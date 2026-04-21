@@ -1,0 +1,1476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Rider Dashboard · Flanorx</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/favicon-32x32.png"
+    />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/apple-touch-icon.png"
+    />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+            boxShadow: {
+              soft: "0 10px 30px rgba(15, 23, 42, 0.06)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+
+      .active-nav {
+        background-color: #13ec5b;
+        color: #102216;
+      }
+
+      .sidebar-item:hover {
+        background-color: rgba(19, 236, 91, 0.1);
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      .dashboard-shortcut {
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease,
+          background-color 0.2s ease;
+      }
+
+      .dashboard-shortcut:hover {
+        transform: translateY(-2px);
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+
+        #menuToggle {
+          display: block;
+        }
+
+        #sidebar {
+          transform: translateX(-100%);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+
+        main {
+          padding-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen antialiased font-display"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <img
+            src="flanorx.png"
+            alt="Flanorx Logo"
+            class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+
+        <div class="px-6 py-4 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div
+              class="size-10 rounded-full bg-slate-700 overflow-hidden bg-cover bg-center"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBa8ZNW64xDK0wXgwyGzDqvnIWwueOsJ8588nwMeGmUHzR-s-ONqU69Abefm6dPzyaQ2GM8hKv58dZFGTNhVelUOYIrPJQlWKfzJRVe7j2ZKPWBxvSEt9vjXSglEsSJ98sQ7iTylRd22ISSTfGWhOU3W3CCQywBiCKaBxit7lP9MbuZNrFUgEIysO3tj5Kch7iJacxK0VB1JNxHoNUwG_0XyCp1iYiQ_KeSTIZqGvE1q2oFWBRvJyuxmqEHMX-kaEkGgQTGWkYfIGY&quot;);
+              "
+            ></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold">Chidi Okonkwo</span>
+              <div class="flex items-center gap-1">
+                <span
+                  class="size-2 bg-primary rounded-full animate-pulse"
+                ></span>
+                <span class="text-xs text-primary font-medium">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-medium">Dashboard</span>
+          </a>
+          <a
+            href="rider-deliveries.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">delivery_dining</span>
+            <span class="font-medium text-slate-300">Deliveries</span>
+          </a>
+          <a
+            href="rider-earnings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">payments</span>
+            <span class="font-medium text-slate-300">Earnings</span>
+          </a>
+          <a
+            href="rider-history.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-medium text-slate-300">History</span>
+          </a>
+          <a
+            href="rider-settings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-medium text-slate-300">Settings</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+          <button
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-500/20 hover:text-red-400 transition-colors py-3 rounded-lg text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-sm">
+              power_settings_new
+            </span>
+            Go Offline
+          </button>
+        </div>
+      </aside>
+
+      <!-- Backdrop -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- Main -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- Header -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+
+            <div
+              class="hidden sm:flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-1.5 rounded-full shadow-sm"
+            >
+              <span
+                class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+              >
+                Status
+              </span>
+              <div
+                class="flex items-center gap-2 bg-primary/15 text-slate-900 dark:text-primary px-3 py-0.5 rounded-full text-sm font-bold"
+              >
+                <span class="size-2 bg-primary rounded-full"></span>
+                Online
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+
+            <div
+              class="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block"
+            ></div>
+
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Chidi Okonkwo
+                </p>
+                <p class="text-xs text-slate-500">Rider Account</p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBa8ZNW64xDK0wXgwyGzDqvnIWwueOsJ8588nwMeGmUHzR-s-ONqU69Abefm6dPzyaQ2GM8hKv58dZFGTNhVelUOYIrPJQlWKfzJRVe7j2ZKPWBxvSEt9vjXSglEsSJ98sQ7iTylRd22ISSTfGWhOU3W3CCQywBiCKaBxit7lP9MbuZNrFUgEIysO3tj5Kch7iJacxK0VB1JNxHoNUwG_0XyCp1iYiQ_KeSTIZqGvE1q2oFWBRvJyuxmqEHMX-kaEkGgQTGWkYfIGY&quot;);
+                "
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="p-4 lg:p-8 space-y-8">
+          <!-- Welcome Hero -->
+          <section
+            class="relative overflow-hidden rounded-3xl bg-slate-900 text-white p-6 lg:p-8 shadow-soft"
+          >
+            <div
+              class="absolute -top-12 -right-12 size-48 bg-primary/20 rounded-full blur-3xl"
+            ></div>
+            <div
+              class="absolute bottom-0 left-0 h-24 w-full bg-gradient-to-r from-primary/10 via-transparent to-transparent"
+            ></div>
+
+            <div
+              class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"
+            >
+              <div class="max-w-2xl">
+                <div
+                  class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-primary mb-4"
+                >
+                  <span
+                    class="size-2 rounded-full bg-primary animate-pulse"
+                  ></span>
+                  Rider Overview
+                </div>
+
+                <h1 class="text-2xl lg:text-4xl font-extrabold tracking-tight">
+                  Welcome back, Chidi!
+                </h1>
+
+                <p
+                  class="mt-3 text-slate-300 text-sm lg:text-base leading-relaxed"
+                >
+                  You have
+                  <span class="text-primary font-extrabold"
+                    >12 available jobs</span
+                  >
+                  nearby. Start with a quick overview, then tap any section
+                  below to manage deliveries, track earnings, and view your
+                  progress.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-3">
+                <a
+                  href="rider-deliveries.html"
+                  class="inline-flex items-center justify-center gap-2 bg-primary text-slate-900 px-5 py-3 rounded-xl font-extrabold hover:bg-primary/90 transition-colors"
+                >
+                  <span class="material-symbols-outlined">delivery_dining</span>
+                  Go to Available Jobs
+                </a>
+                <a
+                  href="rider-earnings.html"
+                  class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/10 px-5 py-3 rounded-xl font-bold transition-colors"
+                >
+                  <span class="material-symbols-outlined">payments</span>
+                  View Earnings
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Earnings Overview -->
+          <section class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-xl lg:text-2xl font-extrabold tracking-tight">
+                  Earnings Overview
+                </h2>
+                <p class="text-sm text-slate-500 mt-1">
+                  A fast summary of today’s performance and weekly progress.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6"
+            >
+              <!-- Card 1 -->
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p
+                      class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                    >
+                      Today
+                    </p>
+                    <h3 class="mt-3 text-3xl font-black text-primary">
+                      ₦28,500
+                    </h3>
+                    <p class="mt-2 text-sm text-slate-500">
+                      +12% from yesterday
+                    </p>
+                  </div>
+                  <div
+                    class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0"
+                  >
+                    <span class="material-symbols-outlined">payments</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p
+                      class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                    >
+                      This Week
+                    </p>
+                    <h3 class="mt-3 text-3xl font-black">₦178,000</h3>
+                    <p class="mt-2 text-sm text-slate-500">
+                      Strong weekly momentum
+                    </p>
+                  </div>
+                  <div
+                    class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0"
+                  >
+                    <span class="material-symbols-outlined">bar_chart</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p
+                      class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                    >
+                      Completed
+                    </p>
+                    <h3 class="mt-3 text-3xl font-black">36</h3>
+                    <p class="mt-2 text-sm text-slate-500">
+                      Deliveries completed
+                    </p>
+                  </div>
+                  <div
+                    class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0"
+                  >
+                    <span class="material-symbols-outlined">task_alt</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div
+                class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-5 shadow-lg"
+              >
+                <div
+                  class="absolute -right-8 -bottom-8 size-28 bg-primary/20 rounded-full blur-2xl"
+                ></div>
+
+                <div class="relative z-10">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <p
+                        class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                      >
+                        Weekly Goal
+                      </p>
+                      <h3 class="mt-3 text-3xl font-black text-primary">89%</h3>
+                      <p class="mt-2 text-sm text-slate-300">
+                        ₦178,000 / ₦200,000 target
+                      </p>
+                    </div>
+                    <div
+                      class="size-12 rounded-2xl bg-white/10 text-primary flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-outlined"
+                        >emoji_events</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="mt-5">
+                    <div
+                      class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-primary rounded-full"
+                        style="width: 89%"
+                      ></div>
+                    </div>
+                    <p class="mt-3 text-sm text-slate-300">
+                      Complete
+                      <span class="font-bold text-white"
+                        >4 more deliveries</span
+                      >
+                      to unlock your bonus.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Quick Access -->
+          <section class="space-y-4">
+            <div>
+              <h2 class="text-xl lg:text-2xl font-extrabold tracking-tight">
+                Quick Access
+              </h2>
+              <p class="text-sm text-slate-500 mt-1">
+                Pick what you want to do next.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+              <a
+                href="rider-deliveries.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary/15"
+                >
+                  <span class="material-symbols-outlined">delivery_dining</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">
+                  Available Jobs
+                </h3>
+                <p class="text-sm text-slate-500 mt-1">12 nearby jobs</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  Open page
+                </div>
+              </a>
+
+              <a
+                href="rider-deliveries.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined">navigation</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">
+                  Active Delivery
+                </h3>
+                <p class="text-sm text-slate-500 mt-1">1 in progress</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  Continue trip
+                </div>
+              </a>
+
+              <a
+                href="rider-earnings.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined">payments</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">Earnings</h3>
+                <p class="text-sm text-slate-500 mt-1">View breakdown</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  See details
+                </div>
+              </a>
+
+              <a
+                href="rider-history.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined">history</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">History</h3>
+                <p class="text-sm text-slate-500 mt-1">Past deliveries</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  Review trips
+                </div>
+              </a>
+
+              <a
+                href="rider-performance.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined">leaderboard</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">Performance</h3>
+                <p class="text-sm text-slate-500 mt-1">Ratings & targets</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  Track stats
+                </div>
+              </a>
+
+              <a
+                href="rider-wallet.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined"
+                    >account_balance_wallet</span
+                  >
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">Wallet</h3>
+                <p class="text-sm text-slate-500 mt-1">₦64,000 available</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  Check payouts
+                </div>
+              </a>
+
+              <a
+                href="rider-notifications.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined">notifications</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">
+                  Notifications
+                </h3>
+                <p class="text-sm text-slate-500 mt-1">3 new alerts</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  View alerts
+                </div>
+              </a>
+
+              <a
+                href="rider-settings.html"
+                class="dashboard-shortcut bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm hover:border-primary hover:shadow-soft group"
+              >
+                <div
+                  class="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-4"
+                >
+                  <span class="material-symbols-outlined">settings</span>
+                </div>
+                <h3 class="font-extrabold text-base lg:text-lg">Settings</h3>
+                <p class="text-sm text-slate-500 mt-1">Account & preferences</p>
+                <div
+                  class="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-primary"
+                >
+                  Manage account
+                </div>
+              </a>
+            </div>
+          </section>
+
+          <!-- Secondary Summary -->
+          <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <!-- Today's Progress -->
+            <div
+              class="xl:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm"
+            >
+              <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+              >
+                <div>
+                  <h3 class="text-lg font-extrabold">Today’s Progress</h3>
+                  <p class="text-sm text-slate-500 mt-1">
+                    Quick overview without crowding the dashboard.
+                  </p>
+                </div>
+                <a
+                  href="rider-performance.html"
+                  class="inline-flex items-center gap-2 text-primary text-sm font-bold"
+                >
+                  View performance
+                  <span class="material-symbols-outlined text-base"
+                    >arrow_forward</span
+                  >
+                </a>
+              </div>
+
+              <div class="grid sm:grid-cols-3 gap-4">
+                <div
+                  class="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4"
+                >
+                  <p
+                    class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                  >
+                    Jobs Accepted
+                  </p>
+                  <p class="mt-3 text-2xl font-black">8</p>
+                  <p class="mt-1 text-sm text-slate-500">
+                    2 pending completion
+                  </p>
+                </div>
+
+                <div
+                  class="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4"
+                >
+                  <p
+                    class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                  >
+                    Completion Rate
+                  </p>
+                  <p class="mt-3 text-2xl font-black">96%</p>
+                  <p class="mt-1 text-sm text-slate-500">
+                    Excellent consistency
+                  </p>
+                </div>
+
+                <div
+                  class="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-4"
+                >
+                  <p
+                    class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400"
+                  >
+                    Average Time
+                  </p>
+                  <p class="mt-3 text-2xl font-black">14m</p>
+                  <p class="mt-1 text-sm text-slate-500">
+                    Per completed delivery
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demand Preview -->
+            <div
+              class="bg-slate-900 text-white rounded-3xl p-6 relative overflow-hidden shadow-lg"
+            >
+              <div
+                class="absolute -top-10 -right-10 size-32 rounded-full bg-primary/20 blur-3xl"
+              ></div>
+
+              <div class="relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 class="text-lg font-extrabold">Demand Preview</h3>
+                    <p class="text-sm text-slate-400 mt-1">
+                      Service area pulse
+                    </p>
+                  </div>
+                  <span class="material-symbols-outlined text-primary text-3xl">
+                    map
+                  </span>
+                </div>
+
+                <div class="space-y-4">
+                  <div
+                    class="rounded-2xl bg-white/5 border border-white/10 p-4"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-slate-300">Choba</span>
+                      <span class="text-sm font-bold text-red-400">High</span>
+                    </div>
+                  </div>
+                  <div
+                    class="rounded-2xl bg-white/5 border border-white/10 p-4"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-slate-300">New GRA</span>
+                      <span class="text-sm font-bold text-amber-400"
+                        >Medium</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="rounded-2xl bg-white/5 border border-white/10 p-4"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="text-sm text-slate-300">Alakahia</span>
+                      <span class="text-sm font-bold text-primary">Rising</span>
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href="rider-demand-map.html"
+                  class="mt-5 inline-flex items-center gap-2 text-primary font-bold text-sm"
+                >
+                  Open demand map
+                  <span class="material-symbols-outlined text-base"
+                    >arrow_forward</span
+                  >
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-bottom-nav">
+      <a href="#" class="bottom-nav-item" id="bottomDashboard">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Home</span>
+      </a>
+      <a
+        href="rider-deliveries.html"
+        class="bottom-nav-item"
+        id="bottomDeliveries"
+      >
+        <span class="material-symbols-outlined">delivery_dining</span>
+        <span>Deliver</span>
+      </a>
+      <a href="rider-earnings.html" class="bottom-nav-item" id="bottomEarnings">
+        <span class="material-symbols-outlined">payments</span>
+        <span>Earnings</span>
+      </a>
+      <a href="rider-history.html" class="bottom-nav-item" id="bottomHistory">
+        <span class="material-symbols-outlined">history</span>
+        <span>History</span>
+      </a>
+      <a href="rider-settings.html" class="bottom-nav-item" id="bottomSettings">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+  <script>
+  (function () {
+    const API_BASE_URL =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+        ? "http://127.0.0.1:8000"
+        : "https://flanorx-api.onrender.com";
+
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("backdrop");
+
+    const sidebarProfileImage = document.querySelector("#sidebar .bg-cover.bg-center");
+    const headerProfileImage = document.querySelector(
+      "header .size-10.rounded-full.bg-slate-200"
+    );
+
+    const sidebarName = document.querySelector("#sidebar .text-sm.font-semibold");
+    const headerName = document.querySelector("header .text-right .text-sm.font-bold");
+    const welcomeTitle = document.querySelector("section h1.text-2xl");
+    const statusBadgeText = document.querySelector(
+      "header .bg-primary\\/15 span:last-child"
+    );
+    const sidebarStatusText = document.querySelector(
+      "#sidebar .text-xs.text-primary.font-medium"
+    );
+
+    const offlineBtn = document.querySelector(
+      "#sidebar button"
+    );
+
+    const availableJobsHero = document.querySelector(
+      "section p .text-primary.font-extrabold"
+    );
+
+    const todayEarningsEl = document.querySelectorAll(".text-3xl.font-black")[0];
+    const weekEarningsEl = document.querySelectorAll(".text-3xl.font-black")[1];
+    const completedEl = document.querySelectorAll(".text-3xl.font-black")[2];
+    const weeklyGoalPercentEl = document.querySelectorAll(".text-3xl.font-black")[3];
+
+    const quickAccessCards = document.querySelectorAll(".dashboard-shortcut");
+    const jobsAcceptedEl = document.querySelectorAll(".text-2xl.font-black")[0];
+    const completionRateEl = document.querySelectorAll(".text-2xl.font-black")[1];
+    const averageTimeEl = document.querySelectorAll(".text-2xl.font-black")[2];
+
+    const defaultAvatar =
+      "https://ui-avatars.com/api/?background=102216&color=13ec5b&name=Rider";
+
+    function getStoredAuth() {
+      try {
+        return JSON.parse(localStorage.getItem("flanorx_auth") || "null");
+      } catch {
+        return null;
+      }
+    }
+
+    function setStoredAuth(data) {
+      localStorage.setItem("flanorx_auth", JSON.stringify(data));
+    }
+
+    function redirectToLogin() {
+      window.location.replace("rider-login.html");
+    }
+
+    function openSidebar() {
+      sidebar.classList.remove("-translate-x-full");
+      sidebar.classList.add("translate-x-0");
+      backdrop.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+      backdrop.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    if (menuToggle) {
+      menuToggle.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (sidebar.classList.contains("-translate-x-full")) {
+          openSidebar();
+        } else {
+          closeSidebar();
+        }
+      });
+    }
+
+    if (backdrop) {
+      backdrop.addEventListener("click", closeSidebar);
+    }
+
+    window.addEventListener("keydown", function (e) {
+      if (
+        e.key === "Escape" &&
+        sidebar &&
+        !sidebar.classList.contains("-translate-x-full") &&
+        window.innerWidth < 1024
+      ) {
+        closeSidebar();
+      }
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove("-translate-x-full");
+        backdrop.classList.add("hidden");
+        document.body.style.overflow = "";
+      } else {
+        if (!sidebar.classList.contains("translate-x-0")) {
+          sidebar.classList.add("-translate-x-full");
+        }
+      }
+    });
+
+    if (window.innerWidth < 1024) {
+      sidebar.classList.add("-translate-x-full");
+      backdrop.classList.add("hidden");
+    } else {
+      sidebar.classList.remove("-translate-x-full");
+    }
+
+    (function setActiveNavigation() {
+      const path = window.location.pathname;
+      let currentPage = path.substring(path.lastIndexOf("/") + 1);
+
+      if (
+        currentPage === "" ||
+        currentPage === "index.html" ||
+        currentPage === "#" ||
+        currentPage === "rider-dashboard.html"
+      ) {
+        currentPage = "home";
+      }
+
+      const navItems = document.querySelectorAll(".bottom-nav-item");
+      navItems.forEach((item) => item.classList.remove("active"));
+
+      navItems.forEach((item) => {
+        const href = item.getAttribute("href");
+
+        if (currentPage === "home" && href === "#") {
+          item.classList.add("active");
+        } else if (href === currentPage) {
+          item.classList.add("active");
+        }
+      });
+
+      const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+      sidebarLinks.forEach((link) => {
+        link.classList.remove("active-nav");
+        const href = link.getAttribute("href");
+
+        if (currentPage === "home" && href === "#") {
+          link.classList.add("active-nav");
+        } else if (href === currentPage) {
+          link.classList.add("active-nav");
+        }
+      });
+    })();
+
+    async function apiFetch(path, options = {}) {
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          ...(options.body instanceof FormData
+            ? {}
+            : { "Content-Type": "application/json" }),
+          ...(options.headers || {}),
+        },
+        ...options,
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data?.message || `Request failed (${response.status})`);
+      }
+
+      return data;
+    }
+
+    function formatMoney(value) {
+      const num = Number(value || 0);
+      return `₦${num.toLocaleString("en-NG", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}`;
+    }
+
+    function getInitials(name = "Rider") {
+      return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join("");
+    }
+
+    function avatarFromName(name = "Rider") {
+      return `https://ui-avatars.com/api/?background=102216&color=13ec5b&name=${encodeURIComponent(
+        name || "Rider"
+      )}`;
+    }
+
+    function setBgImage(el, url) {
+      if (!el) return;
+      el.style.backgroundImage = `url("${url}")`;
+    }
+
+    function updateStatusUI(status) {
+      const normalized = status === "online" ? "online" : "offline";
+      const label = normalized === "online" ? "Online" : "Offline";
+      const dotClass =
+        normalized === "online" ? "bg-primary" : "bg-red-500";
+
+      if (statusBadgeText) {
+        statusBadgeText.textContent = label;
+      }
+
+      const statusWrapper = document.querySelector(
+        "header .bg-primary\\/15, header .bg-red-500\\/15"
+      );
+
+      if (statusWrapper) {
+        statusWrapper.className =
+          normalized === "online"
+            ? "flex items-center gap-2 bg-primary/15 text-slate-900 dark:text-primary px-3 py-0.5 rounded-full text-sm font-bold"
+            : "flex items-center gap-2 bg-red-500/15 text-red-600 dark:text-red-400 px-3 py-0.5 rounded-full text-sm font-bold";
+
+        statusWrapper.innerHTML = `
+          <span class="size-2 ${dotClass} rounded-full"></span>
+          <span>${label}</span>
+        `;
+      }
+
+      if (sidebarStatusText) {
+        sidebarStatusText.textContent = label;
+        sidebarStatusText.className =
+          normalized === "online"
+            ? "text-xs text-primary font-medium"
+            : "text-xs text-red-400 font-medium";
+      }
+
+      const sidebarDot = document.querySelector("#sidebar .size-2.rounded-full");
+      if (sidebarDot) {
+        sidebarDot.className =
+          normalized === "online"
+            ? "size-2 bg-primary rounded-full animate-pulse"
+            : "size-2 bg-red-500 rounded-full";
+      }
+
+      if (offlineBtn) {
+        offlineBtn.innerHTML =
+          normalized === "online"
+            ? `
+              <span class="material-symbols-outlined text-sm">power_settings_new</span>
+              Go Offline
+            `
+            : `
+              <span class="material-symbols-outlined text-sm">power_settings_new</span>
+              Go Online
+            `;
+      }
+    }
+
+    function updateProfileUI(rider) {
+      const riderName = rider?.name || "Rider";
+      const avatar =
+        rider?.profilePicture ||
+        rider?.profile ||
+        avatarFromName(riderName) ||
+        defaultAvatar;
+
+      if (sidebarName) sidebarName.textContent = riderName;
+      if (headerName) headerName.textContent = riderName;
+      if (welcomeTitle) {
+        const firstName = riderName.split(" ")[0] || "Rider";
+        welcomeTitle.textContent = `Welcome back, ${firstName}!`;
+      }
+
+      setBgImage(sidebarProfileImage, avatar);
+      setBgImage(headerProfileImage, avatar);
+
+      updateStatusUI(rider?.status || "offline");
+    }
+
+    function updateDashboardStats({
+      availableJobs = 0,
+      walletBalance = 0,
+      totalEarnings = 0,
+      completedDeliveries = 0,
+      activeDeliveries = 0,
+      completionRate = 0,
+      averageTime = 0,
+    }) {
+      if (availableJobsHero) {
+        availableJobsHero.textContent = `${availableJobs} available jobs`;
+      }
+
+      if (todayEarningsEl) {
+        todayEarningsEl.textContent = formatMoney(walletBalance);
+      }
+
+      if (weekEarningsEl) {
+        weekEarningsEl.textContent = formatMoney(totalEarnings);
+      }
+
+      if (completedEl) {
+        completedEl.textContent = String(completedDeliveries);
+      }
+
+      if (weeklyGoalPercentEl) {
+        const goal = 20;
+        const percent = Math.min(
+          100,
+          Math.round((Number(completedDeliveries || 0) / goal) * 100)
+        );
+        weeklyGoalPercentEl.textContent = `${percent}%`;
+
+        const weeklyGoalText = weeklyGoalPercentEl
+          .closest(".rounded-3xl")
+          ?.querySelector(".mt-2.text-sm.text-slate-300");
+        if (weeklyGoalText) {
+          weeklyGoalText.textContent = `${String(
+            completedDeliveries || 0
+          )} / ${goal} target`;
+        }
+
+        const weeklyGoalBar = weeklyGoalPercentEl
+          .closest(".rounded-3xl")
+          ?.querySelector(".h-full.bg-primary.rounded-full");
+        if (weeklyGoalBar) {
+          weeklyGoalBar.style.width = `${percent}%`;
+        }
+      }
+
+      if (jobsAcceptedEl) {
+        jobsAcceptedEl.textContent = String(
+          Number(completedDeliveries || 0) + Number(activeDeliveries || 0)
+        );
+      }
+
+      if (completionRateEl) {
+        completionRateEl.textContent = `${Number(completionRate || 0)}%`;
+      }
+
+      if (averageTimeEl) {
+        averageTimeEl.textContent = `${Number(averageTime || 0)}m`;
+      }
+
+      if (quickAccessCards[0]) {
+        const text = quickAccessCards[0].querySelector(".text-sm.text-slate-500");
+        if (text) text.textContent = `${availableJobs} nearby jobs`;
+      }
+
+      if (quickAccessCards[1]) {
+        const text = quickAccessCards[1].querySelector(".text-sm.text-slate-500");
+        if (text) {
+          text.textContent =
+            activeDeliveries > 0
+              ? `${activeDeliveries} in progress`
+              : "No active delivery";
+        }
+      }
+
+      if (quickAccessCards[5]) {
+        const text = quickAccessCards[5].querySelector(".text-sm.text-slate-500");
+        if (text) text.textContent = `${formatMoney(walletBalance)} available`;
+      }
+    }
+
+    async function fetchRiderProfile() {
+      return apiFetch("/api/riders/me");
+    }
+
+    async function fetchAvailableDeliveries() {
+      try {
+        const data = await apiFetch("/api/delivery/available");
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    async function fetchMyDeliveries() {
+      try {
+        const data = await apiFetch("/api/delivery/my-deliveries");
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    async function fetchRiderEarnings() {
+      try {
+        return await apiFetch("/api/delivery/rider/earnings");
+      } catch {
+        return {
+          walletBalance: 0,
+          totalEarnings: 0,
+          completedDeliveries: 0,
+          history: [],
+        };
+      }
+    }
+
+    function calculateCompletionRate(history = [], completedDeliveries = 0, activeDeliveries = 0) {
+      const accepted = Number(completedDeliveries || 0) + Number(activeDeliveries || 0);
+      if (!accepted) return 0;
+      return Math.min(100, Math.round((Number(completedDeliveries || 0) / accepted) * 100));
+    }
+
+    function calculateAverageTime(history = []) {
+      if (!Array.isArray(history) || !history.length) return 0;
+
+      const valid = history
+        .map((item) => {
+          if (!item?.completedAt || !item?.createdAt) return null;
+          const start = new Date(item.createdAt).getTime();
+          const end = new Date(item.completedAt).getTime();
+          if (!start || !end || end <= start) return null;
+          return Math.round((end - start) / 60000);
+        })
+        .filter((v) => Number.isFinite(v) && v > 0);
+
+      if (!valid.length) return 0;
+      return Math.round(valid.reduce((a, b) => a + b, 0) / valid.length);
+    }
+
+    async function hydrateDashboard() {
+      const auth = getStoredAuth();
+
+      if (!auth || auth.userType !== "rider") {
+        redirectToLogin();
+        return;
+      }
+
+      try {
+        const rider = await fetchRiderProfile();
+
+        if (
+          rider?.verificationStatus &&
+          rider.verificationStatus !== "approved"
+        ) {
+          window.location.replace("rider-complete-registration.html");
+          return;
+        }
+
+        const refreshedAuth = {
+          ...auth,
+          _id: rider._id || auth._id,
+          name: rider.name || auth.name,
+          email: rider.email || auth.email,
+          profilePicture:
+            rider.profilePicture || rider.profile || auth.profilePicture || "",
+          status: rider.status || auth.status || "offline",
+          verificationStatus:
+            rider.verificationStatus || auth.verificationStatus || "none",
+          isVerified:
+            rider.isVerified === true ||
+            rider.verificationStatus === "approved",
+          userType: "rider",
+          loggedInAt: auth.loggedInAt || Date.now(),
+        };
+
+        setStoredAuth(refreshedAuth);
+        updateProfileUI({
+          ...rider,
+          profilePicture: refreshedAuth.profilePicture,
+          status: refreshedAuth.status,
+        });
+
+        const [availableDeliveries, myDeliveries, earnings] = await Promise.all([
+          fetchAvailableDeliveries(),
+          fetchMyDeliveries(),
+          fetchRiderEarnings(),
+        ]);
+
+        const activeDeliveries = Array.isArray(myDeliveries)
+          ? myDeliveries.filter((item) =>
+              ["accepted", "picked_up", "in_transit", "delivered"].includes(
+                item.deliveryStatus
+              )
+            ).length
+          : 0;
+
+        const completedDeliveries = Number(earnings?.completedDeliveries || 0);
+        const history = Array.isArray(earnings?.history) ? earnings.history : [];
+
+        updateDashboardStats({
+          availableJobs: availableDeliveries.length,
+          walletBalance: earnings?.walletBalance || 0,
+          totalEarnings: earnings?.totalEarnings || 0,
+          completedDeliveries,
+          activeDeliveries,
+          completionRate: calculateCompletionRate(
+            history,
+            completedDeliveries,
+            activeDeliveries
+          ),
+          averageTime: calculateAverageTime(history),
+        });
+      } catch (error) {
+        console.error(error);
+
+        const message = String(error?.message || "").toLowerCase();
+        if (
+          message.includes("not authorized") ||
+          message.includes("401") ||
+          message.includes("jwt") ||
+          message.includes("token")
+        ) {
+          localStorage.removeItem("flanorx_auth");
+          redirectToLogin();
+          return;
+        }
+
+        alert(error.message || "Failed to load dashboard");
+      }
+    }
+
+    async function toggleRiderStatus() {
+      const auth = getStoredAuth();
+      if (!auth) {
+        redirectToLogin();
+        return;
+      }
+
+      const currentStatus = auth.status === "online" ? "online" : "offline";
+      const nextStatus = currentStatus === "online" ? "offline" : "online";
+
+      if (offlineBtn) {
+        offlineBtn.disabled = true;
+        offlineBtn.classList.add("opacity-60", "cursor-not-allowed");
+      }
+
+      try {
+        const response = await apiFetch("/api/riders/status", {
+          method: "PATCH",
+          body: JSON.stringify({ status: nextStatus }),
+        });
+
+        const updated = {
+          ...auth,
+          status: response?.status || nextStatus,
+        };
+
+        setStoredAuth(updated);
+        updateStatusUI(updated.status);
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Failed to update rider status");
+      } finally {
+        if (offlineBtn) {
+          offlineBtn.disabled = false;
+          offlineBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        }
+      }
+    }
+
+    async function logoutRider() {
+      try {
+        await apiFetch("/api/riders/logout", {
+          method: "POST",
+        });
+      } catch (error) {
+        console.error("Logout request failed:", error);
+      } finally {
+        localStorage.removeItem("flanorx_auth");
+        redirectToLogin();
+      }
+    }
+
+    if (offlineBtn) {
+      offlineBtn.addEventListener("click", toggleRiderStatus);
+      offlineBtn.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+        logoutRider();
+      });
+    }
+
+    const notificationBtn = document.querySelector(
+      "header button.relative.text-slate-500"
+    );
+    if (notificationBtn) {
+      notificationBtn.addEventListener("dblclick", function () {
+        window.location.href = "rider-notifications.html";
+      });
+    }
+
+    hydrateDashboard();
+  })();
+</script>
+  </body>
+</html>

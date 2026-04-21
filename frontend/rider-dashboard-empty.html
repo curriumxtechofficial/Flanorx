@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Rider Dashboard · Flanorx</title>
+    <!-- Tailwind + plugins (same as customer) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Manrope font (consistent) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b", // rider primary preserved
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .active-nav {
+        background-color: #13ec5b;
+        color: #102216;
+      }
+      .sidebar-item:hover {
+        background-color: rgba(19, 236, 91, 0.1);
+      }
+      @keyframes pulse-subtle {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .animate-pulse-subtle {
+        animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased"
+  >
+    <!-- MAIN FLEX CONTAINER (exactly like customer: h-screen overflow-hidden) -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- SIDEBAR – fixed on mobile, static on large, with slide transform & backdrop (mirror customer) -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <!-- Logo (rider original) -->
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <!-- Profile card (exactly as provided) -->
+        <div class="px-6 py-4 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div
+              class="size-10 rounded-full bg-slate-700 overflow-hidden bg-cover bg-center"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBa8ZNW64xDK0wXgwyGzDqvnIWwueOsJ8588nwMeGmUHzR-s-ONqU69Abefm6dPzyaQ2GM8hKv58dZFGTNhVelUOYIrPJQlWKfzJRVe7j2ZKPWBxvSEt9vjXSglEsSJ98sQ7iTylRd22ISSTfGWhOU3W3CCQywBiCKaBxit7lP9MbuZNrFUgEIysO3tj5Kch7iJacxK0VB1JNxHoNUwG_0XyCp1iYiQ_KeSTIZqGvE1q2oFWBRvJyuxmqEHMX-kaEkGgQTGWkYfIGY&quot;);
+              "
+            ></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold">Alex Rivera</span>
+              <div class="flex items-center gap-1">
+                <span
+                  class="size-2 bg-primary rounded-full animate-pulse"
+                ></span>
+                <span class="text-xs text-primary font-medium">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation (rider items, active-nav preserved) -->
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-medium">Dashboard</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">delivery_dining</span>
+            <span class="font-medium text-slate-300">Deliveries</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">payments</span>
+            <span class="font-medium text-slate-300">Earnings</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-medium text-slate-300">History</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-medium text-slate-300">Settings</span>
+          </a>
+        </nav>
+
+        <!-- Sidebar footer: Go offline (exactly as original) -->
+        <div class="p-4 border-t border-slate-800">
+          <button
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-500/20 hover:text-red-400 transition-colors py-3 rounded-lg text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-sm"
+              >power_settings_new</span
+            >
+            Go Offline
+          </button>
+        </div>
+      </aside>
+
+      <!-- BACKDROP (mobile only) – same as customer -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- MAIN CONTENT (scrollable column) -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- STICKY HEADER – matches customer: h-16, backdrop-blur, flex-between, same padding, left menu + right notifications/status -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <!-- Left section: hamburger + status chip (rider style) -->
+          <div class="flex items-center gap-4">
+            <!-- mobile menu toggle – exactly like customer position -->
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+
+            <!-- status indicator (rider flavor) placed similarly to customer's search but preserving rider content -->
+            <div
+              class="hidden sm:flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-1.5 rounded-full shadow-sm"
+            >
+              <span
+                class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+                >Status</span
+              >
+              <div
+                class="flex items-center gap-2 bg-primary/20 text-slate-900 dark:text-primary px-3 py-0.5 rounded-full text-sm font-bold"
+              >
+                <span class="size-2 bg-primary rounded-full"></span>
+                Online
+              </div>
+            </div>
+          </div>
+
+          <!-- Right section: notifications + avatar (exact same as customer structure) -->
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div
+              class="h-8 w-px bg-slate-200 dark:border-slate-800 hidden sm:block"
+            ></div>
+            <!-- user block (rider name + avatar) -->
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Alex Rivera
+                </p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBa8ZNW64xDK0wXgwyGzDqvnIWwueOsJ8588nwMeGmUHzR-s-ONqU69Abefm6dPzyaQ2GM8hKv58dZFGTNhVelUOYIrPJQlWKfzJRVe7j2ZKPWBxvSEt9vjXSglEsSJ98sQ7iTylRd22ISSTfGWhOU3W3CCQywBiCKaBxit7lP9MbuZNrFUgEIysO3tj5Kch7iJacxK0VB1JNxHoNUwG_0XyCp1iYiQ_KeSTIZqGvE1q2oFWBRvJyuxmqEHMX-kaEkGgQTGWkYfIGY&quot;);
+                "
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- DASHBOARD CONTENT – padding scale exactly as customer (p-4 lg:p-8 space-y-8) -->
+        <div class="p-4 lg:p-8 space-y-8">
+          <!-- WELCOME SECTION (new rider greeting, matching original copy) -->
+          <div
+            class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4"
+          >
+            <div>
+              <h2
+                class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+              >
+                Welcome to the team, Alex!
+              </h2>
+              <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                Get ready for your first delivery. We're happy to have you!
+              </p>
+            </div>
+            <!-- no action button, but we can add empty div to preserve spacing (or keep as is) -->
+          </div>
+
+          <!-- 12-COLUMN GRID (identical responsive philosophy) gap-6 -->
+          <div class="grid grid-cols-12 gap-6">
+            <!-- EARNINGS PERFORMANCE CARD (col-span-8) – with zero state from rider -->
+            <div
+              class="col-span-12 lg:col-span-8 bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center min-h-[350px]"
+            >
+              <div
+                class="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-full mb-6"
+              >
+                <span class="material-symbols-outlined text-7xl text-primary/40"
+                  >local_shipping</span
+                >
+              </div>
+              <h2 class="text-2xl font-bold mb-2">Earnings Performance</h2>
+              <p class="text-slate-500 dark:text-slate-400 max-w-sm">
+                Your earnings will appear here once you complete your first
+                delivery. Stay tuned!
+              </p>
+              <div class="mt-8 flex gap-8">
+                <div class="text-center">
+                  <p class="text-xs font-bold text-slate-400 uppercase mb-1">
+                    Today
+                  </p>
+                  <p
+                    class="text-2xl font-black text-slate-300 dark:text-slate-700"
+                  >
+                    $0.00
+                  </p>
+                </div>
+                <div
+                  class="text-center border-l border-slate-100 dark:border-slate-800 pl-8"
+                >
+                  <p class="text-xs font-bold text-slate-400 uppercase mb-1">
+                    Week
+                  </p>
+                  <p
+                    class="text-2xl font-black text-slate-300 dark:text-slate-700"
+                  >
+                    $0.00
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- WEEKLY GOAL CARD (col-span-4) – exactly as provided, but using rounded-3xl for consistency (customer uses rounded-3xl, we adapt) -->
+            <div
+              class="col-span-12 lg:col-span-4 bg-slate-900 text-white rounded-3xl p-8 relative overflow-hidden flex flex-col justify-between shadow-xl"
+            >
+              <!-- decorative background consistent with customer philosophy -->
+              <div
+                class="absolute -right-10 -top-10 size-40 bg-primary/20 rounded-full blur-3xl"
+              ></div>
+              <div class="relative z-10">
+                <h2 class="text-xl font-bold">Weekly Goal</h2>
+                <p class="text-slate-400 text-sm">Start your journey today</p>
+                <div class="py-8">
+                  <div class="flex justify-between items-end mb-3">
+                    <span class="text-5xl font-black text-slate-700">0%</span>
+                    <span class="text-slate-500 font-medium">$0 / $500</span>
+                  </div>
+                  <div
+                    class="w-full h-3 bg-slate-800 rounded-full overflow-hidden"
+                  >
+                    <div class="h-full bg-primary rounded-full w-0"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="relative z-10">
+                <button
+                  class="w-full bg-primary text-slate-900 font-bold py-3 rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+                >
+                  Unlock your first bonus
+                  <span class="material-symbols-outlined text-sm font-bold"
+                    >lock_open</span
+                  >
+                </button>
+                <p class="text-xs text-center mt-3 text-slate-500">
+                  Complete 5 deliveries to unlock
+                </p>
+              </div>
+              <span
+                class="material-symbols-outlined text-9xl absolute -bottom-8 -right-8 opacity-5 text-primary pointer-events-none"
+                >workspace_premium</span
+              >
+            </div>
+
+            <!-- AVAILABLE DELIVERIES SECTION – full width zero state as in rider dashboard -->
+            <div class="col-span-12">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-black">Available Deliveries</h2>
+                <div
+                  class="flex items-center gap-2 text-slate-400 font-medium text-sm"
+                >
+                  <span
+                    class="size-2 bg-primary rounded-full animate-pulse"
+                  ></span>
+                  Searching for orders...
+                </div>
+              </div>
+              <!-- zero state card with original rider content, using rounded-3xl to match design system -->
+              <div
+                class="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-8 lg:p-12 flex flex-col items-center justify-center text-center"
+              >
+                <div class="relative mb-6">
+                  <div
+                    class="absolute inset-0 bg-primary/10 rounded-full scale-150 animate-pulse-subtle"
+                  ></div>
+                  <div
+                    class="relative size-20 bg-primary/20 text-primary rounded-full flex items-center justify-center"
+                  >
+                    <span class="material-symbols-outlined text-4xl"
+                      >radar</span
+                    >
+                  </div>
+                </div>
+                <h3 class="text-xl font-bold mb-2">
+                  Searching for orders nearby...
+                </h3>
+                <p class="text-slate-500 dark:text-slate-400 max-w-md mb-8">
+                  We haven't found any orders in your immediate vicinity yet.
+                  Try moving closer to high-demand areas to increase your
+                  chances.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                  <div
+                    class="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-700"
+                  >
+                    <span class="material-symbols-outlined text-amber-500"
+                      >lightbulb</span
+                    >
+                    <span
+                      class="text-sm font-bold text-slate-700 dark:text-slate-300"
+                      >Pro Tip: Head towards the City Center for more
+                      requests.</span
+                    >
+                  </div>
+                  <button
+                    class="flex items-center gap-2 text-primary font-bold hover:underline"
+                  >
+                    <span class="material-symbols-outlined text-sm"
+                      >refresh</span
+                    >
+                    Force Refresh
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- AREA DEMAND MAP (full width) – exactly as provided, but with consistent rounded-3xl -->
+            <div class="col-span-12">
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden"
+              >
+                <div
+                  class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between"
+                >
+                  <h2 class="text-xl font-bold">Area Demand Map</h2>
+                  <div class="flex items-center gap-2">
+                    <span class="size-3 bg-red-500 rounded-full"></span>
+                    <span class="text-sm font-medium text-slate-500"
+                      >High Surge Areas</span
+                    >
+                  </div>
+                </div>
+                <div class="h-64 bg-slate-200 dark:bg-slate-800 relative">
+                  <div
+                    class="absolute inset-0 opacity-40 mix-blend-multiply dark:mix-blend-overlay bg-center bg-cover"
+                    style="
+                      background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBnIKP2whgjmbMGpeEs2Gs3Gz0OosPE0G2m8jqfyOFcgrZv8hmkw6vi0tYo8BIcrSBTmIKsPk8uFaLxirIupI-aHHasdACD2TsGJI9QOAypcqbgMshBGF69OR3VwmXsQlDboUuL44uc_yb-U66eOGl3YExt7-ZMRPRqsUr_v2KTe7cHEpU_8rSjBCwilT6MBZIAlZyQsubQ6cvUsdiVAKblr8G-8OXKbY6k3CU7ys8XW1IkV1nI91XMnkruS_l-yW3Bxa8D2zewvU8&quot;);
+                    "
+                  ></div>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-red-500/20"
+                  ></div>
+                  <div
+                    class="absolute inset-0 flex items-center justify-center"
+                  >
+                    <div
+                      class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-3 shadow-2xl"
+                    >
+                      <span class="material-symbols-outlined">map</span>
+                      Explore Demand Heatmap
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end grid -->
+        </div>
+        <!-- end content padding -->
+      </main>
+      <!-- end main -->
+    </div>
+    <!-- end flex h-screen -->
+
+    <!-- simple script to handle mobile sidebar + backdrop (identical behavior to customer) -->
+    <script>
+      (function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        function openSidebar() {
+          sidebar.classList.remove("-translate-x-full");
+          sidebar.classList.add("translate-x-0");
+          backdrop.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeSidebar() {
+          sidebar.classList.add("-translate-x-full");
+          sidebar.classList.remove("translate-x-0");
+          backdrop.classList.add("hidden");
+          document.body.style.overflow = "";
+        }
+
+        if (menuToggle) {
+          menuToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (sidebar.classList.contains("-translate-x-full")) {
+              openSidebar();
+            } else {
+              closeSidebar();
+            }
+          });
+        }
+
+        if (backdrop) {
+          backdrop.addEventListener("click", closeSidebar);
+        }
+
+        window.addEventListener("keydown", (e) => {
+          if (
+            e.key === "Escape" &&
+            sidebar &&
+            !sidebar.classList.contains("-translate-x-full") &&
+            window.innerWidth < 1024
+          ) {
+            closeSidebar();
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 1024) {
+            sidebar.classList.remove("-translate-x-full");
+            backdrop.classList.add("hidden");
+            document.body.style.overflow = "";
+          } else {
+            // ensure it's hidden by default on mobile (unless opened)
+            if (!sidebar.classList.contains("translate-x-0")) {
+              sidebar.classList.add("-translate-x-full");
+            }
+          }
+        });
+
+        // initial state
+        if (window.innerWidth < 1024) {
+          sidebar.classList.add("-translate-x-full");
+          backdrop.classList.add("hidden");
+        } else {
+          sidebar.classList.remove("-translate-x-full");
+        }
+      })();
+    </script>
+  </body>
+</html>

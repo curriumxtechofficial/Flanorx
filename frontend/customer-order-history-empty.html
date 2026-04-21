@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Order History · Flanorx Customer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts: Manrope (same as dashboard) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols Outlined (two inclusions kept, same as dashboard) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+      }
+      /* keep table styling consistent */
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- ========== SIDEBAR (exact copy from dashboard) ========== -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <!-- Dashboard link (points to dashboard) -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-dashboard.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <!-- Order History (active) using sidebar-active class -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+            href="customer-order-history.html"
+          >
+            <span class="material-symbols-outlined text-primary">history</span>
+            <span class="font-semibold text-sm">Order History</span>
+          </a>
+          <!-- Place Order (current page) — we highlight it with sidebar-active class -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="place-order.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >near_me</span
+            >
+            <span class="font-medium text-sm">Tracking</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Backdrop for mobile sidebar (same as dashboard) -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- ========== MAIN CONTENT (with header & order history) ========== -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- STICKY HEADER (exact copy from dashboard) -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <!-- Hamburger Menu Button (visible only on mobile) -->
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+
+            <!-- search bar same as dashboard -->
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search orders, invoices..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Alex Johnson
+                </p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDaed4n8eyHsDk2cz2h7hrpNJktiMHjPqIevrWQR5hdPnLxrvB2UbHIN4L89o7nYVyIcw2hWGEQCKPvVKUb5C7mbmU-qrte4EGzvr7cSeKjBgJvMDJ7JERZJUbrPTlOunDC6QH7l9MrSkuOcfhLZD6jpdcHYxEDCjue_6yOe1X4wbbb8vR0u8oGmqZnC8KsTLZT6YMOCpKnEpDGC1F7bK2FA0b4WQuMuJc6a62_L-Hw4F_3MJKP9LZkXht9g14VpWj-nncQHH9STm4&quot;);
+                "
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- ========== ORDER HISTORY CONTENT (fully preserved from original) ========== -->
+        <div class="p-4 lg:p-8 space-y-8">
+          <!-- heading + stat cards (exactly as in order-history) but updated to be interactive (removed opacity & pointer-events) -->
+          <div
+            class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6"
+          >
+            <div>
+              <h2 class="text-4xl font-black tracking-tight mb-2">
+                Order History
+              </h2>
+              <p class="text-slate-500 dark:text-slate-400">
+                Review your past fuel deliveries and manage invoices.
+              </p>
+            </div>
+            <div class="flex gap-4">
+              <!-- total orders stat card (now fully visible, removed opacity) -->
+              <div
+                class="bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm min-w-[140px]"
+              >
+                <p
+                  class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                >
+                  Total Orders
+                </p>
+                <p
+                  class="text-2xl font-black text-slate-900 dark:text-white leading-none"
+                >
+                  0
+                </p>
+              </div>
+              <!-- total spent stat card -->
+              <div
+                class="bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm min-w-[140px]"
+              >
+                <p
+                  class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                >
+                  Total Spent
+                </p>
+                <p
+                  class="text-2xl font-black text-slate-900 dark:text-white leading-none"
+                >
+                  ₦0.00
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- FILTERS section: exactly as original but enabled (removed opacity & pointer-events-none, disabled attributes) -->
+          <div
+            class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 mb-10 shadow-sm flex flex-col lg:flex-row gap-4"
+          >
+            <div class="flex-1 relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >search</span
+              >
+              <input
+                class="w-full pl-10 pr-4 py-2.5 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-primary"
+                placeholder="Search by order ID or fuel type..."
+                type="text"
+              />
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- date dropdown -->
+              <div
+                class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+              >
+                <span class="material-symbols-outlined text-slate-500 text-sm"
+                  >calendar_month</span
+                >
+                <span class="text-sm font-medium">Last 30 Days</span>
+                <span class="material-symbols-outlined text-slate-400"
+                  >expand_more</span
+                >
+              </div>
+              <!-- status filter -->
+              <div
+                class="flex items-center gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-lg cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition"
+              >
+                <span class="material-symbols-outlined text-slate-500 text-sm"
+                  >filter_list</span
+                >
+                <span class="text-sm font-medium">Status: All</span>
+                <span class="material-symbols-outlined text-slate-400"
+                  >expand_more</span
+                >
+              </div>
+              <button
+                class="bg-primary text-slate-900 font-bold px-6 py-2.5 rounded-lg text-sm hover:bg-primary/90 transition-all shadow-sm"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- empty state (exactly from original, fully interactive) -->
+          <div
+            class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm py-20 px-6 text-center max-w-3xl mx-auto"
+          >
+            <div class="flex justify-center mb-8">
+              <div class="relative">
+                <div
+                  class="size-32 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-600"
+                    style="
+                      font-variation-settings:
+                        &quot;opsz&quot; 48,
+                        &quot;wght&quot; 200;
+                    "
+                    >receipt_long</span
+                  >
+                </div>
+                <div
+                  class="absolute -bottom-2 -right-2 bg-white dark:bg-slate-900 p-2 rounded-full border-4 border-background-light dark:border-background-dark"
+                >
+                  <span
+                    class="material-symbols-outlined text-primary text-3xl font-bold"
+                    >search</span
+                  >
+                </div>
+              </div>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-4">
+              No orders found yet
+            </h3>
+            <p
+              class="text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-10 leading-relaxed"
+            >
+              Once you place your first fuel order, you'll be able to track and
+              manage your history and receipts here.
+            </p>
+            <button
+              class="bg-brand-yellow hover:bg-yellow-500 text-slate-900 font-black px-8 py-4 rounded-xl transition-all shadow-xl shadow-yellow-500/20 flex items-center gap-3 mx-auto"
+            >
+              <span class="material-symbols-outlined font-bold"
+                >add_shopping_cart</span
+              >
+              Place Your First Order
+            </button>
+          </div>
+
+          <!-- we also keep the original footer note? The dashboard layout already includes a sticky header. 
+             original order-history had a footer, but to keep consistent with dashboard style we omit footer 
+             (the dashboard main area has no footer). However we can embed the footer inside main if needed. 
+             To preserve exact content, I'll include the footer lines but keep them subtle (optional). 
+             I'll include a simplified version of the footer to stay true to history page, but within main scrollable -->
+          <div
+            class="mt-auto pt-10 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 text-xs"
+          >
+            <p class="text-slate-400">© 2026 Flanorx. All rights reserved.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile sidebar toggle script (same as dashboard) -->
+    <script>
+      (function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+        if (menuToggle && sidebar && backdrop) {
+          function openSidebar() {
+            sidebar.classList.remove("-translate-x-full");
+            backdrop.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+          }
+          function closeSidebar() {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+          }
+          menuToggle.addEventListener("click", openSidebar);
+          backdrop.addEventListener("click", closeSidebar);
+          window.addEventListener("resize", function () {
+            if (window.innerWidth >= 1024) {
+              sidebar.classList.remove("-translate-x-full");
+              backdrop.classList.add("hidden");
+              document.body.classList.remove("overflow-hidden");
+            } else {
+              sidebar.classList.add("-translate-x-full");
+            }
+          });
+        }
+      })();
+    </script>
+    <!-- optional dark mode toggle logic if needed (dashboard uses class strategy) – not needed but we keep same as dashboard -->
+    <script>
+      // you can sync dark mode if needed, but dashboard doesn't include toggler; we keep class on html.
+      // For consistency, we rely on tailwind dark mode class. The user may have a switcher elsewhere.
+    </script>
+  </body>
+</html>

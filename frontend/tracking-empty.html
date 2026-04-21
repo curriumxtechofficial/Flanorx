@@ -1,0 +1,396 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx · Order Tracking</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      /* smooth sidebar transition (mobile) */
+      .sidebar-transition {
+        transition: transform 0.3s ease-in-out;
+      }
+      /* blob animation from original tracking page */
+      .illustration-blob {
+        background: radial-gradient(
+          circle,
+          rgba(19, 236, 91, 0.15) 0%,
+          rgba(19, 236, 91, 0) 70%
+        );
+      }
+      /* CRITICAL FIX: Prevent horizontal scrolling while preserving layout */
+      html,
+      body {
+        overflow-x: hidden !important;
+        width: 100%;
+        max-width: 100vw;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Ensure the main container doesn't overflow */
+      .flex.h-screen {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+      }
+
+      /* Keep main content scrollable vertically but hidden horizontally */
+      main {
+        max-width: 100vw;
+        overflow-x: hidden !important;
+      }
+
+      /* Fix any absolute positioned elements that might cause overflow */
+      .relative {
+        max-width: 100vw;
+      }
+
+      /* Ensure images and cards don't cause overflow */
+      img,
+      .bg-white,
+      .shadow-2xl {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen antialiased"
+  >
+    <!-- main container: flex with sidebar + content (same unified layout) -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- SIDEBAR (identical to dashboard & order history) -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <!-- Dashboard link -->
+          <a
+            href="customer-dashboard.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <!-- Order History link -->
+          <a
+            href="customer-order-history.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+          <!-- Place Order (current page) — we highlight it with sidebar-active class -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="place-order.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <!-- Tracking (active) -->
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+          >
+            <span class="material-symbols-outlined text-primary">near_me</span>
+            <span class="font-semibold text-sm">Tracking</span>
+          </a>
+          <!-- Settings -->
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- backdrop for mobile -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- MAIN CONTENT (right side, scrollable) -->
+      <main class="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
+        <!-- HEADER (identical to dashboard/order history) -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <!-- hamburger menu (mobile) -->
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+            <!-- search bar (kept for consistency) -->
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search orders, tracking..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Alex Johnson
+                </p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDaed4n8eyHsDk2cz2h7hrpNJktiMHjPqIevrWQR5hdPnLxrvB2UbHIN4L89o7nYVyIcw2hWGEQCKPvVKUb5C7mbmU-qrte4EGzvr7cSeKjBgJvMDJ7JERZJUbrPTlOunDC6QH7l9MrSkuOcfhLZD6jpdcHYxEDCjue_6yOe1X4wbbb8vR0u8oGmqZnC8KsTLZT6YMOCpKnEpDGC1F7bK2FA0b4WQuMuJc6a62_L-Hw4F_3MJKP9LZkXht9g14VpWj-nncQHH9STm4&quot;);
+                "
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- TRACKING PAGE CONTENT with smaller illustration -->
+        <div
+          class="flex flex-col items-center justify-center h-full w-full px-6 text-center"
+        >
+          <!-- Added margin-top to create space above the illustration -->
+          <div class="mt-8"></div>
+
+          <div class="relative w-full max-w-xl mb-8 flex justify-center">
+            <div
+              class="absolute inset-0 illustration-blob -z-10 scale-125"
+            ></div>
+            <div class="relative max-w-full">
+              <!-- animated blur blobs (original style) - reduced size -->
+              <div
+                class="absolute -top-8 -left-8 size-24 bg-primary/10 rounded-full blur-3xl animate-pulse"
+              ></div>
+              <div
+                class="absolute -bottom-6 -right-6 size-32 bg-accent-yellow/10 rounded-full blur-3xl animate-pulse"
+              ></div>
+              <!-- central illustration card (size reduced further) -->
+              <div
+                class="bg-white dark:bg-slate-800 p-4 rounded-[2rem] shadow-2xl border border-slate-100 dark:border-slate-700 max-w-full"
+              >
+                <!-- Smaller image: reduced from w-64 to w-48 -->
+                <img
+                  alt="Modern delivery drone or fuel truck illustration"
+                  class="w-48 h-auto object-contain drop-shadow-2xl max-w-full"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFWvO-0jqT6qA-wKxxFaoJVvV99A1kLFh47SNAxRnuRPaQ0ql0RgMrjGaXCyCX6IpFcLPosaZAzjs9Lr_vWJ-s_brna-G-hIcD5TbUjIB6x3KJKMjBycNY3-01RPoBvj_iqhqReVhpB7yZ4-400cexV5kDl1SpMPGglGi8rldRxsfFVFkISMGzgvlmaCXnOlIf3sE261VkoGJlJRjXjHz6tvgRY-jMXNkTQmUnXRoVt7PYzdnEPeSJn8fLQN3ojNEdHhWAw4tatzw"
+                />
+                <!-- floating card 1 - adjusted position for smaller size -->
+                <div
+                  class="absolute top-8 -right-4 bg-white dark:bg-slate-900 shadow-xl rounded-xl p-3 border border-slate-100 dark:border-slate-800 flex items-center gap-2 max-w-[calc(100vw-2rem)]"
+                >
+                  <div
+                    class="size-8 bg-primary rounded-full flex items-center justify-center text-white"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >local_shipping</span
+                    >
+                  </div>
+                  <div class="text-left">
+                    <div
+                      class="h-1.5 w-14 bg-slate-200 dark:bg-slate-700 rounded-full mb-1"
+                    ></div>
+                    <div
+                      class="h-1.5 w-8 bg-slate-100 dark:bg-slate-600 rounded-full"
+                    ></div>
+                  </div>
+                </div>
+                <!-- floating card 2 - adjusted position for smaller size -->
+                <div
+                  class="absolute bottom-8 -left-4 bg-white dark:bg-slate-900 shadow-xl rounded-xl p-3 border border-slate-100 dark:border-slate-800 flex items-center gap-2 max-w-[calc(100vw-2rem)]"
+                >
+                  <div
+                    class="size-8 bg-accent-yellow rounded-full flex items-center justify-center text-white"
+                  >
+                    <span class="material-symbols-outlined text-lg"
+                      >distance</span
+                    >
+                  </div>
+                  <div class="text-left">
+                    <div
+                      class="h-1.5 w-10 bg-slate-200 dark:bg-slate-700 rounded-full mb-1"
+                    ></div>
+                    <div
+                      class="h-1.5 w-16 bg-slate-100 dark:bg-slate-600 rounded-full"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="max-w-lg w-full">
+            <h1
+              class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight"
+            >
+              No active deliveries
+            </h1>
+            <p
+              class="text-base text-slate-500 dark:text-slate-400 mb-8 leading-relaxed"
+            >
+              Your real-time tracking will appear here as soon as your fuel is
+              on the way. Ready to refuel your vehicle?
+            </p>
+            <div
+              class="flex flex-col sm:flex-row items-center justify-center gap-3"
+            >
+              <button
+                class="bg-primary hover:bg-primary text-white font-bold text-lg px-10 py-4 rounded-xl shadow-lg shadow-primary/30 transition-all hover:-translate-y-1 active:scale-95 flex items-center gap-3"
+              >
+                <span class="material-symbols-outlined font-bold">
+                  shopping_cart
+                </span>
+                Order Now
+              </button>
+              <button
+                class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-base px-8 py-3 rounded-xl transition-all active:scale-95"
+              >
+                View History
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- mobile sidebar toggle script (identical to dashboard/order history) -->
+    <script>
+      (function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        if (menuToggle && sidebar && backdrop) {
+          function openSidebar() {
+            sidebar.classList.remove("-translate-x-full");
+            backdrop.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+          }
+          function closeSidebar() {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+            document.body.style.overflow = "";
+          }
+
+          menuToggle.addEventListener("click", openSidebar);
+          backdrop.addEventListener("click", closeSidebar);
+
+          window.addEventListener("keydown", (e) => {
+            if (
+              e.key === "Escape" &&
+              !sidebar.classList.contains("-translate-x-full")
+            ) {
+              closeSidebar();
+            }
+          });
+
+          window.addEventListener("resize", function () {
+            if (window.innerWidth >= 1024) {
+              // lg breakpoint
+              sidebar.classList.remove("-translate-x-full");
+              backdrop.classList.add("hidden");
+              document.body.style.overflow = "";
+            } else {
+              // when resizing to mobile, keep sidebar hidden unless opened manually
+              // we also ensure it's closed initially (default class -translate-x-full already there)
+            }
+          });
+        }
+      })();
+    </script>
+    <!-- optional external script placeholder (can be empty) -->
+    <script src="js/customer-tracking.js"></script>
+  </body>
+</html>

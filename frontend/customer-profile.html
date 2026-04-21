@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Profile · Flanorx</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .avatar-upload-overlay {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .avatar-group:hover .avatar-upload-overlay {
+        opacity: 1;
+      }
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+      .mobile-bottom-nav {
+        display: none;
+      }
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+        #menuToggle {
+          display: none;
+        }
+        #sidebar {
+          transform: translateX(-100%);
+        }
+      }
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+        #menuToggle {
+          display: block;
+        }
+        main {
+          padding-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- ========== SIDEBAR (identical to dashboard, but we'll adjust active state later) ========== -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <!-- DASHBOARD -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-dashboard.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <!-- ORDER HISTORY -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-order-history.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+          <!-- PLACE ORDER -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="place-order.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <!-- TRACKING -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="tracking.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >near_me</span
+            >
+            <span class="font-medium text-sm">Tracking</span>
+          </a>
+          <!-- SETTINGS (normal, not active here) -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-settings.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+          <!-- PROFILE (CURRENT) will be highlighted via script -->
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              id="logoutBtn"
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Backdrop (mobile) -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- ========== MAIN CONTENT ========== -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- ========== PROFILE CONTENT (Normal Profile, no settings forms) ========== -->
+        <div class="p-4 lg:p-8 space-y-8 max-w-5xl">
+          <!-- Page heading: Profile, with subtle hint that settings are one click away -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h2
+                class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3"
+              >
+                <span class="material-symbols-outlined text-primary text-3xl"
+                  >account_circle</span
+                >
+                My Profile
+              </h2>
+              <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                Your personal details and activity overview.
+              </p>
+            </div>
+            <!-- quick settings link for mobile/desktop (redundant but handy) -->
+            <a
+              href="customer-settings.html"
+              class="lg:hidden flex items-center gap-1 text-sm font-medium text-primary bg-primary/10 px-4 py-2 rounded-full"
+            >
+              <span class="material-symbols-outlined text-base">settings</span>
+              Settings
+            </a>
+          </div>
+
+          <!-- Profile card: clean, non-editable, summary style with stats and avatar -->
+          <div
+            class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden"
+          >
+            <!-- Cover / header accent -->
+            <div
+              class="h-24 bg-gradient-to-r from-primary/20 to-primary/5 dark:from-primary/10 dark:to-slate-800"
+            ></div>
+
+            <div class="px-6 pb-6 relative">
+              <!-- Avatar with upload (same interactive, now purely profile) -->
+              <div class="flex flex-col sm:flex-row sm:items-end gap-6 -mt-12">
+                <div
+                  class="relative avatar-group group cursor-pointer w-28 h-28 rounded-full border-4 border-white dark:border-slate-900 shadow-lg"
+                >
+                  <img
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaed4n8eyHsDk2cz2h7hrpNJktiMHjPqIevrWQR5hdPnLxrvB2UbHIN4L89o7nYVyIcw2hWGEQCKPvVKUb5C7mbmU-qrte4EGzvr7cSeKjBgJvMDJ7JERZJUbrPTlOunDC6QH7l9MrSkuOcfhLZD6jpdcHYxEDCjue_6yOe1X4wbbb8vR0u8oGmqZnC8KsTLZT6YMOCpKnEpDGC1F7bK2FA0b4WQuMuJc6a62_L-Hw4F_3MJKP9LZkXht9g14VpWj-nncQHH9STm4"
+                    alt="Profile"
+                    class="w-full h-full rounded-full object-cover"
+                  />
+                  <div
+                    class="avatar-upload-overlay absolute inset-0 rounded-full flex items-center justify-center"
+                  >
+                    <span class="material-symbols-outlined text-white text-3xl"
+                      >photo_camera</span
+                    >
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    id="avatarUpload"
+                  />
+                </div>
+                <div
+                  class="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2"
+                >
+                  <div>
+                    <h1
+                      class="text-2xl font-extrabold text-slate-900 dark:text-white"
+                    >
+                      Alex Johnson
+                    </h1>
+                    <div
+                      class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm"
+                    >
+                      <span class="flex items-center gap-1 text-slate-500"
+                        ><span class="material-symbols-outlined text-base"
+                          >mail</span
+                        >
+                        alex.johnson@example.com</span
+                      >
+                      <span class="flex items-center gap-1 text-slate-500"
+                        ><span class="material-symbols-outlined text-base"
+                          >call</span
+                        >
+                        +1 (555) 789-1234</span
+                      >
+                      <span class="flex items-center gap-1 text-slate-500"
+                        ><span class="material-symbols-outlined text-base"
+                          >calendar_month</span
+                        >
+                        Member since Jun 2023</span
+                      >
+                    </div>
+                  </div>
+                  <!-- hint: photo upload -->
+                  <button
+                    onclick="document.getElementById('avatarUpload').click()"
+                    class="text-xs text-primary font-medium hover:underline flex items-center gap-1 self-start sm:self-center"
+                  >
+                    <span class="material-symbols-outlined text-base"
+                      >upload</span
+                    >
+                    change photo
+                  </button>
+                </div>
+              </div>
+
+              <!-- Profile stats row (like dashboard mini) -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
+                <div
+                  class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center"
+                >
+                  <span class="block text-2xl font-black text-primary">24</span>
+                  <span class="text-xs text-slate-500">Total orders</span>
+                </div>
+                <div
+                  class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center"
+                >
+                  <span class="block text-2xl font-black text-primary"
+                    >2.45k</span
+                  >
+                  <span class="text-xs text-slate-500">Loyalty pts</span>
+                </div>
+                <div
+                  class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center"
+                >
+                  <span class="block text-2xl font-black text-primary">12</span>
+                  <span class="text-xs text-slate-500">This month</span>
+                </div>
+                <div
+                  class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 text-center"
+                >
+                  <span class="block text-2xl font-black text-primary"
+                    >⭐ 4.8</span
+                  >
+                  <span class="text-xs text-slate-500">Avg. rating</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional profile details: personal info (display only, non-editable) + recent activity -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- left: personal details card (read-only) -->
+            <div class="lg:col-span-1 space-y-6">
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm"
+              >
+                <h3
+                  class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-4"
+                >
+                  <span class="material-symbols-outlined text-primary"
+                    >info</span
+                  >
+                  Details
+                </h3>
+                <dl class="space-y-3 text-sm">
+                  <div class="flex justify-between">
+                    <dt class="text-slate-500">Full name</dt>
+                    <dd class="font-medium">Alex Johnson</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-slate-500">Date of birth</dt>
+                    <dd class="font-medium">August 23, 1985</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-slate-500">Gender</dt>
+                    <dd class="font-medium">Male</dd>
+                  </div>
+                  <div class="flex justify-between">
+                    <dt class="text-slate-500">Language</dt>
+                    <dd class="font-medium">English (US)</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <!-- quick link to settings (desktop) -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm hidden lg:block"
+              >
+                <a
+                  href="customer-settings.html"
+                  class="flex items-center gap-3 text-primary hover:underline"
+                >
+                  <span class="material-symbols-outlined">settings</span>
+                  <span class="font-medium">Go to Settings</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- right column: recent orders / activity (profile-like) -->
+            <div class="lg:col-span-2 space-y-6">
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm"
+              >
+                <h3
+                  class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-4"
+                >
+                  <span class="material-symbols-outlined text-primary"
+                    >history</span
+                  >
+                  Recent orders
+                </h3>
+                <ul class="divide-y divide-slate-100 dark:divide-slate-800">
+                  <li class="py-3 flex items-center justify-between">
+                    <div>
+                      <p class="font-semibold">#FLX-8723</p>
+                      <p class="text-xs text-slate-500">
+                        Propane refill · Aug 12, 2024
+                      </p>
+                    </div>
+                    <span
+                      class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold"
+                      >Delivered</span
+                    >
+                  </li>
+                  <li class="py-3 flex items-center justify-between">
+                    <div>
+                      <p class="font-semibold">#FLX-8710</p>
+                      <p class="text-xs text-slate-500">
+                        20lb tank exchange · Aug 5, 2024
+                      </p>
+                    </div>
+                    <span
+                      class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold"
+                      >Delivered</span
+                    >
+                  </li>
+                  <li class="py-3 flex items-center justify-between">
+                    <div>
+                      <p class="font-semibold">#FLX-8699</p>
+                      <p class="text-xs text-slate-500">
+                        Accessories · Jul 28, 2024
+                      </p>
+                    </div>
+                    <span
+                      class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold"
+                      >Shipped</span
+                    >
+                  </li>
+                </ul>
+                <div class="mt-3 text-right">
+                  <a
+                    href="customer-order-history.html"
+                    class="text-sm text-primary font-medium hover:underline inline-flex items-center gap-1"
+                    >View all
+                    <span class="material-symbols-outlined text-base"
+                      >arrow_forward</span
+                    ></a
+                  >
+                </div>
+              </div>
+
+              <!-- Delivery addresses summary (non-editable) -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm"
+              >
+                <h3
+                  class="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2 mb-4"
+                >
+                  <span class="material-symbols-outlined text-primary"
+                    >home</span
+                  >
+                  Saved addresses
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div
+                    class="border border-slate-100 dark:border-slate-700 rounded-xl p-3"
+                  >
+                    <p class="font-semibold text-xs text-primary mb-1">
+                      🏠 HOME
+                    </p>
+                    <p class="text-sm">
+                      4517 Washington Ave, Manchester, KY 39495
+                    </p>
+                  </div>
+                  <div
+                    class="border border-slate-100 dark:border-slate-700 rounded-xl p-3"
+                  >
+                    <p class="font-semibold text-xs text-primary mb-1">
+                      🏢 WORK
+                    </p>
+                    <p class="text-sm">1901 Thornridge Cir, Shiloh, HI 36620</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Tab Bar (consistent with other pages) -->
+    <nav class="mobile-bottom-nav">
+      <a
+        href="customer-dashboard.html"
+        class="bottom-nav-item"
+        id="bottomDashboard"
+        ><span class="material-symbols-outlined">dashboard</span
+        ><span>Home</span></a
+      >
+      <a
+        href="customer-order-history.html"
+        class="bottom-nav-item"
+        id="bottomHistory"
+        ><span class="material-symbols-outlined">history</span
+        ><span>History</span></a
+      >
+      <a href="place-order.html" class="bottom-nav-item" id="bottomPlaceOrder"
+        ><span class="material-symbols-outlined">local_gas_station</span
+        ><span>Order</span></a
+      >
+      <a href="tracking.html" class="bottom-nav-item" id="bottomTracking"
+        ><span class="material-symbols-outlined">near_me</span
+        ><span>Track</span></a
+      >
+      <a
+        href="customer-settings.html"
+        class="bottom-nav-item"
+        id="bottomSettings"
+        ><span class="material-symbols-outlined">settings</span
+        ><span>Settings</span></a
+      >
+    </nav>
+
+    <!-- Scripts -->
+    <script>
+      (function () {
+        // Mobile menu toggle
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        if (menuToggle && sidebar && backdrop) {
+          menuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("-translate-x-full");
+            backdrop.classList.toggle("hidden");
+          });
+
+          backdrop.addEventListener("click", function () {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+          });
+        }
+
+        // Logout
+        document
+          .getElementById("logoutBtn")
+          ?.addEventListener("click", function () {
+            if (confirm("Log out from Flanorx?")) {
+              localStorage.removeItem("flanorx_auth");
+              window.location.href = "login.html";
+            }
+          });
+
+        // Avatar upload demo trigger
+        document
+          .getElementById("avatarUpload")
+          ?.addEventListener("change", function (e) {
+            if (e.target.files.length > 0) {
+              alert("[Demo] Avatar upload simulation. File would be uploaded.");
+            }
+          });
+
+        // ========== ACTIVE STATE MANAGEMENT ==========
+        (function setActiveNavigation() {
+          const path = window.location.pathname;
+          let currentPage = path.substring(path.lastIndexOf("/") + 1);
+          if (
+            !currentPage ||
+            currentPage === "index.html" ||
+            currentPage === "customer-dashboard.html"
+          ) {
+            currentPage = "home";
+          }
+          // For this page (profile), we want bottom nav to highlight something? Actually we want Settings icon, but no bottom nav item for profile. We'll keep Dashboard as active? But this is profile page – best not to force active on bottom nav, but we can set nothing active. However we want consistency: we set active = none, because Profile is not in bottom nav. But if you want, you could activate 'Settings'? No, that's misleading. We'll simply not add active to any bottom nav. Also sidebar active: we'll add a special class for Profile? Not present in sidebar. We'll create a pseudo "Profile" by highlighting maybe Dashboard? Better to keep clean.
+          // Instead, we leave sidebar without active class for this page, because we are not in any of those links.
+          // But we want to show something: we can highlight nothing. That's fine.
+          // However we can add a special "Profile" to sidebar? We don't have that link. For simplicity, we remove all sidebar-active from all links.
+          const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+          sidebarLinks.forEach((link) =>
+            link.classList.remove("sidebar-active"),
+          );
+
+          // Also remove bottom nav active (since we have no profile tab)
+          const navItems = document.querySelectorAll(".bottom-nav-item");
+          navItems.forEach((item) => item.classList.remove("active"));
+        })();
+      })();
+    </script>
+  </body>
+</html>

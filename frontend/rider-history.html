@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Rider History · Flanorx</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/favicon-32x32.png"
+    />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/apple-touch-icon.png"
+    />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .active-nav {
+        background-color: #13ec5b;
+        color: #102216;
+      }
+      .sidebar-item:hover {
+        background-color: rgba(19, 236, 91, 0.1);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+
+        #menuToggle {
+          display: none;
+        }
+
+        #sidebar {
+          transform: translateX(-100%);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+
+        #menuToggle {
+          display: block;
+        }
+
+        main {
+          padding-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <aside
+        id="sidebar"
+        class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <div class="px-6 py-4 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div
+              id="sidebarProfileImage"
+              class="size-10 rounded-full bg-slate-700 overflow-hidden bg-cover bg-center"
+            ></div>
+            <div class="flex flex-col">
+              <span id="sidebarRiderName" class="text-sm font-semibold">Rider</span>
+              <div class="flex items-center gap-1">
+                <span
+                  id="sidebarStatusDot"
+                  class="size-2 bg-primary rounded-full animate-pulse"
+                ></span>
+                <span id="sidebarStatusText" class="text-xs text-primary font-medium">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="rider-dashboard.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-medium text-slate-300">Dashboard</span>
+          </a>
+          <a
+            href="rider-deliveries.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">delivery_dining</span>
+            <span class="font-medium text-slate-300">Deliveries</span>
+          </a>
+          <a
+            href="rider-earnings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">payments</span>
+            <span class="font-medium text-slate-300">Earnings</span>
+          </a>
+          <a
+            href="rider-history.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-medium">History</span>
+          </a>
+          <a
+            href="rider-settings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-medium text-slate-300">Settings</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+          <button
+            id="logoutBtn"
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-500/20 hover:text-red-400 transition-colors py-3 rounded-lg text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-sm">power_settings_new</span>
+            Go Offline
+          </button>
+        </div>
+      </aside>
+
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+            <div
+              class="hidden sm:flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-1.5 rounded-full shadow-sm"
+            >
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">History</span>
+              <div
+                class="flex items-center gap-2 bg-primary/20 text-slate-900 dark:text-primary px-3 py-0.5 rounded-full text-sm font-bold"
+              >
+                <span class="size-2 bg-primary rounded-full"></span>
+                Last 30 days
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800 hidden sm:block"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p id="headerRiderName" class="text-sm font-bold text-slate-900 dark:text-white">
+                  Rider
+                </p>
+              </div>
+              <div
+                id="headerProfileImage"
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4 lg:p-8 space-y-8">
+          <div
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          >
+            <div>
+              <h2
+                class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+              >
+                Delivery History
+              </h2>
+              <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                View all your past deliveries and filter by status
+              </p>
+            </div>
+            <div
+              class="flex flex-wrap items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-xl shadow-sm"
+            >
+              <button
+                id="historyFilterAll"
+                class="px-4 py-2 text-sm font-bold rounded-lg bg-primary text-slate-900"
+              >
+                All
+              </button>
+              <button
+                id="historyFilterCompleted"
+                class="px-4 py-2 text-sm font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                Completed
+              </button>
+              <button
+                id="historyFilterCancelled"
+                class="px-4 py-2 text-sm font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                Cancelled
+              </button>
+              <button
+                id="historyFilterPending"
+                class="px-4 py-2 text-sm font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                Pending
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">delivery_dining</span>
+                <span class="text-xs font-bold uppercase tracking-widest">Total deliveries</span>
+              </div>
+              <p id="historyTotalValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                0
+              </p>
+              <p class="text-xs text-slate-500 font-bold mt-2">Lifetime trips</p>
+            </div>
+
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">check_circle</span>
+                <span class="text-xs font-bold uppercase tracking-widest">Completed</span>
+              </div>
+              <p id="historyCompletedValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                0
+              </p>
+              <p id="historyCompletedMeta" class="text-xs text-primary font-bold mt-2">
+                0% success rate
+              </p>
+            </div>
+
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">cancel</span>
+                <span class="text-xs font-bold uppercase tracking-widest">Cancelled</span>
+              </div>
+              <p id="historyCancelledValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                0
+              </p>
+              <p id="historyCancelledMeta" class="text-xs text-amber-600 font-bold mt-2">
+                0% cancellation
+              </p>
+            </div>
+
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">schedule</span>
+                <span class="text-xs font-bold uppercase tracking-widest">Pending</span>
+              </div>
+              <p id="historyPendingValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                0
+              </p>
+              <p class="text-xs text-blue-500 font-bold mt-2">Awaiting completion</p>
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col sm:flex-row gap-4 items-center justify-between"
+          >
+            <div class="relative w-full sm:w-96">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                <span class="material-symbols-outlined text-xl">search</span>
+              </span>
+              <input
+                id="historySearchInput"
+                type="text"
+                placeholder="Search by delivery ID, location..."
+                class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-primary/50 outline-none transition-all"
+              />
+            </div>
+            <div class="flex items-center gap-3 self-end">
+              <button
+                id="historyDateBtn"
+                class="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                <span class="material-symbols-outlined">calendar_today</span>
+                Date range
+              </button>
+              <button
+                id="historyExtraFilterBtn"
+                class="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                <span class="material-symbols-outlined">filter_list</span>
+                Filter
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm"
+          >
+            <div
+              class="hidden md:grid grid-cols-12 gap-4 p-5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-500 uppercase tracking-wider"
+            >
+              <div class="col-span-3">Delivery ID / Time</div>
+              <div class="col-span-3">Route</div>
+              <div class="col-span-2">Amount</div>
+              <div class="col-span-2">Status</div>
+              <div class="col-span-2">Actions</div>
+            </div>
+
+            <div id="historyListWrap" class="divide-y divide-slate-100 dark:divide-slate-800"></div>
+
+            <div
+              class="p-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between"
+            >
+              <p id="historyPaginationText" class="text-sm text-slate-500">
+                Showing 0 of 0 deliveries
+              </p>
+              <div class="flex gap-2">
+                <button
+                  id="historyPrevBtn"
+                  class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                >
+                  Previous
+                </button>
+                <button
+                  id="historyPageOneBtn"
+                  class="px-4 py-2 rounded-lg bg-primary text-slate-900 text-sm font-bold hover:bg-primary/90 transition"
+                >
+                  1
+                </button>
+                <button
+                  id="historyPageTwoBtn"
+                  class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                >
+                  2
+                </button>
+                <button
+                  id="historyPageThreeBtn"
+                  class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                >
+                  3
+                </button>
+                <button
+                  id="historyNextBtn"
+                  class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl p-6 flex flex-wrap items-center justify-between gap-4 shadow-lg"
+          >
+            <div class="flex items-center gap-4">
+              <div class="bg-primary/20 p-3 rounded-full">
+                <span class="material-symbols-outlined text-3xl text-primary">download</span>
+              </div>
+              <div>
+                <h3 class="text-sm font-bold uppercase tracking-wider opacity-80">
+                  Export History
+                </h3>
+                <p class="text-lg font-extrabold">
+                  Download your complete delivery log as CSV or PDF
+                </p>
+              </div>
+            </div>
+            <button
+              id="historyExportBtn"
+              class="bg-primary text-slate-900 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-xl"
+            >
+              <span class="material-symbols-outlined">file_download</span>
+              Export Now
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="mobile-bottom-nav">
+      <a href="rider-dashboard.html" class="bottom-nav-item" id="bottomDashboard">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Home</span>
+      </a>
+      <a href="rider-deliveries.html" class="bottom-nav-item" id="bottomDeliveries">
+        <span class="material-symbols-outlined">delivery_dining</span>
+        <span>Deliver</span>
+      </a>
+      <a href="rider-earnings.html" class="bottom-nav-item" id="bottomEarnings">
+        <span class="material-symbols-outlined">payments</span>
+        <span>Earnings</span>
+      </a>
+      <a href="rider-history.html" class="bottom-nav-item" id="bottomHistory">
+        <span class="material-symbols-outlined">history</span>
+        <span>History</span>
+      </a>
+      <a href="rider-settings.html" class="bottom-nav-item" id="bottomSettings">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+   <script>
+(function () {
+
+  /* ================================
+     LOAD RIDER FROM LOCAL STORAGE
+  ================================= */
+
+  const authData = JSON.parse(localStorage.getItem("flanorx_auth") || "{}");
+
+  const riderName = authData.name || "Rider";
+  const riderImage = authData.profilePicture || "";
+
+  const sidebarName = document.getElementById("sidebarRiderName");
+  const headerName = document.getElementById("headerRiderName");
+
+  const sidebarImage = document.getElementById("sidebarProfileImage");
+  const headerImage = document.getElementById("headerProfileImage");
+
+  if (sidebarName) sidebarName.textContent = riderName;
+  if (headerName) headerName.textContent = riderName;
+
+  if (riderImage) {
+    if (sidebarImage) sidebarImage.style.backgroundImage = `url(${riderImage})`;
+    if (headerImage) headerImage.style.backgroundImage = `url(${riderImage})`;
+  }
+
+
+  /* ================================
+     LOGOUT
+  ================================= */
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      if (!confirm("Go offline and logout?")) return;
+
+      localStorage.removeItem("flanorx_auth");
+      window.location.href = "rider-login.html";
+    });
+  }
+
+
+  /* ================================
+     SIDEBAR TOGGLE
+  ================================= */
+
+  const menuToggle = document.getElementById("menuToggle");
+  const sidebar = document.getElementById("sidebar");
+  const backdrop = document.getElementById("backdrop");
+
+  function openSidebar() {
+    sidebar.classList.remove("-translate-x-full");
+    sidebar.classList.add("translate-x-0");
+    backdrop.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    sidebar.classList.remove("translate-x-0");
+    backdrop.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  if (menuToggle) {
+    menuToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      if (sidebar.classList.contains("-translate-x-full")) {
+        openSidebar();
+      } else {
+        closeSidebar();
+      }
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener("click", closeSidebar);
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (
+      e.key === "Escape" &&
+      sidebar &&
+      !sidebar.classList.contains("-translate-x-full") &&
+      window.innerWidth < 1024
+    ) {
+      closeSidebar();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 1024) {
+      sidebar.classList.remove("-translate-x-full");
+      backdrop.classList.add("hidden");
+      document.body.style.overflow = "";
+    } else {
+      if (!sidebar.classList.contains("translate-x-0")) {
+        sidebar.classList.add("-translate-x-full");
+      }
+    }
+  });
+
+  if (window.innerWidth < 1024) {
+    sidebar.classList.add("-translate-x-full");
+    backdrop.classList.add("hidden");
+  } else {
+    sidebar.classList.remove("-translate-x-full");
+  }
+
+
+  /* ================================
+     ACTIVE NAVIGATION
+  ================================= */
+
+  (function setActiveNavigation() {
+
+    const path = window.location.pathname;
+    let currentPage = path.substring(path.lastIndexOf("/") + 1);
+
+    if (
+      currentPage === "" ||
+      currentPage === "index.html" ||
+      currentPage === "#" ||
+      currentPage === "rider-dashboard.html"
+    ) {
+      currentPage = "home";
+    }
+
+    const navItems = document.querySelectorAll(".bottom-nav-item");
+
+    navItems.forEach((item) => {
+      item.classList.remove("active");
+    });
+
+    navItems.forEach((item) => {
+      const href = item.getAttribute("href");
+
+      if (currentPage === "home" && href === "rider-dashboard.html") {
+        item.classList.add("active");
+      } else if (href === currentPage) {
+        item.classList.add("active");
+      }
+    });
+
+    const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+
+    sidebarLinks.forEach((link) => {
+      link.classList.remove("active-nav");
+
+      const href = link.getAttribute("href");
+
+      if (currentPage === "home" && href === "rider-dashboard.html") {
+        link.classList.add("active-nav");
+      } else if (href === currentPage) {
+        link.classList.add("active-nav");
+      }
+    });
+
+  })();
+
+})();
+</script>
+  </body>
+</html>

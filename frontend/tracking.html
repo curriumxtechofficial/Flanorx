@@ -1,0 +1,779 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Order Tracking | Flanorx Fuel Delivery</title>
+    <!-- Tailwind CSS with Plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        vertical-align: middle;
+      }
+      .step-active .icon-container {
+        background-color: #13ec5b;
+        color: white;
+      }
+      .step-completed .icon-container {
+        background-color: #13ec5b20;
+        color: #13ec5b;
+      }
+      /* Pulse effect for live status */
+      .pulse-live {
+        box-shadow: 0 0 0 0 rgba(19, 236, 91, 0.7);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        70% {
+          box-shadow: 0 0 0 10px rgba(19, 236, 91, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(19, 236, 91, 0);
+        }
+      }
+      /* dashboard helper */
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+
+      /* Bottom nav item active state - matching sidebar-active style */
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+
+      /* Mobile bottom nav - only visible on mobile */
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 50;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+
+        /* Add bottom spacing to main content to prevent overlap */
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+
+        /* Hide hamburger menu on mobile */
+        #menuToggle {
+          display: none;
+        }
+
+        /* Ensure sidebar stays hidden on mobile */
+        #sidebar {
+          transform: translateX(-100%);
+        }
+
+        /* Adjust map height on mobile */
+        .flex-col.md\:flex-row > section:first-child {
+          height: 40vh;
+        }
+      }
+
+      /* Tablet and desktop remain exactly the same */
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+
+        #menuToggle {
+          display: block;
+        }
+
+        main {
+          padding-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen overflow-hidden"
+  >
+    <!-- DASHBOARD LAYOUT: SIDEBAR + MAIN (sticky header) exactly as customer-dashboard.html -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- ========== SIDEBAR (same as customer-dashboard) ========== -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <!-- Dashboard link -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-dashboard.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <!-- Order History link -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-order-history.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+          <!-- Place Order link -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="place-order.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <!-- Tracking (ACTIVE) -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+            href="tracking.html"
+          >
+            <span class="material-symbols-outlined text-primary">near_me</span>
+            <span class="font-semibold text-sm">Tracking</span>
+          </a>
+          <!-- Settings link -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-settings.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              id="logoutBtn"
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Backdrop for mobile -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- ========== MAIN CONTENT (with sticky header) ========== -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- Sticky Header (exactly as customer-dashboard) -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <!-- Hamburger menu for mobile (toggles sidebar) -->
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+            <!-- Search field -->
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search orders, invoices..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Alex Johnson
+                </p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDaed4n8eyHsDk2cz2h7hrpNJktiMHjPqIevrWQR5hdPnLxrvB2UbHIN4L89o7nYVyIcw2hWGEQCKPvVKUb5C7mbmU-qrte4EGzvr7cSeKjBgJvMDJ7JERZJUbrPTlOunDC6QH7l9MrSkuOcfhLZD6jpdcHYxEDCjue_6yOe1X4wbbb8vR0u8oGmqZnC8KsTLZT6YMOCpKnEpDGC1F7bK2FA0b4WQuMuJc6a62_L-Hw4F_3MJKP9LZkXht9g14VpWj-nncQHH9STm4&quot;);
+                "
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- ========== TRACKING CONTENT ========== -->
+        <div class="flex flex-col md:flex-row h-full w-full">
+          <!-- Left Section: Interactive Map (70%) -->
+          <section
+            class="relative flex-1 bg-slate-200 overflow-hidden md:h-auto h-[55vh] md:h-auto"
+          >
+            <!-- Simulated Map Background -->
+            <div
+              class="absolute inset-0 z-0 bg-cover bg-center"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuC4XREr0Cy_OuWqVn2oJpOGPfxCAOIuiGayg2D_ZRi9nQQvVRPWHdsVxMshaEdBO9gbJXj6qSuOyys_oiQzVOeG9IyNCZw5_KhDWjGcMfGvEZhwBLJbIGN0plfubHWn1PgFe5x5XqbP9oWSyEK8Oo6bXru7XFiBq4WCP8cULUo6r72XwZDMuj_dlzmGmmaUGfQhVgAkDwgnfo3pLpZWv-SA8Zorteto2ZkuYDuAh_QnXQckD3vq249Slfh7uHp6f-69p6bzvMkaU8k&quot;);
+              "
+            >
+              <!-- SVG Route Line Layer -->
+              <svg
+                class="absolute inset-0 w-full h-full pointer-events-none"
+                viewBox="0 0 1000 1000"
+              >
+                <path
+                  d="M200,800 L400,600 L450,400 L700,300"
+                  fill="none"
+                  stroke="#13ec5b"
+                  stroke-dasharray="12,12"
+                  stroke-width="6"
+                ></path>
+              </svg>
+              <!-- Rider Marker -->
+              <div
+                class="absolute top-[40%] left-[45%] -translate-x-1/2 -translate-y-1/2 z-10"
+              >
+                <div class="relative flex flex-col items-center">
+                  <div
+                    class="bg-white dark:bg-slate-900 px-3 py-1.5 rounded-xl shadow-xl mb-2 flex items-center gap-2 border border-primary/30"
+                  >
+                    <span
+                      class="text-xs font-bold text-primary flex items-center gap-1"
+                    >
+                      <span
+                        class="size-2 bg-primary rounded-full animate-ping"
+                      ></span>
+                      LIVE
+                    </span>
+                    <span class="text-xs font-semibold whitespace-nowrap"
+                      >Rider: Marcus V.</span
+                    >
+                  </div>
+                  <div
+                    class="bg-primary p-2 rounded-full shadow-2xl pulse-live text-white border-2 border-white"
+                  >
+                    <span class="material-symbols-outlined text-3xl"
+                      >local_shipping</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <!-- Destination Marker -->
+              <div
+                class="absolute top-[30%] left-[70%] -translate-x-1/2 -translate-y-1/2 z-10"
+              >
+                <div
+                  class="bg-slate-900 text-white p-2 rounded-full shadow-lg border-2 border-white"
+                >
+                  <span class="material-symbols-outlined">home</span>
+                </div>
+              </div>
+            </div>
+            <!-- Map Controls -->
+            <div class="absolute bottom-6 right-6 flex flex-col gap-2 z-20">
+              <button
+                class="bg-white dark:bg-slate-800 p-3 rounded-lg shadow-lg hover:bg-slate-50 transition-colors"
+              >
+                <span class="material-symbols-outlined">add</span>
+              </button>
+              <button
+                class="bg-white dark:bg-slate-800 p-3 rounded-lg shadow-lg hover:bg-slate-50 transition-colors"
+              >
+                <span class="material-symbols-outlined">remove</span>
+              </button>
+              <button
+                class="bg-white dark:bg-slate-800 p-3 rounded-lg shadow-lg text-primary hover:bg-slate-50 transition-colors mt-2"
+              >
+                <span class="material-symbols-outlined">my_location</span>
+              </button>
+            </div>
+            <!-- Floating Rider Card -->
+            <div
+              class="absolute bottom-6 left-6 z-20 max-w-sm w-full bg-white dark:bg-slate-900 rounded-xl shadow-2xl p-4 border border-slate-100 dark:border-slate-800 md:max-w-sm w-[calc(100%-3rem)] md:w-full"
+            >
+              <div class="flex items-center gap-4">
+                <img
+                  alt="Rider Marcus"
+                  class="size-14 rounded-full object-cover border-2 border-primary/20"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFWvO-0jqT6qA-wKxxFaoJVvV99A1kLFh47SNAxRnuRPaQ0ql0RgMrjGaXCyCX6IpFcLPosaZAzjs9Lr_vWJ-s_brna-G-hIcD5TbUjIB6x3KJKMjBycNY3-01RPoBvj_iqhqReVhpB7yZ4-400cexV5kDl1SpMPGglGi8rldRxsfFVFkISMGzgvlmaCXnOlIf3sE261VkoGJlJRjXjHz6tvgRY-jMXNkTQmUnXRoVt7PYzdnEPeSJn8fLQN3ojNEdHhWAw4tatzw"
+                />
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-bold text-lg truncate">Marcus Van-Halen</h4>
+                  <div
+                    class="flex items-center gap-2 text-sm text-slate-500 flex-wrap"
+                  >
+                    <span
+                      class="flex items-center text-yellow-500 whitespace-nowrap"
+                      ><span class="material-symbols-outlined !text-sm"
+                        >star</span
+                      >
+                      4.9</span
+                    >
+                    <span>•</span>
+                    <span class="truncate">Yamaha Fuel-Pro 2024</span>
+                  </div>
+                </div>
+                <button
+                  class="bg-primary hover:bg-primary/90 text-slate-900 font-bold px-4 py-2 rounded-lg text-sm transition-transform active:scale-95 whitespace-nowrap"
+                >
+                  Call
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Right Section: Sidebar (30%) -->
+          <aside
+            class="w-full md:w-[400px] h-full bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 flex flex-col overflow-y-auto"
+          >
+            <!-- ETA Header -->
+            <div
+              class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <span
+                  class="text-sm font-bold uppercase tracking-widest text-slate-400"
+                  >Order #FLX-8829</span
+                >
+                <span
+                  class="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-bold border border-primary/30 whitespace-nowrap"
+                  >IN PROGRESS</span
+                >
+              </div>
+              <div class="flex flex-col">
+                <p
+                  class="text-slate-500 dark:text-slate-400 text-sm font-medium"
+                >
+                  Estimated Arrival
+                </p>
+                <div class="flex items-baseline gap-2">
+                  <h1
+                    class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white"
+                  >
+                    12
+                  </h1>
+                  <span
+                    class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white"
+                    >mins</span
+                  >
+                  <div
+                    class="ml-auto bg-primary p-2 rounded-lg flex items-center justify-center text-slate-900"
+                  >
+                    <span class="material-symbols-outlined !text-2xl"
+                      >timer</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Status Timeline -->
+            <div class="flex-1 p-6">
+              <h3
+                class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-8"
+              >
+                Delivery Status
+              </h3>
+              <div class="relative space-y-0">
+                <div
+                  class="absolute left-6 top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-slate-800 z-0"
+                ></div>
+                <!-- Step 1: Completed -->
+                <div class="relative z-10 flex gap-6 pb-10 step-completed">
+                  <div
+                    class="icon-container size-12 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 flex-shrink-0"
+                  >
+                    <span class="material-symbols-outlined">check_circle</span>
+                  </div>
+                  <div class="flex flex-col justify-center min-w-0">
+                    <h4
+                      class="font-bold text-slate-900 dark:text-white truncate"
+                    >
+                      Order Confirmed
+                    </h4>
+                    <p class="text-xs text-slate-500 truncate">
+                      10:45 AM • Payment Successful
+                    </p>
+                  </div>
+                </div>
+                <!-- Step 2: Completed -->
+                <div class="relative z-10 flex gap-6 pb-10 step-completed">
+                  <div
+                    class="icon-container size-12 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 flex-shrink-0"
+                  >
+                    <span class="material-symbols-outlined">person_pin</span>
+                  </div>
+                  <div class="flex flex-col justify-center min-w-0">
+                    <h4
+                      class="font-bold text-slate-900 dark:text-white truncate"
+                    >
+                      Rider Assigned
+                    </h4>
+                    <p class="text-xs text-slate-500 truncate">
+                      10:48 AM • Marcus is on the way
+                    </p>
+                  </div>
+                </div>
+                <!-- Step 3: Current -->
+                <div class="relative z-10 flex gap-6 pb-10 step-active">
+                  <div
+                    class="icon-container size-12 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 ring-2 ring-primary/20 shadow-lg shadow-primary/20 flex-shrink-0"
+                  >
+                    <span class="material-symbols-outlined">oil_barrel</span>
+                  </div>
+                  <div class="flex flex-col justify-center min-w-0">
+                    <h4
+                      class="font-bold text-slate-900 dark:text-white truncate"
+                    >
+                      Fuel Picked Up
+                    </h4>
+                    <p class="text-xs text-primary font-semibold truncate">
+                      11:02 AM • Quality Verified
+                    </p>
+                  </div>
+                </div>
+                <!-- Step 4: Pending -->
+                <div class="relative z-10 flex gap-6 pb-4">
+                  <div
+                    class="size-12 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 border-4 border-white dark:border-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 flex-shrink-0"
+                  >
+                    <span class="material-symbols-outlined">navigation</span>
+                  </div>
+                  <div class="flex flex-col justify-center min-w-0">
+                    <h4 class="font-bold text-slate-400 truncate">
+                      Heading to You
+                    </h4>
+                    <p class="text-xs text-slate-400 italic truncate">
+                      Expected in 12 mins
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Order Details Card -->
+            <div
+              class="p-6 bg-background-light dark:bg-slate-800/50 m-4 rounded-xl border border-slate-200 dark:border-slate-700"
+            >
+              <button class="w-full flex items-center justify-between group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-slate-400"
+                    >shopping_cart</span
+                  ><span class="font-bold text-sm">Order Summary</span>
+                </div>
+                <span
+                  class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors"
+                  >expand_more</span
+                >
+              </button>
+              <div
+                class="mt-4 space-y-2 border-t border-slate-200 dark:border-slate-700 pt-4"
+              >
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">Product</span
+                  ><span class="font-semibold truncate ml-2"
+                    >Premium Diesel (95 Octane)</span
+                  >
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-500">Quantity</span
+                  ><span class="font-semibold">50 Liters</span>
+                </div>
+                <div
+                  class="flex justify-between text-base pt-2 border-t border-dashed border-slate-300 dark:border-slate-600"
+                >
+                  <span class="font-bold">Total</span
+                  ><span class="font-bold text-primary">$84.50</span>
+                </div>
+              </div>
+            </div>
+            <!-- Footer: Safety Reminder -->
+            <div class="px-6 pb-6 text-center">
+              <div
+                class="flex items-center justify-center gap-2 text-[10px] text-slate-400 uppercase tracking-widest font-bold"
+              >
+                <span class="material-symbols-outlined !text-sm">shield</span>
+                Secure Delivery Protocol Active
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Tab Bar -->
+    <nav class="mobile-bottom-nav">
+      <a
+        href="customer-dashboard.html"
+        class="bottom-nav-item"
+        id="bottomDashboard"
+      >
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Home</span>
+      </a>
+      <a
+        href="customer-order-history.html"
+        class="bottom-nav-item"
+        id="bottomHistory"
+      >
+        <span class="material-symbols-outlined">history</span>
+        <span>History</span>
+      </a>
+      <a href="place-order.html" class="bottom-nav-item" id="bottomPlaceOrder">
+        <span class="material-symbols-outlined">local_gas_station</span>
+        <span>Order</span>
+      </a>
+      <a href="tracking.html" class="bottom-nav-item" id="bottomTracking">
+        <span class="material-symbols-outlined">near_me</span>
+        <span>Track</span>
+      </a>
+      <a
+        href="customer-settings.html"
+        class="bottom-nav-item"
+        id="bottomSettings"
+      >
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script>
+      (function () {
+        // Sidebar toggle
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        if (menuToggle && sidebar && backdrop) {
+          function openSidebar() {
+            sidebar.classList.remove("-translate-x-full");
+            backdrop.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+          }
+          function closeSidebar() {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+          }
+
+          menuToggle.addEventListener("click", openSidebar);
+          backdrop.addEventListener("click", closeSidebar);
+
+          // Close on escape key
+          window.addEventListener("keydown", (e) => {
+            if (
+              e.key === "Escape" &&
+              !sidebar.classList.contains("-translate-x-full")
+            ) {
+              closeSidebar();
+            }
+          });
+
+          // On window resize above lg, ensure sidebar is visible and backdrop hidden
+          window.addEventListener("resize", () => {
+            if (window.innerWidth >= 1024) {
+              sidebar.classList.remove("-translate-x-full");
+              backdrop.classList.add("hidden");
+              document.body.classList.remove("overflow-hidden");
+            }
+          });
+        }
+
+        // Logout functionality
+        document
+          .getElementById("logoutBtn")
+          ?.addEventListener("click", function () {
+            localStorage.removeItem("flanorx_auth");
+            window.location.href = "login.html";
+          });
+
+        // ========== ACTIVE STATE MANAGEMENT ==========
+        (function setActiveNavigation() {
+          // Get current filename from URL
+          const path = window.location.pathname;
+          let currentPage = path.substring(path.lastIndexOf("/") + 1);
+
+          // Handle homepage variations
+          if (
+            currentPage === "" ||
+            currentPage === "index.html" ||
+            currentPage === "customer-dashboard.html" ||
+            currentPage === "#"
+          ) {
+            currentPage = "home";
+          }
+
+          console.log("Current page:", currentPage); // Debug
+
+          const navItems = document.querySelectorAll(".bottom-nav-item");
+
+          // Remove active class from all items first
+          navItems.forEach((item) => {
+            item.classList.remove("active");
+          });
+
+          // Set active class based on current page
+          navItems.forEach((item) => {
+            const href = item.getAttribute("href");
+
+            // Check if this item should be active
+            if (currentPage === "home" && href === "customer-dashboard.html") {
+              item.classList.add("active");
+              console.log("Home tab activated");
+            } else if (href === currentPage) {
+              item.classList.add("active");
+              console.log("Tab activated:", href);
+            }
+          });
+
+          // Also update sidebar active state
+          const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+          sidebarLinks.forEach((link) => {
+            link.classList.remove("sidebar-active");
+            const href = link.getAttribute("href");
+
+            if (currentPage === "home" && href === "customer-dashboard.html") {
+              link.classList.add("sidebar-active");
+            } else if (href === currentPage) {
+              link.classList.add("sidebar-active");
+            }
+          });
+        })();
+      })();
+    </script>
+  </body>
+</html>

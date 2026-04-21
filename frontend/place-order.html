@@ -1,0 +1,1735 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Place Fuel Order · Flanorx</title>
+
+    <!-- Tailwind with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Font: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Symbols -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        background: #13ec5b;
+        cursor: pointer;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+        #menuToggle {
+          display: none;
+        }
+        #sidebar {
+          transform: translateX(-100%);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+        #menuToggle {
+          display: block;
+        }
+        main {
+          padding-bottom: 0;
+        }
+      }
+
+      /* tiny toast */
+      .toast {
+        position: fixed;
+        right: 16px;
+        top: 16px;
+        z-index: 60;
+        max-width: 360px;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-dashboard.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-order-history.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+            href="place-order.html"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="tracking.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >near_me</span
+            >
+            <span class="font-medium text-sm">Tracking</span>
+          </a>
+
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-settings.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              id="logoutBtn"
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- Main -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search orders, invoices..."
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+
+            <!-- USER INFO like dashboard -->
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p
+                  id="userNameTop"
+                  class="text-sm font-bold text-slate-900 dark:text-white"
+                >
+                  Customer
+                </p>
+              </div>
+              <div
+                id="userAvatar"
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                style="background-image: url(&quot;&quot;)"
+                title="User"
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Toast -->
+        <div id="toast" class="toast hidden">
+          <div
+            id="toastInner"
+            class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/95 dark:bg-slate-900/95 backdrop-blur p-4 shadow-xl"
+          >
+            <p id="toastTitle" class="text-sm font-extrabold">Notice</p>
+            <p
+              id="toastMsg"
+              class="text-xs text-slate-600 dark:text-slate-400 mt-1"
+            ></p>
+          </div>
+        </div>
+
+        <div class="p-4 lg:p-8">
+          <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Left wizard -->
+            <div class="flex-1 space-y-8">
+              <div>
+                <h1 class="text-3xl font-extrabold mb-2">Place Your Order</h1>
+                <p class="text-slate-500 dark:text-slate-400">
+                  Fill in the details below to schedule your fuel delivery.
+                </p>
+              </div>
+
+              <!-- Step 1: Fuel Type -->
+              <section
+                class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm"
+              >
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary"
+                    >local_gas_station</span
+                  >
+                  Step 1: Select Fuel Type
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label class="relative group cursor-pointer">
+                    <input
+                      checked
+                      class="peer sr-only"
+                      name="fuel_type"
+                      type="radio"
+                      value="Petrol (95 Octane)"
+                    />
+                    <div
+                      class="p-6 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50"
+                    >
+                      <div class="flex justify-between items-start mb-4">
+                        <div class="bg-primary/20 p-3 rounded-lg text-primary">
+                          <span class="material-symbols-outlined text-3xl"
+                            >oil_barrel</span
+                          >
+                        </div>
+                        <div class="peer-checked:block hidden">
+                          <span class="material-symbols-outlined text-primary"
+                            >check_circle</span
+                          >
+                        </div>
+                      </div>
+                      <h3 class="text-lg font-bold">Petrol (95 Octane)</h3>
+                      <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        Optimal for passenger cars and high-performance engines.
+                      </p>
+                      <p class="mt-4 font-bold text-primary">₦850/L</p>
+                    </div>
+                  </label>
+
+                  <label class="relative group cursor-pointer">
+                    <input
+                      class="peer sr-only"
+                      name="fuel_type"
+                      type="radio"
+                      value="Diesel"
+                    />
+                    <div
+                      class="p-6 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50"
+                    >
+                      <div class="flex justify-between items-start mb-4">
+                        <div
+                          class="bg-blue-500/20 p-3 rounded-lg text-blue-500"
+                        >
+                          <span class="material-symbols-outlined text-3xl"
+                            >conveyor_belt</span
+                          >
+                        </div>
+                        <div class="peer-checked:block hidden">
+                          <span class="material-symbols-outlined text-primary"
+                            >check_circle</span
+                          >
+                        </div>
+                      </div>
+                      <h3 class="text-lg font-bold">Diesel</h3>
+                      <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        High-efficiency fuel for trucks and heavy machinery.
+                      </p>
+                      <p class="mt-4 font-bold text-primary">₦1320/L</p>
+                    </div>
+                  </label>
+                </div>
+              </section>
+
+              <!-- Step 2: Station -->
+              <section
+                class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm"
+              >
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary"
+                    >local_gas_station</span
+                  >
+                  Step 2: Select Preferred Filling Station
+                </h2>
+
+                <div class="mb-6">
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      >search</span
+                    >
+                    <input
+                      class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary border-none"
+                      placeholder="Search for a filling station..."
+                      type="text"
+                      id="stationSearch"
+                    />
+                  </div>
+                </div>
+
+                <div class="mb-6">
+                  <h3
+                    class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3"
+                  >
+                    Major Stations
+                  </h3>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="NNPC"
+                        class="peer sr-only"
+                        checked
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">NNPC</div>
+                        <div class="text-xs text-slate-500">Retail</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="TotalEnergies"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">TotalEnergies</div>
+                        <div class="text-xs text-slate-500">Nigeria</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Mobil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Mobil</div>
+                        <div class="text-xs text-slate-500">ExxonMobil</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Conoil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Conoil</div>
+                        <div class="text-xs text-slate-500">Conoil PLC</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="MRS Oil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">MRS Oil</div>
+                        <div class="text-xs text-slate-500">MRS</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Oando"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Oando</div>
+                        <div class="text-xs text-slate-500">Oando PLC</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Chevron"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Chevron</div>
+                        <div class="text-xs text-slate-500">Texaco</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Petrolex"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Petrolex</div>
+                        <div class="text-xs text-slate-500">Petrolex</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Eterna"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Eterna</div>
+                        <div class="text-xs text-slate-500">Eterna PLC</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Forte Oil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Forte Oil</div>
+                        <div class="text-xs text-slate-500">Axxela</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                <details class="group">
+                  <summary
+                    class="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg cursor-pointer list-none"
+                  >
+                    <span class="text-sm font-bold text-primary"
+                      >View all 30 filling stations</span
+                    >
+                    <span
+                      class="material-symbols-outlined group-open:rotate-180 transition-transform text-primary"
+                      >expand_more</span
+                    >
+                  </summary>
+
+                  <div
+                    class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-2"
+                  >
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Archoil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Archoil</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="TGI"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">TGI</div>
+                        <div class="text-xs text-slate-500">
+                          Tropical General
+                        </div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Enyo Retail"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Enyo Retail</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Tellus Energy"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Tellus Energy</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Energy Fest"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Energy Fest</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="IET"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">IET</div>
+                        <div class="text-xs text-slate-500">
+                          Integrated Energy
+                        </div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Pan Ocean Oil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Pan Ocean Oil</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="African Petroleum"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">African Petroleum</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Panol Nigeria"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Panol Nigeria</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Zenon Petroleum"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Zenon Petroleum</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Oando Downstream"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Oando Downstream</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="KAPCO"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">KAPCO</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="DUFIL Prima"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">DUFIL Prima</div>
+                        <div class="text-xs text-slate-500">V-Power</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="NIPCO"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">NIPCO</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Capital Oil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Capital Oil</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Prime Energy"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Prime Energy</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Freedom Oil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Freedom Oil</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Chief Oil & Gas"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Chief Oil & Gas</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Damto Oil"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Damto Oil</div>
+                      </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                      <input
+                        type="radio"
+                        name="filling_station"
+                        value="Gaslink Nigeria"
+                        class="peer sr-only"
+                      />
+                      <div
+                        class="p-3 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary peer-checked:bg-primary/5 transition-all group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 text-center"
+                      >
+                        <div class="font-medium text-sm">Gaslink Nigeria</div>
+                      </div>
+                    </label>
+                  </div>
+                </details>
+
+                <div
+                  class="mt-4 p-3 bg-primary/5 border border-primary/20 rounded-lg flex items-center gap-2"
+                >
+                  <span class="material-symbols-outlined text-primary"
+                    >info</span
+                  >
+                  <span class="text-sm"
+                    >Fuel will be sourced from:
+                    <span class="font-bold" id="selectedStation"
+                      >NNPC</span
+                    ></span
+                  >
+                </div>
+              </section>
+
+              <!-- Step 3: Quantity -->
+              <section
+                class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm"
+              >
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary"
+                    >straighten</span
+                  >
+                  Step 3: How much do you need?
+                </h2>
+
+                <div class="space-y-8 py-4">
+                  <div class="flex items-end justify-between">
+                    <div class="w-full">
+                      <input
+                        id="qtyRange"
+                        class="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-primary"
+                        max="500"
+                        min="5"
+                        type="range"
+                        value="45"
+                      />
+                      <div
+                        class="flex justify-between mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest"
+                      >
+                        <span>5L</span><span>250L</span><span>500L</span>
+                      </div>
+                    </div>
+
+                    <div class="ml-8 shrink-0">
+                      <div class="relative">
+                        <input
+                          id="qtyInput"
+                          class="w-28 text-center text-2xl font-black bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary py-3"
+                          type="number"
+                          value="45"
+                          min="5"
+                          max="500"
+                        />
+                        <span
+                          class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold"
+                          >L</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Step 4: Location -->
+              <section
+                class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm"
+              >
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary"
+                    >location_on</span
+                  >
+                  Step 4: Where should we deliver?
+                </h2>
+
+                <div class="space-y-4">
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                      >search</span
+                    >
+                    <input
+                      id="addressInput"
+                      class="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary border-none"
+                      placeholder="Enter delivery address..."
+                      type="text"
+                    />
+                    <button
+                      id="useCurrentLocationBtn"
+                      type="button"
+                      class="absolute right-2 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 px-3 py-1.5 rounded-md text-xs font-bold shadow-sm flex items-center gap-1 hover:bg-slate-50"
+                    >
+                      <span class="material-symbols-outlined text-sm"
+                        >my_location</span
+                      >
+                      Current Location
+                    </button>
+                  </div>
+
+                  <div
+                    class="w-full h-64 rounded-xl overflow-hidden relative group"
+                  >
+                    <div
+                      class="absolute inset-0 bg-slate-100 flex items-center justify-center"
+                    >
+                      <img
+                        alt="Map"
+                        class="w-full h-full object-cover opacity-50 grayscale"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCncvzjPAaXGWKfugkQMTZlOkK02yaKm88d7NXBtbwDZ059MZsCCHeD4fqvTod0PF7wpFpOotLVqecfKjP2IPSrsrOhjPkZYiGk4qSxNKcHeQfyIiBoK4mMXdWc3GPOGSqH2NQIIpdPAUM9Qc3ydYih73K1oE_1gudRVm0nnApTJt_-rHEULrpHJpWgu0YarLsbRcmPo-eMt8jEEIcpS9Z8BHryXyBaareQG8_gvkrm-2FwucF8WIJL4D-lSW4PuV0QvWiOm_YFZIo"
+                      />
+                      <div
+                        class="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      >
+                        <span
+                          class="material-symbols-outlined text-4xl text-primary animate-bounce"
+                          >location_on</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <p
+                    id="coordsHint"
+                    class="text-xs text-slate-500 dark:text-slate-400"
+                  ></p>
+                </div>
+              </section>
+
+              <!-- Step 5: Schedule -->
+              <section
+                class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 p-6 rounded-xl shadow-sm"
+              >
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary"
+                    >schedule</span
+                  >
+                  Step 5: When should we arrive?
+                </h2>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <label class="cursor-pointer">
+                    <input
+                      checked
+                      class="peer sr-only"
+                      name="schedule"
+                      type="radio"
+                      value="now"
+                    />
+                    <div
+                      class="p-4 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary text-center"
+                    >
+                      <span class="material-symbols-outlined text-2xl mb-2"
+                        >bolt</span
+                      >
+                      <p class="font-bold">Deliver Now</p>
+                      <p class="text-xs text-slate-500">
+                        Estimated: 15-30 mins
+                      </p>
+                    </div>
+                  </label>
+
+                  <label class="cursor-pointer">
+                    <input
+                      class="peer sr-only"
+                      name="schedule"
+                      type="radio"
+                      value="scheduled"
+                    />
+                    <div
+                      class="p-4 border-2 border-slate-100 dark:border-slate-800 rounded-xl peer-checked:border-primary text-center"
+                    >
+                      <span class="material-symbols-outlined text-2xl mb-2"
+                        >calendar_today</span
+                      >
+                      <p class="font-bold">Schedule for Later</p>
+                      <p class="text-xs text-slate-500">Pick date &amp; time</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="mt-6 flex flex-col md:flex-row gap-4">
+                  <div class="flex-1">
+                    <label
+                      class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                      >Select Date</label
+                    >
+                    <input
+                      id="scheduledDate"
+                      class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary py-3"
+                      type="date"
+                    />
+                  </div>
+                  <div class="flex-1">
+                    <label
+                      class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                      >Select Time</label
+                    >
+                    <input
+                      id="scheduledTime"
+                      class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-primary py-3"
+                      type="time"
+                    />
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Right summary -->
+            <div class="lg:w-96">
+              <div class="sticky top-24 space-y-4">
+                <div
+                  class="bg-slate-900 text-white rounded-2xl p-8 shadow-xl overflow-hidden relative"
+                >
+                  <div
+                    class="absolute -top-12 -right-12 w-40 h-40 bg-primary/20 rounded-full blur-3xl"
+                  ></div>
+
+                  <h2 class="text-2xl font-bold mb-6 relative z-10">
+                    Order Summary
+                  </h2>
+
+                  <div class="space-y-4 relative z-10">
+                    <div class="flex justify-between items-center">
+                      <span class="text-slate-400 text-sm">Fuel Type</span>
+                      <span class="font-semibold" id="summaryFuel"
+                        >Petrol (95 Octane)</span
+                      >
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <span class="text-slate-400 text-sm"
+                        >Filling Station</span
+                      >
+                      <span class="font-semibold" id="summaryStation"
+                        >NNPC</span
+                      >
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <span class="text-slate-400 text-sm">Quantity</span>
+                      <span class="font-semibold" id="summaryQty"
+                        >45 Liters</span
+                      >
+                    </div>
+
+                    <div class="h-px bg-slate-800 my-4"></div>
+
+                    <div class="flex justify-between items-center">
+                      <span class="text-slate-400 text-sm" id="summarySubLabel"
+                        >Price</span
+                      >
+                      <span class="font-semibold" id="summarySubtotal">₦0</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <span class="text-slate-400 text-sm">Delivery Fee</span>
+                      <span class="font-semibold" id="summaryDeliveryFee"
+                        >₦0</span
+                      >
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                      <span class="text-slate-400 text-sm"
+                        >Service Tax (5%)</span
+                      >
+                      <span class="font-semibold" id="summaryTax">₦0</span>
+                    </div>
+
+                    <div class="h-px bg-slate-800 my-4"></div>
+
+                    <div class="flex justify-between items-end pt-2">
+                      <span class="text-slate-400 text-sm pb-1"
+                        >Total Payable</span
+                      >
+                      <span
+                        class="text-4xl font-black text-primary"
+                        id="summaryTotal"
+                        >₦0</span
+                      >
+                    </div>
+                  </div>
+
+                  <button
+                    id="confirmPayBtn"
+                    type="button"
+                    class="w-full mt-8 bg-[#fbbf24] hover:bg-[#f59e0b] text-slate-900 font-extrabold py-4 rounded-xl transition-all shadow-lg shadow-yellow-600/20 active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    Confirm &amp; Pay
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                  </button>
+
+                  <p class="mt-3 text-[11px] text-slate-300/80 leading-snug">
+                    Clicking <b>Confirm &amp; Pay</b> creates the order in the
+                    DB with <b>paid:false</b>, then redirects to Paystack
+                    checkout.
+                  </p>
+                </div>
+
+                <div
+                  class="bg-primary/10 border border-primary/20 rounded-xl p-4 flex gap-4"
+                >
+                  <span class="material-symbols-outlined text-primary"
+                    >verified</span
+                  >
+                  <div>
+                    <p class="text-sm font-bold">Safe &amp; Reliable</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                      All our deliveries are handled by certified riders with
+                      real-time tracking.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Tab Bar -->
+    <nav class="mobile-bottom-nav">
+      <a
+        href="customer-dashboard.html"
+        class="bottom-nav-item"
+        id="bottomDashboard"
+      >
+        <span class="material-symbols-outlined">dashboard</span
+        ><span>Home</span>
+      </a>
+      <a
+        href="customer-order-history.html"
+        class="bottom-nav-item"
+        id="bottomHistory"
+      >
+        <span class="material-symbols-outlined">history</span
+        ><span>History</span>
+      </a>
+      <a href="place-order.html" class="bottom-nav-item" id="bottomPlaceOrder">
+        <span class="material-symbols-outlined">local_gas_station</span
+        ><span>Order</span>
+      </a>
+      <a href="tracking.html" class="bottom-nav-item" id="bottomTracking">
+        <span class="material-symbols-outlined">near_me</span><span>Track</span>
+      </a>
+      <a
+        href="customer-settings.html"
+        class="bottom-nav-item"
+        id="bottomSettings"
+      >
+        <span class="material-symbols-outlined">settings</span
+        ><span>Settings</span>
+      </a>
+    </nav>
+
+    <script>
+      // Same API_BASE_URL logic you used on dashboard
+      const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+          ? "http://127.0.0.1:8000"
+          : "https://flanorx-api.onrender.com";
+
+      // ---------------------------
+      // Helpers
+      // ---------------------------
+      function formatNaira(n) {
+        const num = Number(n || 0);
+        return "₦" + num.toLocaleString("en-NG");
+      }
+
+      function showToast(title, msg) {
+        const wrap = document.getElementById("toast");
+        const t = document.getElementById("toastTitle");
+        const m = document.getElementById("toastMsg");
+        if (!wrap || !t || !m) return;
+
+        t.textContent = title || "Notice";
+        m.textContent = msg || "";
+        wrap.classList.remove("hidden");
+
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => wrap.classList.add("hidden"), 4500);
+      }
+
+      function safeJSONParse(s) {
+        try {
+          return JSON.parse(s);
+        } catch {
+          return null;
+        }
+      }
+
+      function requireAuthOrRedirect() {
+        const raw = localStorage.getItem("flanorx_auth");
+        if (!raw) {
+          window.location.href = "login.html";
+          return null;
+        }
+        const user = safeJSONParse(raw);
+        if (!user) {
+          localStorage.removeItem("flanorx_auth");
+          window.location.href = "login.html";
+          return null;
+        }
+        return user;
+      }
+
+      // ---------------------------
+      // USER INFO (same pattern as dashboard)
+      // ---------------------------
+      (function () {
+        const user = requireAuthOrRedirect();
+        if (!user) return;
+
+        const fullName = user?.name || user?.email || "Customer";
+        const top = document.getElementById("userNameTop");
+        const avatar = document.getElementById("userAvatar");
+
+        if (top) top.textContent = fullName;
+
+        if (avatar) {
+          const pic = user?.profile || "";
+          if (pic) avatar.style.backgroundImage = `url('${pic}')`;
+        }
+      })();
+
+      // ---------------------------
+      // Sidebar toggle
+      // ---------------------------
+      (function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        if (menuToggle && sidebar && backdrop) {
+          menuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("-translate-x-full");
+            backdrop.classList.toggle("hidden");
+          });
+          backdrop.addEventListener("click", function () {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+          });
+        }
+      })();
+
+      // ---------------------------
+      // Logout (same as dashboard)
+      // ---------------------------
+      document
+        .getElementById("logoutBtn")
+        ?.addEventListener("click", async () => {
+          try {
+            await fetch(`${API_BASE_URL}/api/users/logout`, {
+              method: "POST",
+              credentials: "include",
+            });
+          } catch (e) {}
+          localStorage.removeItem("flanorx_auth");
+          window.location.href = "login.html";
+        });
+
+      // ---------------------------
+      // Station selection + search
+      // ---------------------------
+      const stationRadios = document.querySelectorAll(
+        'input[name="filling_station"]',
+      );
+      const selectedStationSpan = document.getElementById("selectedStation");
+      const summaryStationSpan = document.getElementById("summaryStation");
+
+      function getSelectedStation() {
+        const selected = document.querySelector(
+          'input[name="filling_station"]:checked',
+        );
+        return selected?.value || "NNPC";
+      }
+
+      function updateSelectedStation() {
+        const stationName = getSelectedStation();
+        if (selectedStationSpan) selectedStationSpan.textContent = stationName;
+        if (summaryStationSpan) summaryStationSpan.textContent = stationName;
+      }
+
+      stationRadios.forEach((r) =>
+        r.addEventListener("change", updateSelectedStation),
+      );
+      updateSelectedStation();
+
+      const searchInput = document.getElementById("stationSearch");
+      if (searchInput) {
+        searchInput.addEventListener("input", function (e) {
+          const searchTerm = (e.target.value || "").toLowerCase();
+          const allStationLabels = document.querySelectorAll(
+            'label[class*="cursor-pointer group"]',
+          );
+
+          allStationLabels.forEach((label) => {
+            const stationName =
+              label.querySelector(".font-medium")?.textContent?.toLowerCase() ||
+              "";
+            const stationDesc =
+              label.querySelector(".text-xs")?.textContent?.toLowerCase() || "";
+            label.style.display =
+              stationName.includes(searchTerm) ||
+              stationDesc.includes(searchTerm)
+                ? ""
+                : "none";
+          });
+        });
+      }
+
+      // ---------------------------
+      // Fuel + Quantity + Price sync (matches your Order.calculatePrice)
+      // ---------------------------
+      const PRICE_PER_LITER = {
+        "Petrol (95 Octane)": 850,
+        Diesel: 1320,
+      };
+
+      const qtyRange = document.getElementById("qtyRange");
+      const qtyInput = document.getElementById("qtyInput");
+
+      const summaryFuel = document.getElementById("summaryFuel");
+      const summaryQty = document.getElementById("summaryQty");
+      const summarySubLabel = document.getElementById("summarySubLabel");
+      const summarySubtotal = document.getElementById("summarySubtotal");
+      const summaryDeliveryFee = document.getElementById("summaryDeliveryFee");
+      const summaryTax = document.getElementById("summaryTax");
+      const summaryTotal = document.getElementById("summaryTotal");
+
+      function clamp(n, min, max) {
+        const x = Number(n);
+        if (Number.isNaN(x)) return min;
+        return Math.max(min, Math.min(max, x));
+      }
+
+      function getFuelType() {
+        return (
+          document.querySelector('input[name="fuel_type"]:checked')?.value ||
+          "Petrol (95 Octane)"
+        );
+      }
+
+      function getQuantity() {
+        return clamp(qtyInput?.value ?? qtyRange?.value ?? 45, 5, 500);
+      }
+
+      function calculatePrice(fuelType, quantity) {
+        const pricePerLiter = PRICE_PER_LITER[fuelType] || 0;
+        const subtotal = pricePerLiter * quantity;
+        const deliveryFee = 4.99; // your model default
+        const serviceTax = subtotal * 0.05;
+        const total = subtotal + deliveryFee + serviceTax;
+        return { pricePerLiter, subtotal, deliveryFee, serviceTax, total };
+      }
+
+      function refreshSummary() {
+        const fuelType = getFuelType();
+        const quantity = getQuantity();
+        const station = getSelectedStation();
+        const { pricePerLiter, subtotal, deliveryFee, serviceTax, total } =
+          calculatePrice(fuelType, quantity);
+
+        if (summaryFuel) summaryFuel.textContent = fuelType;
+        if (summaryStationSpan) summaryStationSpan.textContent = station;
+        if (summaryQty) summaryQty.textContent = `${quantity} Liters`;
+
+        if (summarySubLabel)
+          summarySubLabel.textContent = `Price (${quantity}L × ₦${pricePerLiter.toLocaleString("en-NG")})`;
+        if (summarySubtotal)
+          summarySubtotal.textContent = formatNaira(subtotal);
+        if (summaryDeliveryFee)
+          summaryDeliveryFee.textContent = formatNaira(deliveryFee);
+        if (summaryTax) summaryTax.textContent = formatNaira(serviceTax);
+        if (summaryTotal) summaryTotal.textContent = formatNaira(total);
+      }
+
+      document
+        .querySelectorAll('input[name="fuel_type"]')
+        .forEach((r) => r.addEventListener("change", refreshSummary));
+
+      function syncFromRange() {
+        if (!qtyRange || !qtyInput) return;
+        qtyInput.value = qtyRange.value;
+        refreshSummary();
+      }
+      function syncFromInput() {
+        if (!qtyRange || !qtyInput) return;
+        const v = clamp(qtyInput.value, 5, 500);
+        qtyInput.value = v;
+        qtyRange.value = v;
+        refreshSummary();
+      }
+      qtyRange?.addEventListener("input", syncFromRange);
+      qtyInput?.addEventListener("input", syncFromInput);
+
+      refreshSummary();
+
+      // ---------------------------
+      // Location (optional coordinates)
+      // ---------------------------
+      const addressInput = document.getElementById("addressInput");
+      const useCurrentLocationBtn = document.getElementById(
+        "useCurrentLocationBtn",
+      );
+      const coordsHint = document.getElementById("coordsHint");
+      let deliveryCoordinates = null;
+
+      useCurrentLocationBtn?.addEventListener("click", () => {
+        if (!navigator.geolocation) {
+          showToast("Location", "Geolocation not supported on this browser.");
+          return;
+        }
+
+        showToast("Location", "Getting your current location...");
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            deliveryCoordinates = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+            };
+            if (coordsHint)
+              coordsHint.textContent = `Captured coordinates: ${deliveryCoordinates.lat.toFixed(
+                5,
+              )}, ${deliveryCoordinates.lng.toFixed(5)}`;
+            showToast(
+              "Location",
+              "Coordinates captured. Please also type your address for accuracy.",
+            );
+          },
+          (err) => {
+            console.error(err);
+            showToast(
+              "Location",
+              "Unable to get location. Please type your address.",
+            );
+          },
+          { enableHighAccuracy: true, timeout: 15000 },
+        );
+      });
+
+      // ---------------------------
+      // Schedule
+      // ---------------------------
+      function getScheduleType() {
+        return (
+          document.querySelector('input[name="schedule"]:checked')?.value ||
+          "now"
+        );
+      }
+
+      // ---------------------------
+      // CONFIRM & PAY (PAYSTACK INTEGRATED)
+      //
+      // Flow:
+      // 1) POST /api/order (backend creates order with paid:false)
+      //    Backend initializes Paystack and returns:
+      //    { order, authorization_url, reference }
+      // 2) Redirect to Paystack hosted checkout: authorization_url
+      // ---------------------------
+      const confirmPayBtn = document.getElementById("confirmPayBtn");
+      const scheduledDateEl = document.getElementById("scheduledDate");
+      const scheduledTimeEl = document.getElementById("scheduledTime");
+
+      async function createOrderAndGetPaystackUrl() {
+        const user = requireAuthOrRedirect();
+        if (!user) throw new Error("Not logged in");
+
+        const fuelType = getFuelType();
+        const fillingStation = getSelectedStation();
+        const quantity = getQuantity();
+        const deliveryAddress = (addressInput?.value || "").trim();
+        const scheduleType = getScheduleType();
+
+        if (
+          !fuelType ||
+          !fillingStation ||
+          !quantity ||
+          !deliveryAddress ||
+          !scheduleType
+        ) {
+          throw new Error(
+            "Please complete all required fields (fuel, station, quantity, address, schedule).",
+          );
+        }
+
+        const scheduledDate = scheduledDateEl?.value || "";
+        const scheduledTime = scheduledTimeEl?.value || "";
+
+        if (
+          scheduleType === "scheduled" &&
+          (!scheduledDate || !scheduledTime)
+        ) {
+          throw new Error(
+            "Please select date and time for scheduled delivery.",
+          );
+        }
+
+        const { subtotal, deliveryFee, serviceTax, total } = calculatePrice(
+          fuelType,
+          quantity,
+        );
+
+        // matches your controller fields exactly
+        const payload = {
+          fuelType,
+          fillingStation,
+          quantity,
+          deliveryAddress,
+          deliveryCoordinates: deliveryCoordinates || undefined,
+          scheduleType,
+          scheduledDate:
+            scheduleType === "scheduled" ? scheduledDate : undefined,
+          scheduledTime:
+            scheduleType === "scheduled" ? scheduledTime : undefined,
+          subtotal,
+          deliveryFee,
+          serviceTax,
+          totalAmount: total,
+          notes: undefined,
+          estimatedDeliveryMinutes: scheduleType === "now" ? 30 : null,
+        };
+
+        const res = await fetch(`${API_BASE_URL}/api/order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include", // keep if your auth uses cookies
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 401) {
+          localStorage.removeItem("flanorx_auth");
+          window.location.href = "login.html";
+          return null;
+        }
+
+        if (!res.ok) {
+          throw new Error(data?.message || "Failed to create order");
+        }
+
+        // Expect backend to return:
+        // { order, authorization_url, reference }
+        const payUrl = data?.authorization_url;
+        const order = data?.order || data; // fallback if you returned only order
+
+        if (!payUrl) {
+          // Optional: if you still want fallback redirect to your own page
+          // const orderId = order?._id || order?.id;
+          // if (orderId) window.location.href = `paystack.html?orderId=${encodeURIComponent(orderId)}`;
+          throw new Error(
+            "Paystack link not returned. Check your createOrder controller response.",
+          );
+        }
+
+        return { payUrl, order, reference: data?.reference };
+      }
+
+      confirmPayBtn?.addEventListener("click", async () => {
+        try {
+          confirmPayBtn.disabled = true;
+          confirmPayBtn.classList.add("opacity-70", "cursor-not-allowed");
+          showToast("Order", "Creating your order...");
+
+          const result = await createOrderAndGetPaystackUrl();
+          if (!result) return;
+
+          showToast("Payment", "Redirecting to Paystack...");
+          window.location.href = result.payUrl;
+        } catch (err) {
+          console.error(err);
+          showToast("Error", err?.message || "Something went wrong");
+        } finally {
+          confirmPayBtn.disabled = false;
+          confirmPayBtn.classList.remove("opacity-70", "cursor-not-allowed");
+        }
+      });
+
+      // ---------------------------
+      // Active state on bottom nav
+      // ---------------------------
+      (function setActiveNavigation() {
+        const path = window.location.pathname;
+        let currentPage = path.substring(path.lastIndexOf("/") + 1);
+        if (
+          currentPage === "" ||
+          currentPage === "index.html" ||
+          currentPage === "customer-dashboard.html" ||
+          currentPage === "#"
+        ) {
+          currentPage = "home";
+        }
+
+        const navItems = document.querySelectorAll(".bottom-nav-item");
+        navItems.forEach((item) => item.classList.remove("active"));
+
+        navItems.forEach((item) => {
+          const href = item.getAttribute("href");
+          if (currentPage === "home" && href === "customer-dashboard.html")
+            item.classList.add("active");
+          else if (href === currentPage) item.classList.add("active");
+        });
+
+        const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+        sidebarLinks.forEach((link) => {
+          link.classList.remove("sidebar-active");
+          const href = link.getAttribute("href");
+          if (currentPage === "home" && href === "customer-dashboard.html")
+            link.classList.add("sidebar-active");
+          else if (href === currentPage) link.classList.add("sidebar-active");
+        });
+      })();
+    </script>
+  </body>
+</html>

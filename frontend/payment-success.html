@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful · Flanorx Receipt</title>
+  <!-- Tailwind + plugins (forms, container-queries) same as dashboard -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <!-- Google Fonts: Manrope (exactly like customer dashboard) -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Material Symbols Outlined (same as dashboard) -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#13ec5b',
+            'brand-yellow': '#FFD700',
+            'background-light': '#f6f8f6',
+            'background-dark': '#102216',
+          },
+          fontFamily: {
+            display: ['Manrope', 'sans-serif'],
+          },
+          borderRadius: {
+            DEFAULT: '0.25rem',
+            lg: '0.5rem',
+            xl: '0.75rem',
+            full: '9999px',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Manrope', sans-serif;
+    }
+    /* receipt card glass style – matches dashboard cards */
+    .receipt-card {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .dark .receipt-card {
+      background: rgba(30, 41, 59, 0.8);
+      border-color: rgba(51, 65, 85, 0.8);
+    }
+    /* success icon uses primary */
+    .success-circle {
+      background: rgba(19, 236, 91, 0.15);
+      color: #13ec5b;
+    }
+    .status-message {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .btn-primary {
+      background-color: #13ec5b;
+      color: #0f172a;
+      font-weight: 700;
+      box-shadow: 0 10px 15px -3px rgba(19, 236, 91, 0.25);
+    }
+    .btn-primary:hover {
+      background-color: #10d04e;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(19, 236, 91, 0.3);
+    }
+    .btn-secondary {
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-weight: 600;
+      border: 1px solid #e2e8f0;
+    }
+    .dark .btn-secondary {
+      background-color: #1e293b;
+      color: #f1f5f9;
+      border-color: #334155;
+    }
+    .btn-secondary:hover {
+      background-color: #e2e8f0;
+      transform: translateY(-1px);
+    }
+    .dark .btn-secondary:hover {
+      background-color: #2d3a4f;
+    }
+
+    /* FIX: allow long numbers/addresses to wrap */
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;  /* top align so tall wrapped content doesn't stretch */
+      gap: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .dark .receipt-row {
+      border-bottom-color: #1e293b;
+    }
+    .receipt-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+      flex-shrink: 0;        /* label keeps its width */
+    }
+    .receipt-value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: right;
+      color: #1e293b;
+      word-break: break-word;   /* break long words if needed */
+      overflow-wrap: break-word;
+      max-width: 220px;         /* enough space, but will wrap */
+      flex: 1;                  /* take remaining space */
+    }
+    .dark .receipt-value {
+      color: #f1f5f9;
+    }
+    /* total row specific */
+    .receipt-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+    }
+    .total-label {
+      font-size: 0.875rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .dark .total-label {
+      color: #cbd5e1;
+    }
+    .total-amount {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #13ec5b;
+      word-break: break-word;
+      text-align: right;
+      flex: 1;
+    }
+    /* address can be extra long — no fixed max width */
+    .receipt-value.address {
+      max-width: none;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-4 font-display transition-colors duration-300">
+
+  <div class="w-full max-w-md">
+    <!-- main receipt panel – same rounded-3xl & shadow as dashboard cards -->
+    <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 p-6 md:p-8 transition-all duration-300">
+
+      <!-- success icon (primary / fill) -->
+      <div class="flex justify-center mb-6">
+        <div class="w-20 h-20 rounded-2xl success-circle flex items-center justify-center">
+          <span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+        </div>
+      </div>
+
+      <!-- header -->
+      <h1 class="text-2xl md:text-3xl font-extrabold text-center text-slate-900 dark:text-white tracking-tight mb-2">
+        Payment successful!
+      </h1>
+      <p class="text-center text-slate-500 dark:text-slate-400 text-sm md:text-base mb-6">
+        Your payment is confirmed. Your receipt is ready.
+      </p>
+
+      <!-- dynamic status box (uses dashboard style) -->
+      <div id="statusBox" class="status-message hidden mb-6"></div>
+
+      <!-- receipt card – now with wrapping rows (no overflow) -->
+      <div id="receiptCard" class="receipt-card rounded-2xl p-5 md:p-6 mb-6 hidden">
+        
+        <!-- each row uses flexible layout with wrapping value -->
+        <div class="receipt-row">
+          <span class="receipt-label">Receipt / Ref</span>
+          <span class="receipt-value" id="refText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Order ID</span>
+          <span class="receipt-value" id="orderIdText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Date</span>
+          <span class="receipt-value" id="dateText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Payment method</span>
+          <span class="receipt-value" id="methodText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Fuel type</span>
+          <span class="receipt-value" id="fuelText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Station</span>
+          <span class="receipt-value" id="stationText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Quantity</span>
+          <span class="receipt-value" id="qtyText">—</span>
+        </div>
+
+        <!-- address row with extra wrapping freedom -->
+        <div class="receipt-row">
+          <span class="receipt-label">Delivery address</span>
+          <span class="receipt-value address" id="addressText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Subtotal</span>
+          <span class="receipt-value" id="subtotalText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Delivery fee</span>
+          <span class="receipt-value" id="deliveryFeeText">—</span>
+        </div>
+
+        <div class="receipt-row">
+          <span class="receipt-label">Service tax</span>
+          <span class="receipt-value" id="taxText">—</span>
+        </div>
+
+        <!-- total row (different style, but also wraps) -->
+        <div class="receipt-total">
+          <span class="total-label">Amount paid</span>
+          <span class="total-amount" id="totalText">—</span>
+        </div>
+      </div>
+
+      <!-- action buttons – primary (download) and secondary (home) -->
+      <div class="space-y-3">
+        <button id="printBtn" onclick="window.print()"
+          class="w-full btn-primary py-3.5 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none text-sm shadow-lg disabled:shadow-none"
+          disabled>
+          <span class="flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-lg">download</span>
+            <span>Download receipt</span>
+          </span>
+        </button>
+
+        <!-- RETURN TO HOMEPAGE button – links to customer-dashboard.html -->
+        <button id="homeBtn"
+          class="w-full btn-secondary py-3.5 px-4 rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-lg">home</span>
+          Return to Homepage
+        </button>
+      </div>
+
+      <!-- footer hint – matches dashboard subtle text -->
+      <p class="text-center text-xs text-slate-400 dark:text-slate-500 mt-6" id="footerNote">
+        If you don’t see your receipt, try refreshing.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL =
+      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://127.0.0.1:8000"
+        : "https://flanorx-api.onrender.com";
+
+    const statusBox = document.getElementById("statusBox");
+    const receiptCard = document.getElementById("receiptCard");
+    const printBtn = document.getElementById("printBtn");
+
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    function pickPaystackReference() {
+      return getQueryParam("reference") || getQueryParam("trxref") || "";
+    }
+
+    function showStatus(type, msg) {
+      statusBox.classList.remove("hidden");
+      statusBox.classList.remove("bg-blue-50", "text-blue-700", "border-blue-200", "bg-red-50", "text-red-700", "border-red-200", "bg-green-50", "text-green-700", "border-green-200");
+
+      if (type === "loading") {
+        statusBox.classList.add("bg-blue-50", "text-blue-700", "border", "border-blue-200");
+      } else if (type === "error") {
+        statusBox.classList.add("bg-red-50", "text-red-700", "border", "border-red-200");
+      } else if (type === "success") {
+        statusBox.classList.add("bg-green-50", "text-green-700", "border", "border-green-200");
+      }
+      statusBox.textContent = msg || "";
+    }
+
+    function formatNaira(n) {
+      const num = Number(n || 0);
+      return "₦" + num.toLocaleString("en-NG");
+    }
+
+    function formatDate(d) {
+      const dt = d ? new Date(d) : new Date();
+      return dt.toLocaleDateString("en-NG", { year: "numeric", month: "long", day: "numeric" });
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value ?? "—";
+    }
+
+    async function fetchReceiptByReference(reference) {
+      const res = await fetch(`${API_BASE_URL}/api/order/verify/${encodeURIComponent(reference)}`, {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Unable to verify payment");
+      return data?.order;
+    }
+
+    function renderReceipt(order) {
+      receiptCard.classList.remove("hidden");
+      printBtn.disabled = false;
+
+      setText("refText", order?.paymentReference || "—");
+      setText("orderIdText", order?.orderId || order?._id || "—");
+      setText("dateText", formatDate(order?.paymentDate || order?.updatedAt || order?.createdAt));
+      setText("methodText", order?.paymentMethod || "card");
+
+      setText("fuelText", order?.fuelType);
+      setText("stationText", order?.fillingStation);
+      setText("qtyText", `${order?.quantity ?? "—"} L`);
+      setText("addressText", order?.deliveryAddress);
+
+      setText("subtotalText", formatNaira(order?.subtotal));
+      setText("deliveryFeeText", formatNaira(order?.deliveryFee));
+      setText("taxText", formatNaira(order?.serviceTax));
+      setText("totalText", formatNaira(order?.totalAmount));
+    }
+
+    (async function init() {
+      printBtn.disabled = true;
+      receiptCard.classList.add("hidden");
+
+      const reference = pickPaystackReference();
+
+      if (!reference) {
+        showStatus("error", "Missing Paystack reference. Please arrive via Paystack.");
+        return;
+      }
+
+      try {
+        showStatus("loading", "Verifying payment & loading receipt...");
+        const order = await fetchReceiptByReference(reference);
+        if (!order) throw new Error("Order not found.");
+        renderReceipt(order);
+        showStatus("success", "Receipt loaded.");
+      } catch (err) {
+        console.error(err);
+        showStatus("error", err?.message || "Something went wrong.");
+      }
+    })();
+
+    // ----- Return to homepage (customer-dashboard.html) -----
+    document.getElementById("homeBtn").addEventListener("click", function() {
+      window.location.href = "customer-dashboard.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1198 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+      name="viewport"
+    />
+    <title>Flanorx - Complete Registration</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body { font-family: "Manrope", sans-serif; }
+      .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+      .dark .glass { background: rgba(15, 23, 42, 0.55); }
+      .dropzone.dragover { outline: 2px dashed rgba(19, 236, 91, 0.9); outline-offset: 4px; background: rgba(19, 236, 91, 0.06); }
+      button, a, [data-pick] { touch-action: manipulation; }
+      .modal-backdrop { transition: opacity 0.2s ease; }
+      .modal-content { transition: transform 0.3s ease, opacity 0.2s ease; }
+    </style>
+  </head>
+
+  <body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display">
+    <!-- Header -->
+    <header class="w-full px-4 sm:px-8 py-4 sm:py-6 max-w-7xl mx-auto">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a href="index.html" class="flex items-center">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-5 sm:h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </a>
+          <span class="hidden xs:flex sm:flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+            <span class="material-symbols-outlined text-base">verified_user</span>
+            <span class="hidden xs:inline">Verification</span>
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            id="themeBtn"
+            type="button"
+            class="px-3 sm:px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
+            aria-label="Toggle theme"
+          >
+            <span class="material-symbols-outlined text-base">dark_mode</span>
+            <span class="hidden xs:inline">Theme</span>
+          </button>
+          <a
+            href="rider-support.html"
+            class="px-4 sm:px-6 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300 inline-block"
+            >Support</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 px-3 sm:px-4 pb-24 md:pb-10">
+      <div class="max-w-6xl mx-auto">
+        <!-- Top progress / intro -->
+        <div class="mb-5">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+            <div class="space-y-1 sm:space-y-2">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold">
+                <span class="material-symbols-outlined text-sm">task_alt</span>
+                <span>Step 2 of 2 · Complete profile</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
+                Finish Registration
+              </h1>
+              <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl">
+                For safety and payouts, we need your NIN, address proof, profile photo, fueling station and bank details.
+              </p>
+            </div>
+
+            <div class="glass rounded-xl border border-slate-200/70 dark:border-slate-700/60 p-3 shadow-sm w-full md:w-auto">
+              <div class="flex items-center gap-3">
+                <div class="size-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-xl">delivery_dining</span>
+                </div>
+                <div>
+                  <p class="text-xs font-extrabold text-slate-900 dark:text-slate-100">Rider Verification</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Takes ~2–5 minutes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 h-2 w-full bg-slate-200/70 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full w-[72%] bg-gradient-to-r from-primary via-yellow-400 to-primary/60"></div>
+          </div>
+        </div>
+
+        <!-- ✅ Awaiting Verification Card -->
+        <div
+          id="awaitingWrap"
+          class="hidden mb-6 bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden"
+        >
+          <div class="p-5 sm:p-6 flex items-start gap-4">
+            <div class="size-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-primary text-3xl">hourglass_top</span>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-slate-100">
+                Details Submitted, Awaiting Verification
+              </h2>
+              <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Your documents have been received. Please wait for admin verification.
+              </p>
+              <div class="mt-4 grid sm:grid-cols-3 gap-3">
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Status</p>
+                  <p class="text-sm font-black text-primary">Pending</p>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Expected time</p>
+                  <p class="text-sm font-black text-slate-900 dark:text-slate-100">Within 24 hours</p>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Next</p>
+                  <p class="text-sm font-black text-slate-900 dark:text-slate-100">Check back later</p>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                <a
+                  href="rider-login.html"
+                  class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  >Back to Sign In</a
+                >
+                <button
+                  id="refreshStatusBtn"
+                  type="button"
+                  class="px-4 py-2 rounded-lg bg-primary text-slate-950 text-sm font-black hover:brightness-95 active:scale-[0.99] transition-all inline-flex items-center gap-2"
+                >
+                  Refresh status
+                  <span class="material-symbols-outlined text-base">refresh</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ❌ Rejected Verification Card -->
+        <div
+          id="rejectedWrap"
+          class="hidden mb-6 bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden"
+        >
+          <div class="p-5 sm:p-6 flex items-start gap-4">
+            <div class="size-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-red-500 text-3xl">error</span>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-slate-100">
+                Verification Rejected
+              </h2>
+              <p id="rejectionReason" class="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                Your submission was rejected. Please review and resubmit.
+              </p>
+
+              <div class="mt-4 grid sm:grid-cols-3 gap-3">
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Status</p>
+                  <p class="text-sm font-black text-red-500">Rejected</p>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Next step</p>
+                  <p class="text-sm font-black text-slate-900 dark:text-slate-100">Resubmit documents</p>
+                </div>
+                <div class="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Help</p>
+                  <p class="text-sm font-black text-slate-900 dark:text-slate-100">Contact support</p>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button
+                  id="resubmitBtn"
+                  type="button"
+                  class="px-4 py-2 rounded-lg bg-primary text-slate-950 text-sm font-black hover:brightness-95 active:scale-[0.99] transition-all inline-flex items-center gap-2"
+                >
+                  Resubmit
+                  <span class="material-symbols-outlined text-base">restart_alt</span>
+                </button>
+
+                <a
+                  href="rider-support.html"
+                  class="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  >Contact Support</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-5 lg:gap-6">
+          <!-- LEFT: Form -->
+          <section
+            id="formSection"
+            class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden"
+          >
+            <div class="p-4 sm:p-6 border-b border-slate-100 dark:border-slate-800">
+              <div class="flex items-start justify-between gap-3">
+                <div class="space-y-0.5">
+                  <h2 class="text-base sm:text-lg font-black text-slate-900 dark:text-slate-100">
+                    Identity & Payment Info
+                  </h2>
+                  <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                    Make sure your details match your official documents.
+                  </p>
+                </div>
+                <div class="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                  <span class="material-symbols-outlined text-base text-primary">lock</span>
+                  Encrypted uploads
+                </div>
+              </div>
+            </div>
+
+            <form id="kycForm" class="p-4 sm:p-6 space-y-6">
+              <!-- Fueling station -->
+              <div class="space-y-2">
+                <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">Fueling Station</label>
+                <div class="relative">
+                  <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl"
+                    >local_gas_station</span
+                  >
+                  <input
+                    id="fuelingStation"
+                    type="text"
+                    placeholder="e.g. TotalEnergies - Rumuola"
+                    class="w-full pl-10 pr-3 py-2.5 sm:py-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                    required
+                  />
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Enter the station you operate from.
+                </p>
+              </div>
+
+              <!-- NIN + Profile -->
+              <div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
+                <div class="space-y-2">
+                  <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">NIN Number</label>
+                  <div class="relative">
+                    <span
+                      class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl"
+                      >badge</span
+                    >
+                    <input
+                      id="ninNumber"
+                      type="text"
+                      inputmode="numeric"
+                      maxlength="11"
+                      placeholder="11-digit NIN"
+                      class="w-full pl-10 pr-3 py-2.5 sm:py-3 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      required
+                    />
+                  </div>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Only numbers. Example: 12345678901</p>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">Profile Picture</label>
+                  <div class="flex items-center gap-3">
+                    <div class="size-12 sm:size-14 rounded-full bg-primary/10 border border-primary/20 overflow-hidden flex items-center justify-center shrink-0">
+                      <img id="profilePreview" alt="" class="hidden w-full h-full object-cover" />
+                      <span id="profileIcon" class="material-symbols-outlined text-primary text-2xl sm:text-3xl">person</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <input
+                        id="profilePic"
+                        type="file"
+                        accept="image/*"
+                        class="block w-full text-xs sm:text-sm text-slate-600 dark:text-slate-300 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-primary/15 file:text-primary file:font-bold hover:file:bg-primary/20"
+                        required
+                      />
+                      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Clear face photo</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upload cards -->
+              <div class="grid sm:grid-cols-2 gap-4 sm:gap-5">
+                <!-- NIN Card -->
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">NIN Card Photo</label>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Card only</span>
+                  </div>
+                  <div id="ninDrop" class="dropzone p-3 sm:p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40">
+                    <div class="flex items-start gap-2">
+                      <div class="size-9 sm:size-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-primary text-xl">id_card</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-sm text-slate-900 dark:text-slate-100">Upload NIN card</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Drag or click. JPG/PNG.</p>
+                        <input id="ninCard" type="file" accept="image/*" class="hidden" required />
+                        <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                          <button
+                            type="button"
+                            data-pick="ninCard"
+                            class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            Choose
+                          </button>
+                          <button
+                            type="button"
+                            id="ninRemove"
+                            class="hidden px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-300 text-xs font-bold hover:bg-red-50/60 dark:hover:bg-red-950/30 transition-colors"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <div id="ninMeta" class="mt-2 hidden">
+                          <div class="rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                            <img id="ninPreview" alt="NIN preview" class="w-full h-32 sm:h-40 object-cover" />
+                          </div>
+                          <p id="ninFilename" class="mt-1 text-xs text-slate-500 dark:text-slate-400 truncate"></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Address proof -->
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <label class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">Proof of Address</label>
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Utility bill</span>
+                  </div>
+                  <div id="addrDrop" class="dropzone p-3 sm:p-4 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40">
+                    <div class="flex items-start gap-2">
+                      <div class="size-9 sm:size-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-primary text-xl">home_pin</span>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="font-bold text-sm text-slate-900 dark:text-slate-100">Upload document</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">PDF or image</p>
+                        <input id="addressProof" type="file" accept="image/*,application/pdf" class="hidden" required />
+                        <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                          <button
+                            type="button"
+                            data-pick="addressProof"
+                            class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            Choose
+                          </button>
+                          <button
+                            type="button"
+                            id="addrRemove"
+                            class="hidden px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-300 text-xs font-bold hover:bg-red-50/60 dark:hover:bg-red-950/30 transition-colors"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        <div id="addrMeta" class="mt-2 hidden">
+                          <div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-2 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">description</span>
+                            <div class="min-w-0">
+                              <p id="addrFilename" class="text-xs font-bold text-slate-900 dark:text-slate-100 truncate"></p>
+                              <p id="addrFiletype" class="text-xs text-slate-500 dark:text-slate-400"></p>
+                            </div>
+                          </div>
+                          <div id="addrImageWrap" class="mt-2 hidden rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                            <img id="addrPreview" alt="Address preview" class="w-full h-32 sm:h-40 object-cover" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bank details -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-slate-100">Bank Details</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Used for payouts.</p>
+                  </div>
+                  <span class="hidden sm:flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                    <span class="material-symbols-outlined text-base text-primary">payments</span>
+                    Secure
+                  </span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">Bank Name</label>
+                    <input
+                      id="bankName"
+                      type="text"
+                      placeholder="e.g. GTBank"
+                      class="w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      required
+                    />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">Account Number</label>
+                    <input
+                      id="accountNumber"
+                      type="text"
+                      inputmode="numeric"
+                      maxlength="10"
+                      placeholder="10-digit"
+                      class="w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      required
+                    />
+                  </div>
+                  <div class="space-y-1 sm:col-span-2 lg:col-span-1">
+                    <label class="text-xs font-bold text-slate-800 dark:text-slate-200">Account Name</label>
+                    <input
+                      id="accountName"
+                      type="text"
+                      placeholder="Full name"
+                      class="w-full px-3 py-2.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div id="formMsg" class="text-sm text-slate-600 dark:text-slate-300"></div>
+
+              <p class="text-xs text-slate-500 dark:text-slate-400 pt-2">
+                By continuing, you confirm these documents are yours and accurate.
+              </p>
+            </form>
+          </section>
+
+          <!-- RIGHT: Side cards -->
+          <aside class="space-y-5 lg:block">
+            <div class="glass rounded-xl border border-slate-200/70 dark:border-slate-700/60 p-5 shadow-sm">
+              <div class="flex items-start gap-3">
+                <div class="size-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary">lightbulb</span>
+                </div>
+                <div>
+                  <h3 class="font-black text-slate-900 dark:text-slate-100 text-sm">Upload Tips</h3>
+                  <ul class="mt-2 space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                    <li class="flex gap-2">
+                      <span class="material-symbols-outlined text-base text-primary mt-0.5">check_circle</span>
+                      Bright lighting, no shadows.
+                    </li>
+                    <li class="flex gap-2">
+                      <span class="material-symbols-outlined text-base text-primary mt-0.5">check_circle</span>
+                      NIN card only (no clutter).
+                    </li>
+                    <li class="flex gap-2">
+                      <span class="material-symbols-outlined text-base text-primary mt-0.5">check_circle</span>
+                      Address proof matches profile.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-5 shadow-xl shadow-slate-200/50 dark:shadow-none">
+              <div class="flex items-center justify-between">
+                <h3 class="font-black text-slate-900 dark:text-slate-100 text-sm">Required</h3>
+                <span class="text-xs text-slate-500 dark:text-slate-400">All must be provided</span>
+              </div>
+              <div class="mt-4 space-y-2 text-sm">
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">local_gas_station</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">Fueling station</span>
+                  </div>
+                  <span id="okStation" class="material-symbols-outlined text-slate-400">radio_button_unchecked</span>
+                </div>
+
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">badge</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">NIN number</span>
+                  </div>
+                  <span id="okNin" class="material-symbols-outlined text-slate-400">radio_button_unchecked</span>
+                </div>
+
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">id_card</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">NIN card</span>
+                  </div>
+                  <span id="okNinCard" class="material-symbols-outlined text-slate-400">radio_button_unchecked</span>
+                </div>
+
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">home_pin</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">Address proof</span>
+                  </div>
+                  <span id="okAddr" class="material-symbols-outlined text-slate-400">radio_button_unchecked</span>
+                </div>
+
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">person</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">Profile photo</span>
+                  </div>
+                  <span id="okProfile" class="material-symbols-outlined text-slate-400">radio_button_unchecked</span>
+                </div>
+
+                <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">account_balance</span>
+                    <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">Bank details</span>
+                  </div>
+                  <span id="okBank" class="material-symbols-outlined text-slate-400">radio_button_unchecked</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom buttons -->
+    <div class="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-3 flex justify-between gap-3 items-center shadow-lg md:hidden z-10">
+      <a
+        href="rider-login.html"
+        class="flex-1 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-center"
+        >Back</a
+      >
+      <button
+        id="mobileSubmitBtn"
+        type="button"
+        disabled
+        class="flex-1 px-4 py-3 rounded-lg bg-primary text-slate-950 font-black hover:brightness-95 active:scale-[0.99] transition-all disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 text-sm"
+      >
+        Save & Continue
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </button>
+    </div>
+
+    <div class="hidden md:block max-w-6xl mx-auto px-4 pb-6 -mt-2">
+      <div class="flex justify-between items-center">
+        <div id="formMsgDesktop" class="text-sm text-slate-600 dark:text-slate-300"></div>
+        <div class="flex items-center gap-3">
+          <a
+            href="rider-login.html"
+            class="px-5 py-3 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            >Back</a
+          >
+          <button
+            id="submitBtn"
+            type="submit"
+            form="kycForm"
+            disabled
+            class="px-6 py-3 rounded-lg bg-primary text-slate-950 font-black hover:brightness-95 active:scale-[0.99] transition-all disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center gap-2"
+          >
+            Save & Continue
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-yellow-400 to-primary/50 opacity-50 pointer-events-none"></div>
+
+    <!-- SUCCESS MODAL -->
+    <div
+      id="successModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none"
+    >
+      <div
+        class="modal-content bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 transform scale-95 transition-all duration-300"
+      >
+        <div class="text-center">
+          <div class="mx-auto flex items-center justify-center size-16 rounded-full bg-primary/20 mb-4">
+            <span class="material-symbols-outlined text-primary text-4xl">mark_email_read</span>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 mb-2">Details submitted!</h2>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+            You'll receive an update about your verification status within 24 hours.
+          </p>
+          <button
+            id="modalOkBtn"
+            type="button"
+            class="inline-block w-full px-6 py-3 rounded-lg bg-primary text-slate-950 font-black hover:brightness-95 transition-all text-center"
+          >
+            Okay
+          </button>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-4">We’ll notify you once verified.</p>
+        </div>
+      </div>
+    </div>
+
+  <script>
+  // ─────────────────────────────────────────────────────────────────────────
+  // SETTINGS
+  // ─────────────────────────────────────────────────────────────────────────
+  const API_BASE_URL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "http://127.0.0.1:8000"
+      : "https://flanorx-api.onrender.com";
+
+  const $ = (id) => document.getElementById(id);
+
+  // Theme toggle
+  const root = document.documentElement;
+  const themeBtn = $("themeBtn");
+  themeBtn?.addEventListener("click", () => {
+    root.classList.toggle("dark");
+    root.classList.toggle("light");
+  });
+
+  function setOk(el, ok) {
+    if (!el) return;
+    el.textContent = ok ? "check_circle" : "radio_button_unchecked";
+    el.className = "material-symbols-outlined " + (ok ? "text-primary" : "text-slate-400");
+  }
+
+  function isDigits(str) {
+    return /^[0-9]+$/.test(str);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // VIEW STATES
+  // ─────────────────────────────────────────────────────────────────────────
+  function showAwaitingCard() {
+    $("awaitingWrap")?.classList.remove("hidden");
+    $("rejectedWrap")?.classList.add("hidden");
+    $("formSection")?.classList.add("hidden");
+    document.querySelector(".md\\:hidden")?.classList.add("hidden");
+    document.querySelector(".hidden.md\\:block")?.classList.add("hidden");
+  }
+
+  function showRejectedCard(reasonText) {
+    $("rejectedWrap")?.classList.remove("hidden");
+    $("awaitingWrap")?.classList.add("hidden");
+    $("formSection")?.classList.add("hidden");
+    document.querySelector(".md\\:hidden")?.classList.add("hidden");
+    document.querySelector(".hidden.md\\:block")?.classList.add("hidden");
+
+    const reasonEl = $("rejectionReason");
+    if (reasonEl) {
+      reasonEl.textContent =
+        reasonText?.trim() || "Your submission was rejected. Please review and resubmit.";
+    }
+  }
+
+  function showForm() {
+    $("awaitingWrap")?.classList.add("hidden");
+    $("rejectedWrap")?.classList.add("hidden");
+    $("formSection")?.classList.remove("hidden");
+    document.querySelector(".md\\:hidden")?.classList.remove("hidden");
+    document.querySelector(".hidden.md\\:block")?.classList.remove("hidden");
+  }
+
+  function redirectDashboard() {
+    window.location.replace("rider-dashboard.html");
+  }
+
+  function redirectLogin() {
+    window.location.replace("rider-login.html");
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // SESSION HELPERS
+  // ─────────────────────────────────────────────────────────────────────────
+  function getStoredAuth() {
+    try {
+      return JSON.parse(localStorage.getItem("flanorx_auth") || "null");
+    } catch {
+      return null;
+    }
+  }
+
+  function updateStoredAuthFromMe(me) {
+    const current = getStoredAuth() || {};
+    const verificationStatus =
+      me?.verificationStatus ??
+      me?.kycStatus ??
+      current?.verificationStatus ??
+      "";
+
+    const approvedStatuses = ["approved", "verified", "active"];
+    const isVerified =
+      me?.isVerified === true ||
+      approvedStatuses.includes(String(verificationStatus).toLowerCase());
+
+    const next = {
+      ...current,
+      _id: me?._id ?? current._id,
+      name: me?.name ?? current.name,
+      email: me?.email ?? current.email,
+      profilePicture: me?.profilePicture ?? current.profilePicture,
+      userType: "rider",
+      isVerified,
+      verificationStatus,
+      loggedInAt: current.loggedInAt || Date.now(),
+    };
+
+    localStorage.setItem("flanorx_auth", JSON.stringify(next));
+    return next;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // AUTH GUARD + STATUS CHECK
+  // ─────────────────────────────────────────────────────────────────────────
+  async function fetchRiderMe() {
+    const res = await fetch(`${API_BASE_URL}/api/riders/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data?.message || `Failed to fetch profile (${res.status})`);
+    }
+
+    return data?.rider || data?.user || data;
+  }
+
+  function normalizeStatus(me) {
+    return String(
+      me?.verificationStatus ??
+      me?.kycStatus ??
+      me?.status ??
+      ""
+    ).toLowerCase().trim();
+  }
+
+  function isApproved(me) {
+    const status = normalizeStatus(me);
+    return (
+      me?.isVerified === true ||
+      status === "approved" ||
+      status === "verified" ||
+      status === "active"
+    );
+  }
+
+  function isRejected(me) {
+    const status = normalizeStatus(me);
+    return (
+      status === "rejected" ||
+      me?.isRejected === true ||
+      me?.verificationRejected === true
+    );
+  }
+
+  function hasKycSubmitted(me) {
+    const nin = me?.nin ?? me?.NIN ?? me?.ninNumber ?? "";
+    const station = me?.fuelingStation ?? me?.station ?? me?.fuelStation ?? "";
+
+    const proof =
+      me?.proofOfAddress ??
+      me?.proofOfAddressUrl ??
+      me?.addressProof ??
+      me?.addressProofUrl ??
+      me?.proof ??
+      "";
+
+    const ninOk = String(nin).trim().length > 0;
+    const stationOk = String(station).trim().length > 0;
+    const proofOk = typeof proof === "string" ? proof.trim().length > 0 : !!proof;
+
+    return ninOk && stationOk && proofOk;
+  }
+
+  function getRejectionReason(me) {
+    return (
+      me?.rejectionReason ||
+      me?.verificationRejectionReason ||
+      me?.adminRejectionReason ||
+      me?.rejectReason ||
+      ""
+    );
+  }
+
+  async function initPageState() {
+    const session = getStoredAuth();
+
+    if (!session || session.userType !== "rider") {
+      return redirectLogin();
+    }
+
+    try {
+      const me = await fetchRiderMe();
+
+      // keep localStorage fresh
+      updateStoredAuthFromMe(me);
+
+      // ✅ if approved or verified, this page must never show
+      if (isApproved(me)) {
+        return redirectDashboard();
+      }
+
+      // ✅ rejected
+      if (isRejected(me)) {
+        showRejectedCard(getRejectionReason(me));
+        return;
+      }
+
+      const status = normalizeStatus(me);
+      const submitted = hasKycSubmitted(me);
+
+      // ✅ submitted but not yet approved
+      if (
+        status === "pending" ||
+        status === "submitted" ||
+        status === "under_review" ||
+        status === "in_review" ||
+        submitted
+      ) {
+        showAwaitingCard();
+        return;
+      }
+
+      // ✅ no submission yet
+      showForm();
+    } catch (e) {
+      console.error("initPageState error:", e);
+      redirectLogin();
+    }
+  }
+
+  // Refresh button
+  $("refreshStatusBtn")?.addEventListener("click", async () => {
+    const btn = $("refreshStatusBtn");
+    btn.disabled = true;
+    btn.classList.add("opacity-70", "cursor-not-allowed");
+
+    try {
+      const me = await fetchRiderMe();
+      updateStoredAuthFromMe(me);
+
+      if (isApproved(me)) {
+        redirectDashboard();
+        return;
+      }
+
+      if (isRejected(me)) {
+        showRejectedCard(getRejectionReason(me));
+        return;
+      }
+
+      showAwaitingCard();
+    } catch (e) {
+      console.error("refresh error:", e);
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("opacity-70", "cursor-not-allowed");
+    }
+  });
+
+  // Resubmit button
+  $("resubmitBtn")?.addEventListener("click", () => {
+    showForm();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // FILE/UI LOGIC
+  // ─────────────────────────────────────────────────────────────────────────
+  const profilePic = $("profilePic");
+  profilePic?.addEventListener("change", () => {
+    const file = profilePic.files?.[0];
+    if (!file) return;
+    const img = $("profilePreview");
+    const icon = $("profileIcon");
+    img.src = URL.createObjectURL(file);
+    img.classList.remove("hidden");
+    icon.classList.add("hidden");
+    validate();
+  });
+
+  document.querySelectorAll("[data-pick]").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const target = btn.getAttribute("data-pick");
+      $(target)?.click();
+    });
+  });
+
+  function setupDropzone({ zoneId, inputId, metaId, removeId, onFile }) {
+    const zone = $(zoneId);
+    const input = $(inputId);
+    const meta = $(metaId);
+    const removeBtn = $(removeId);
+
+    if (!zone || !input || !meta || !removeBtn) return;
+
+    function setFile(file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      onFile(file);
+      meta.classList.remove("hidden");
+      removeBtn.classList.remove("hidden");
+      validate();
+    }
+
+    zone.addEventListener("click", (e) => {
+      if (e.target.closest("button")) return;
+      input.click();
+    });
+
+    zone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      zone.classList.add("dragover");
+    });
+
+    zone.addEventListener("dragleave", () => {
+      zone.classList.remove("dragover");
+    });
+
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      zone.classList.remove("dragover");
+      const file = e.dataTransfer.files?.[0];
+      if (file) setFile(file);
+    });
+
+    input.addEventListener("change", () => {
+      const file = input.files?.[0];
+      if (file) {
+        onFile(file);
+        meta.classList.remove("hidden");
+        removeBtn.classList.remove("hidden");
+        validate();
+      }
+    });
+
+    removeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      input.value = "";
+      meta.classList.add("hidden");
+      removeBtn.classList.add("hidden");
+      onFile(null);
+      validate();
+    });
+  }
+
+  setupDropzone({
+    zoneId: "ninDrop",
+    inputId: "ninCard",
+    metaId: "ninMeta",
+    removeId: "ninRemove",
+    onFile: (file) => {
+      if (!file) {
+        $("ninFilename").textContent = "";
+        $("ninPreview").src = "";
+        return;
+      }
+      $("ninFilename").textContent = file.name;
+      $("ninPreview").src = URL.createObjectURL(file);
+    },
+  });
+
+  setupDropzone({
+    zoneId: "addrDrop",
+    inputId: "addressProof",
+    metaId: "addrMeta",
+    removeId: "addrRemove",
+    onFile: (file) => {
+      const wrap = $("addrImageWrap");
+      if (!file) {
+        $("addrFilename").textContent = "";
+        $("addrFiletype").textContent = "";
+        $("addrPreview").src = "";
+        wrap?.classList.add("hidden");
+        return;
+      }
+
+      $("addrFilename").textContent = file.name;
+      $("addrFiletype").textContent = file.type || "Document";
+
+      const isImage = file.type.startsWith("image/");
+      if (isImage) {
+        $("addrPreview").src = URL.createObjectURL(file);
+        wrap?.classList.remove("hidden");
+      } else {
+        wrap?.classList.add("hidden");
+      }
+    },
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // VALIDATION
+  // ─────────────────────────────────────────────────────────────────────────
+  const formMsg = $("formMsg");
+  const formMsgDesktop = $("formMsgDesktop");
+  const submitBtn = $("submitBtn");
+  const mobileSubmitBtn = $("mobileSubmitBtn");
+
+  const fields = {
+    fuelingStation: $("fuelingStation"),
+    ninNumber: $("ninNumber"),
+    ninCard: $("ninCard"),
+    addressProof: $("addressProof"),
+    profilePic: $("profilePic"),
+    bankName: $("bankName"),
+    accountNumber: $("accountNumber"),
+    accountName: $("accountName"),
+  };
+
+  Object.values(fields).forEach((el) => {
+    if (!el) return;
+    el.addEventListener("input", validate);
+    el.addEventListener("change", validate);
+  });
+
+  function validate() {
+    const stationOk = fields.fuelingStation?.value.trim().length >= 2;
+
+    const nin = fields.ninNumber?.value.trim() || "";
+    const ninOk = nin.length === 11 && isDigits(nin);
+
+    const ninCardOk = !!fields.ninCard?.files?.length;
+    const addrOk = !!fields.addressProof?.files?.length;
+    const profileOk = !!fields.profilePic?.files?.length;
+
+    const bankOk =
+      (fields.bankName?.value.trim().length || 0) >= 2 &&
+      (fields.accountName?.value.trim().length || 0) >= 2 &&
+      (fields.accountNumber?.value.trim().length || 0) === 10 &&
+      isDigits(fields.accountNumber?.value.trim() || "");
+
+    setOk($("okStation"), !!stationOk);
+    setOk($("okNin"), !!ninOk);
+    setOk($("okNinCard"), !!ninCardOk);
+    setOk($("okAddr"), !!addrOk);
+    setOk($("okProfile"), !!profileOk);
+    setOk($("okBank"), !!bankOk);
+
+    const allOk = stationOk && ninOk && ninCardOk && addrOk && profileOk && bankOk;
+
+    if (submitBtn) submitBtn.disabled = !allOk;
+    if (mobileSubmitBtn) mobileSubmitBtn.disabled = !allOk;
+
+    const msg = allOk
+      ? "All set — you can continue."
+      : "Complete all required fields to continue.";
+
+    if (formMsg) formMsg.textContent = msg;
+    if (formMsgDesktop) formMsgDesktop.textContent = msg;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // SUBMIT TO BACKEND
+  // ─────────────────────────────────────────────────────────────────────────
+  async function sendVerificationFormData(formData) {
+    const res = await fetch(`${API_BASE_URL}/api/riders/verification-registration`, {
+      method: "PUT",
+      credentials: "include",
+      body: formData,
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data?.message || `Backend error (${res.status})`);
+    }
+    return data;
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // SUCCESS MODAL
+  // ─────────────────────────────────────────────────────────────────────────
+  const modal = $("successModal");
+  const modalOkBtn = $("modalOkBtn");
+
+  function showSuccessModal() {
+    modal?.classList.remove("opacity-0", "pointer-events-none");
+    modal?.classList.add("opacity-100", "pointer-events-auto");
+    document.querySelector(".modal-content")?.classList.remove("scale-95");
+    document.querySelector(".modal-content")?.classList.add("scale-100");
+  }
+
+  function hideSuccessModal() {
+    modal?.classList.add("opacity-0", "pointer-events-none");
+    modal?.classList.remove("opacity-100", "pointer-events-auto");
+    document.querySelector(".modal-content")?.classList.add("scale-95");
+    document.querySelector(".modal-content")?.classList.remove("scale-100");
+  }
+
+  modalOkBtn?.addEventListener("click", async () => {
+    hideSuccessModal();
+    await initPageState();
+  });
+
+  modal?.addEventListener("click", (e) => {
+    if (e.target === modal) hideSuccessModal();
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // SUBMIT HANDLER
+  // ─────────────────────────────────────────────────────────────────────────
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (submitBtn?.disabled && mobileSubmitBtn?.disabled) return;
+
+    const msgEls = [formMsg, formMsgDesktop].filter(Boolean);
+    msgEls.forEach((el) => (el.textContent = "Saving your details..."));
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (mobileSubmitBtn) mobileSubmitBtn.disabled = true;
+
+    try {
+      const fd = new FormData();
+
+      fd.append("nin", fields.ninNumber.value.trim());
+      fd.append("fuelingStation", fields.fuelingStation.value.trim());
+      fd.append("bankAccountNumber", fields.accountNumber.value.trim());
+      fd.append("bankName", fields.bankName.value.trim());
+      fd.append("accountName", fields.accountName.value.trim());
+
+      const profileFile = fields.profilePic.files?.[0];
+      const ninFile = fields.ninCard.files?.[0];
+      const proofFile = fields.addressProof.files?.[0];
+
+      if (profileFile) fd.append("profilePicture", profileFile);
+      if (ninFile) fd.append("ninPicture", ninFile);
+      if (proofFile) fd.append("proofOfAddress", proofFile);
+
+      const submitResponse = await sendVerificationFormData(fd);
+
+      // if backend already returns updated rider and approved, redirect immediately
+      const meFromSubmit =
+        submitResponse?.rider ||
+        submitResponse?.user ||
+        submitResponse;
+
+      if (meFromSubmit && typeof meFromSubmit === "object") {
+        updateStoredAuthFromMe(meFromSubmit);
+        if (isApproved(meFromSubmit)) {
+          return redirectDashboard();
+        }
+      }
+
+      msgEls.forEach((el) => (el.textContent = ""));
+      showSuccessModal();
+      showAwaitingCard();
+    } catch (err) {
+      console.error(err);
+      const message = err?.message || "Failed to submit details. Please try again.";
+      msgEls.forEach((el) => (el.textContent = message));
+      validate();
+    }
+  }
+
+  $("kycForm")?.addEventListener("submit", handleSubmit);
+
+  mobileSubmitBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    $("kycForm")?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────────────────────────────────────
+  validate();
+  initPageState();
+</script>
+  </body>
+</html>

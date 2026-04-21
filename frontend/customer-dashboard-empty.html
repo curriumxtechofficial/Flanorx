@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx Customer Dashboard - Welcome</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+      }
+      .empty-state-pattern {
+        background-image: radial-gradient(#13ec5b 0.5px, transparent 0.5px);
+        background-size: 24px 24px;
+        opacity: 0.1;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <aside
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >dashboard</span
+            >
+            <span class="font-semibold text-sm">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+          <!-- Place Order (current page) — we highlight it with sidebar-active class -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="place-order.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >near_me</span
+            >
+            <span class="font-medium text-sm">Tracking</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-primary/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-primary uppercase mb-1">
+              New Member
+            </p>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+              Your journey starts here!
+            </p>
+            <button
+              class="w-full py-2 bg-primary text-slate-900 text-xs font-bold rounded-lg hover:bg-primary/90 transition-all"
+            >
+              Setup Profile
+            </button>
+          </div>
+        </div>
+      </aside>
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-64 transition-all"
+                placeholder="Search orders..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Alex Johnson
+                </p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-slate-300"
+                data-alt="User profile avatar silhouette"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDaed4n8eyHsDk2cz2h7hrpNJktiMHjPqIevrWQR5hdPnLxrvB2UbHIN4L89o7nYVyIcw2hWGEQCKPvVKUb5C7mbmU-qrte4EGzvr7cSeKjBgJvMDJ7JERZJUbrPTlOunDC6QH7l9MrSkuOcfhLZD6jpdcHYxEDCjue_6yOe1X4wbbb8vR0u8oGmqZnC8KsTLZT6YMOCpKnEpDGC1F7bK2FA0b4WQuMuJc6a62_L-Hw4F_3MJKP9LZkXht9g14VpWj-nncQHH9STm4&quot;);
+                "
+              ></div>
+            </div>
+          </div>
+        </header>
+        <div class="p-8 space-y-8">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2
+                class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+              >
+                Welcome to Flanorx
+              </h2>
+              <p class="text-slate-500 mt-1">
+                Ready to experience hassle-free fuel delivery?
+              </p>
+            </div>
+            <a
+              href="place-order.html"
+              class="bg-brand-yellow hover:scale-105 transition-transform px-4 lg:px-6 py-2 lg:py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-yellow-500/20 text-slate-900 font-bold text-sm lg:text-base"
+            >
+              <span class="material-symbols-outlined">bolt</span>
+              Quick Order
+            </a>
+          </div>
+          <div class="grid grid-cols-12 gap-6">
+            <div
+              class="col-span-12 lg:col-span-8 bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col md:flex-row min-h-[400px]"
+            >
+              <div
+                class="w-full md:w-1/2 p-8 flex flex-col justify-center relative"
+              >
+                <div class="absolute inset-0 empty-state-pattern"></div>
+                <div class="relative z-10">
+                  <div
+                    class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6"
+                  >
+                    <span class="material-symbols-outlined text-3xl font-bold"
+                      >waving_hand</span
+                    >
+                  </div>
+                  <h3
+                    class="text-3xl font-black text-slate-900 dark:text-white mb-4 leading-tight"
+                  >
+                    Your fuel is just a tap away
+                  </h3>
+                  <p class="text-slate-500 mb-8 leading-relaxed">
+                    Join thousands of smart drivers who never visit a gas
+                    station. Choose your fuel type, set your location, and our
+                    riders will handle the rest.
+                  </p>
+                  <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                      <span
+                        class="size-6 rounded-full bg-primary text-slate-900 text-[10px] font-black flex items-center justify-center"
+                        >1</span
+                      >
+                      <span class="text-sm font-bold">Pick your fuel type</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span
+                        class="size-6 rounded-full bg-primary text-slate-900 text-[10px] font-black flex items-center justify-center"
+                        >2</span
+                      >
+                      <span class="text-sm font-bold"
+                        >Set delivery location</span
+                      >
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span
+                        class="size-6 rounded-full bg-primary text-slate-900 text-[10px] font-black flex items-center justify-center"
+                        >3</span
+                      >
+                      <span class="text-sm font-bold"
+                        >Relax while we deliver</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="w-full md:w-1/2 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-center p-8 relative overflow-hidden"
+              >
+                <div
+                  class="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-20"
+                  style="
+                    background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBnIKP2whgjmbMGpeEs2Gs3Gz0OosPE0G2m8jqfyOFcgrZv8hmkw6vi0tYo8BIcrSBTmIKsPk8uFaLxirIupI-aHHasdACD2TsGJI9QOAypcqbgMshBGF69OR3VwmXsQlDboUuL44uc_yb-U66eOGl3YExt7-ZMRPRqsUr_v2KTe7cHEpU_8rSjBCwilT6MBZIAlZyQsubQ6cvUsdiVAKblr8G-8OXKbY6k3CU7ys8XW1IkV1nI91XMnkruS_l-yW3Bxa8D2zewvU8&quot;);
+                  "
+                ></div>
+                <div class="relative flex flex-col items-center">
+                  <div
+                    class="size-64 rounded-full bg-primary/20 flex items-center justify-center relative"
+                  >
+                    <div
+                      class="size-48 rounded-full bg-white dark:bg-slate-700 shadow-2xl flex items-center justify-center"
+                    >
+                      <span
+                        class="material-symbols-outlined text-8xl text-primary"
+                        >local_shipping</span
+                      >
+                    </div>
+                    <div
+                      class="absolute -bottom-4 -right-4 size-24 rounded-2xl bg-brand-yellow flex items-center justify-center shadow-lg rotate-12"
+                    >
+                      <span
+                        class="material-symbols-outlined text-4xl text-slate-900"
+                        >water_drop</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-12 lg:col-span-4 space-y-6">
+              <div
+                class="bg-slate-900 text-white rounded-3xl p-6 relative overflow-hidden shadow-xl min-h-[180px] flex flex-col justify-between"
+              >
+                <div
+                  class="absolute -right-10 -top-10 size-40 bg-white/5 rounded-full blur-3xl"
+                ></div>
+                <div class="relative z-10">
+                  <h3
+                    class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-4"
+                  >
+                    Total Spent (Monthly)
+                  </h3>
+                  <p class="text-4xl font-black mb-2 opacity-30">$0.00</p>
+                  <p class="text-primary text-xs font-bold">
+                    Make your first purchase
+                  </p>
+                </div>
+                <div
+                  class="relative z-10 flex items-center justify-between text-sm mt-6 pt-4 border-t border-slate-800"
+                >
+                  <div>
+                    <p class="text-slate-500 text-[10px] uppercase font-bold">
+                      Loyalty Points
+                    </p>
+                    <p class="font-bold text-slate-600">0 pts</p>
+                  </div>
+                  <div class="h-8 w-px bg-slate-800"></div>
+                  <div>
+                    <p class="text-slate-500 text-[10px] uppercase font-bold">
+                      Total Fuel
+                    </p>
+                    <p class="font-bold text-slate-600">0 Liters</p>
+                  </div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <button
+                  class="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-primary transition-all text-left shadow-sm"
+                >
+                  <div
+                    class="size-12 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
+                  >
+                    <span class="material-symbols-outlined font-bold"
+                      >local_gas_station</span
+                    >
+                  </div>
+                  <h4 class="font-bold text-sm">Petrol</h4>
+                  <p class="text-xs text-slate-400">View Prices</p>
+                </button>
+                <button
+                  class="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-primary transition-all text-left shadow-sm"
+                >
+                  <div
+                    class="size-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
+                  >
+                    <span class="material-symbols-outlined font-bold"
+                      >ev_station</span
+                    >
+                  </div>
+                  <h4 class="font-bold text-sm">Diesel</h4>
+                  <p class="text-xs text-slate-400">View Prices</p>
+                </button>
+              </div>
+            </div>
+            <div
+              class="col-span-12 bg-white dark:bg-slate-900 rounded-3xl p-12 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center"
+            >
+              <div
+                class="size-24 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-6 relative"
+              >
+                <span class="material-symbols-outlined text-4xl text-slate-300"
+                  >receipt_long</span
+                >
+                <span
+                  class="material-symbols-outlined absolute -bottom-1 -right-1 text-slate-300 bg-white dark:bg-slate-900 rounded-full text-2xl"
+                  >history</span
+                >
+              </div>
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                No orders yet
+              </h3>
+              <p class="text-slate-500 max-w-sm mb-8">
+                When you start ordering fuel, your transaction history and
+                receipts will appear here.
+              </p>
+              <button
+                class="text-sm font-bold text-primary flex items-center gap-2 hover:gap-3 transition-all"
+              >
+                How it works
+                <span class="material-symbols-outlined text-sm"
+                  >arrow_forward</span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

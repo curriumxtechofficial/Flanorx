@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Users Management · Flanorx Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 9999px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: inline-block;
+      }
+      .status-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        color: #13ec5b;
+      }
+      .status-inactive {
+        background-color: #f1f5f9;
+        color: #6b7280;
+      }
+      .dark .status-inactive {
+        background-color: #1f2937;
+        color: #6b7280;
+      }
+
+      /* Mobile bottom navigation */
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+        }
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+        #sidebar {
+          display: none;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          display: flex !important;
+        }
+        main {
+          padding-bottom: 0;
+        }
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+      .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        transition: all 0.2s;
+        flex: 1;
+        max-width: 80px;
+        padding: 4px 0;
+        margin: 0 2px;
+      }
+      .bottom-nav-item span:first-child {
+        font-size: 24px;
+      }
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar (same structure) -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 hidden lg:flex"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="admin-dashboard.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <a
+            href="orders.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >shopping_cart</span
+            >
+            <span class="font-medium text-sm">Orders</span>
+          </a>
+          <a
+            href="riders.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >motorcycle</span
+            >
+            <span class="font-medium text-sm">Riders</span>
+          </a>
+          <a
+            href="users.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+          >
+            <span class="material-symbols-outlined text-primary">people</span>
+            <span class="font-semibold text-sm">Users</span>
+          </a>
+          <a
+            href="settings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="size-10 rounded-full bg-primary/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >admin_panel_settings</span
+                >
+              </div>
+              <div>
+                <p class="text-sm font-bold">Admin User</p>
+                <p class="text-xs text-slate-500">admin@flanorx.com</p>
+              </div>
+            </div>
+            <button
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined text-sm">logout</span>
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Sticky Header -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10 shrink-0"
+        >
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search users..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Admin
+                </p>
+                <p class="text-xs text-slate-500">Operations</p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >admin_panel_settings</span
+                >
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Users Content -->
+        <div class="flex-1 overflow-y-auto p-4 lg:p-8">
+          <div class="space-y-6">
+            <!-- Page Header -->
+            <div
+              class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h2
+                  class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+                >
+                  Users Management
+                </h2>
+                <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                  Manage customer accounts and platform users
+                </p>
+              </div>
+              <button
+                class="bg-primary hover:bg-primary/90 px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl flex items-center gap-2 text-slate-900 font-bold text-sm transition-all shadow-lg shadow-primary/20"
+              >
+                <span class="material-symbols-outlined">person_add</span>
+                Add New User
+              </button>
+            </div>
+
+            <!-- User Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <p class="text-xs font-bold text-slate-400 uppercase mb-1">
+                  Total Users
+                </p>
+                <p class="text-3xl font-black">12,439</p>
+                <p class="text-xs text-primary mt-2">↑ +124 this week</p>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <p class="text-xs font-bold text-slate-400 uppercase mb-1">
+                  Active Users
+                </p>
+                <p class="text-3xl font-black text-primary">8,847</p>
+                <p class="text-xs text-slate-500 mt-2">Last 30 days</p>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <p class="text-xs font-bold text-slate-400 uppercase mb-1">
+                  New This Month
+                </p>
+                <p class="text-3xl font-black text-slate-900 dark:text-white">
+                  342
+                </p>
+                <p class="text-xs text-primary mt-2">↑ +18% growth</p>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <p class="text-xs font-bold text-slate-400 uppercase mb-1">
+                  Top Ordering
+                </p>
+                <p class="text-3xl font-black text-yellow-500">847</p>
+                <p class="text-xs text-slate-500 mt-2">Users with 10+ orders</p>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div
+              class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="relative">
+                  <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"
+                    >search</span
+                  >
+                  <input
+                    type="text"
+                    placeholder="Search by name, email..."
+                    class="w-full pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <select
+                  class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                >
+                  <option>All Statuses</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                </select>
+                <select
+                  class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                >
+                  <option>Sort by</option>
+                  <option>Newest</option>
+                  <option>Most Orders</option>
+                  <option>Oldest</option>
+                </select>
+                <button
+                  class="bg-primary/10 hover:bg-primary/20 text-primary font-bold px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-all"
+                >
+                  <span class="material-symbols-outlined">download</span>
+                  Export List
+                </button>
+              </div>
+            </div>
+
+            <!-- Desktop Table -->
+            <div
+              class="desktop-table bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm w-full"
+            >
+              <div class="w-full">
+                <div class="overflow-x-auto">
+                  <table class="w-full table-auto">
+                    <thead
+                      class="border-b border-slate-200 dark:border-slate-800"
+                    >
+                      <tr
+                        class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+                      >
+                        <th class="py-4 pl-6 pr-2 text-left">User</th>
+                        <th class="py-4 px-2 text-left">Email</th>
+                        <th class="py-4 px-2 text-left">Phone</th>
+                        <th class="py-4 px-2 text-left">Total Orders</th>
+                        <th class="py-4 px-2 text-left">Joined</th>
+                        <th class="py-4 px-2 text-left">Status</th>
+                        <th class="py-4 pr-6 pl-2 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      class="divide-y divide-slate-100 dark:divide-slate-800"
+                    >
+                      <tr
+                        class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                      >
+                        <td class="py-4 pl-6 pr-2 whitespace-nowrap">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="size-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0"
+                            >
+                              <span
+                                class="material-symbols-outlined text-primary"
+                                >person</span
+                              >
+                            </div>
+                            <span class="font-bold text-sm">John Doe</span>
+                          </div>
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          john.doe@email.com
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          +234 801 234 5678
+                        </td>
+                        <td class="py-4 px-2 font-medium whitespace-nowrap">
+                          47
+                        </td>
+                        <td class="py-4 px-2 text-slate-500 whitespace-nowrap">
+                          Jan 2023
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td class="py-4 pr-6 pl-2 text-right whitespace-nowrap">
+                          <div class="flex items-center justify-end gap-2">
+                            <button
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                              title="Edit"
+                            >
+                              <span
+                                class="material-symbols-outlined text-slate-500"
+                                >edit</span
+                              >
+                            </button>
+                            <button
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                              title="Delete"
+                            >
+                              <span
+                                class="material-symbols-outlined text-red-500"
+                                >delete</span
+                              >
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                      >
+                        <td class="py-4 pl-6 pr-2 whitespace-nowrap">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="size-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0"
+                            >
+                              <span
+                                class="material-symbols-outlined text-primary"
+                                >person</span
+                              >
+                            </div>
+                            <span class="font-bold text-sm">Sarah Smith</span>
+                          </div>
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          sarah.smith@email.com
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          +234 802 345 6789
+                        </td>
+                        <td class="py-4 px-2 font-medium whitespace-nowrap">
+                          32
+                        </td>
+                        <td class="py-4 px-2 text-slate-500 whitespace-nowrap">
+                          Mar 2023
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td class="py-4 pr-6 pl-2 text-right whitespace-nowrap">
+                          <div class="flex items-center justify-end gap-2">
+                            <button
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            >
+                              <span
+                                class="material-symbols-outlined text-slate-500"
+                                >edit</span
+                              >
+                            </button>
+                            <button
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            >
+                              <span
+                                class="material-symbols-outlined text-red-500"
+                                >delete</span
+                              >
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                      >
+                        <td class="py-4 pl-6 pr-2 whitespace-nowrap">
+                          <div class="flex items-center gap-3">
+                            <div
+                              class="size-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0"
+                            >
+                              <span
+                                class="material-symbols-outlined text-slate-500"
+                                >person</span
+                              >
+                            </div>
+                            <span class="font-bold text-sm">Mike Johnson</span>
+                          </div>
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          mike.j@email.com
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          +234 803 456 7890
+                        </td>
+                        <td class="py-4 px-2 font-medium whitespace-nowrap">
+                          8
+                        </td>
+                        <td class="py-4 px-2 text-slate-500 whitespace-nowrap">
+                          Nov 2023
+                        </td>
+                        <td class="py-4 px-2 whitespace-nowrap">
+                          <span class="status-badge status-inactive"
+                            >Inactive</span
+                          >
+                        </td>
+                        <td class="py-4 pr-6 pl-2 text-right whitespace-nowrap">
+                          <div class="flex items-center justify-end gap-2">
+                            <button
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            >
+                              <span
+                                class="material-symbols-outlined text-slate-500"
+                                >edit</span
+                              >
+                            </button>
+                            <button
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            >
+                              <span
+                                class="material-symbols-outlined text-red-500"
+                                >delete</span
+                              >
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-800"
+              >
+                <p class="text-sm text-slate-500">
+                  Showing 1-3 of 12,439 users
+                </p>
+                <div class="flex gap-2">
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    class="px-3 py-1 bg-primary text-slate-900 rounded-lg text-sm font-bold"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-cards space-y-4">
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <div class="flex items-start gap-3 mb-3">
+                  <div
+                    class="size-12 rounded-full bg-primary/20 flex items-center justify-center"
+                  >
+                    <span
+                      class="material-symbols-outlined text-primary text-2xl"
+                      >person</span
+                    >
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between">
+                      <p class="font-bold">John Doe</p>
+                      <span class="status-badge status-active">Active</span>
+                    </div>
+                    <p class="text-xs text-slate-500">john.doe@email.com</p>
+                    <p class="text-xs text-slate-500">+234 801 234 5678</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                  <div><span class="text-slate-400">Orders:</span> 47</div>
+                  <div>
+                    <span class="text-slate-400">Joined:</span> Jan 2023
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800"
+                >
+                  <button class="text-primary text-sm font-bold">Edit</button>
+                  <button class="text-red-500 text-sm font-bold">Delete</button>
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <div class="flex items-start gap-3 mb-3">
+                  <div
+                    class="size-12 rounded-full bg-primary/20 flex items-center justify-center"
+                  >
+                    <span
+                      class="material-symbols-outlined text-primary text-2xl"
+                      >person</span
+                    >
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between">
+                      <p class="font-bold">Sarah Smith</p>
+                      <span class="status-badge status-active">Active</span>
+                    </div>
+                    <p class="text-xs text-slate-500">sarah.smith@email.com</p>
+                    <p class="text-xs text-slate-500">+234 802 345 6789</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                  <div><span class="text-slate-400">Orders:</span> 32</div>
+                  <div>
+                    <span class="text-slate-400">Joined:</span> Mar 2023
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800"
+                >
+                  <button class="text-primary text-sm font-bold">Edit</button>
+                  <button class="text-red-500 text-sm font-bold">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+      <a href="admin-dashboard.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Home</span>
+      </a>
+      <a href="orders.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span>Orders</span>
+      </a>
+      <a href="riders.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">motorcycle</span>
+        <span>Riders</span>
+      </a>
+      <a href="users.html" class="bottom-nav-item active">
+        <span class="material-symbols-outlined">people</span>
+        <span>Users</span>
+      </a>
+      <a href="settings.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <script>
+      (function () {
+        const currentPage =
+          window.location.pathname.split("/").pop() || "users.html";
+        document.querySelectorAll("#sidebar nav a").forEach((link) => {
+          link.classList.remove("sidebar-active");
+          if (link.getAttribute("href") === currentPage)
+            link.classList.add("sidebar-active");
+        });
+        document.querySelectorAll(".bottom-nav-item").forEach((item) => {
+          item.classList.remove("active");
+          if (item.getAttribute("href") === currentPage)
+            item.classList.add("active");
+        });
+      })();
+    </script>
+  </body>
+</html>

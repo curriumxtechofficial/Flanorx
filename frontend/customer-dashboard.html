@@ -1,0 +1,1322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx Customer Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+
+      .glass-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+      }
+
+      #mapFrame {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      /* Loader */
+      #pageLoader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f6f8f6;
+        transition:
+          opacity 0.45s ease,
+          visibility 0.45s ease;
+      }
+
+      .dark #pageLoader {
+        background: #102216;
+      }
+
+      #pageLoader.hidden-loader {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .loader-logo {
+        width: 120px;
+        max-width: 40vw;
+        height: auto;
+        animation: logoPulse 1.5s ease-in-out infinite;
+        transform-origin: center;
+        will-change: transform, opacity;
+      }
+
+      @keyframes logoPulse {
+        0% {
+          transform: scale(0.92);
+          opacity: 0.85;
+        }
+        50% {
+          transform: scale(1.12);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.92);
+          opacity: 0.85;
+        }
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+        }
+
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+
+        #sidebar {
+          display: none;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          display: flex !important;
+        }
+
+        main {
+          padding-bottom: 0;
+        }
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+
+      .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        transition: all 0.2s;
+        flex: 1;
+        max-width: 80px;
+        padding: 4px 0;
+        margin: 0 2px;
+      }
+
+      .bottom-nav-item span:first-child {
+        font-size: 24px;
+      }
+
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+
+      .dark .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.15);
+      }
+
+      @media (max-width: 1023px) {
+        #recentDesktopTable {
+          display: none !important;
+        }
+
+        #recentMobileCards {
+          display: block !important;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #recentMobileCards {
+          display: none !important;
+        }
+
+        #recentDesktopTable {
+          display: block !important;
+        }
+      }
+
+      .scrollable-recent {
+        max-height: 320px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+      }
+
+      .scrollable-recent::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .scrollable-recent::-webkit-scrollbar-thumb {
+        background: #cbd5e0;
+        border-radius: 4px;
+      }
+
+      .dark .scrollable-recent::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <!-- Loader Overlay -->
+    <div id="pageLoader">
+      <img src="flanorx.png" alt="Flanorx Loading Logo" class="loader-logo" />
+    </div>
+
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar (desktop only now) -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 hidden lg:flex"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >dashboard</span
+            >
+            <span class="font-semibold text-sm">Dashboard</span>
+          </a>
+          <a
+            href="customer-order-history.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+          <a
+            href="place-order.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <a
+            href="tracking.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >near_me</span
+            >
+            <span class="font-medium text-sm">Tracking</span>
+          </a>
+          <a
+            href="customer-settings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              id="logoutBtn"
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10 shrink-0"
+        >
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search orders, invoices..."
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 lg:gap-6">
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p
+                  id="userNameTop"
+                  class="text-sm font-bold text-slate-900 dark:text-white"
+                >
+                  Customer
+                </p>
+              </div>
+              <a href="customer-profile.html" title="User Profile">
+                <div
+                  id="userAvatar"
+                  class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+                  style="background-image: url(&quot;&quot;)"
+                  title="User"
+                ></div>
+              </a>
+            </div>
+          </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 lg:p-8">
+          <div class="space-y-8">
+            <div
+              class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 shrink-0"
+            >
+              <div>
+                <h2
+                  class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+                >
+                  Good morning, <span id="userNameHero">Customer</span>
+                </h2>
+                <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                  Welcome to Flanorx.
+                </p>
+              </div>
+              <a
+                href="place-order.html"
+                class="bg-brand-yellow hover:scale-105 transition-transform px-4 lg:px-6 py-2 lg:py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-yellow-500/20 text-slate-900 font-bold text-sm lg:text-base"
+              >
+                <span class="material-symbols-outlined">bolt</span> Quick Order
+              </a>
+            </div>
+
+            <div class="grid grid-cols-12 gap-6">
+              <div
+                class="col-span-12 lg:col-span-8 bg-white dark:bg-slate-900 rounded-3xl p-4 lg:p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span
+                      id="activeDot"
+                      class="size-2 bg-slate-300 rounded-full"
+                    ></span>
+                    Active Order
+                  </h3>
+                  <span
+                    id="activeOrderId"
+                    class="text-xs font-bold text-slate-400"
+                    >ID: --</span
+                  >
+                </div>
+
+                <div id="noActiveUI" class="hidden">
+                  <div
+                    class="rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 p-6 bg-slate-50/60 dark:bg-slate-800/30"
+                  >
+                    <div class="flex items-start gap-4">
+                      <div
+                        class="size-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0"
+                      >
+                        <span class="material-symbols-outlined"
+                          >local_gas_station</span
+                        >
+                      </div>
+                      <div class="flex-1">
+                        <p
+                          class="text-base font-extrabold text-slate-900 dark:text-white"
+                        >
+                          No active order right now
+                        </p>
+                        <p class="text-sm text-slate-500 mt-1">
+                          Place a new order to start delivery tracking and see
+                          your rider on the map.
+                        </p>
+                        <div class="mt-5 flex flex-col sm:flex-row gap-3">
+                          <a
+                            href="place-order.html"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-slate-900 font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all"
+                          >
+                            <span class="material-symbols-outlined">bolt</span>
+                            Place Order
+                          </a>
+                          <a
+                            href="customer-order-history.html"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-white dark:hover:bg-slate-800 transition-all"
+                          >
+                            <span class="material-symbols-outlined"
+                              >history</span
+                            >
+                            View History
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="activeUI" class="hidden">
+                  <div class="w-full space-y-6">
+                    <div class="w-full">
+                      <div class="flex justify-between items-end mb-2">
+                        <p
+                          id="activeOrderStatus"
+                          class="text-sm font-bold text-slate-500 uppercase tracking-wider"
+                        >
+                          --
+                        </p>
+                        <p
+                          class="text-2xl font-black text-slate-900 dark:text-white"
+                        >
+                          <span id="etaValue">--</span>
+                          <span class="text-sm font-medium text-slate-400"
+                            >away</span
+                          >
+                        </p>
+                      </div>
+
+                      <div
+                        class="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex"
+                      >
+                        <div
+                          id="etaProgress"
+                          class="h-full bg-primary rounded-full"
+                          style="width: 0%"
+                        ></div>
+                      </div>
+
+                      <div
+                        class="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                      >
+                        <span>Order Placed</span>
+                        <span class="text-primary">Out for Delivery</span>
+                        <span>Arrived</span>
+                      </div>
+                    </div>
+
+                    <div
+                      class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100 dark:border-slate-800"
+                    >
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center"
+                        >
+                          <span class="material-symbols-outlined"
+                            >oil_barrel</span
+                          >
+                        </div>
+                        <div>
+                          <p
+                            class="text-[10px] font-bold text-slate-400 uppercase"
+                          >
+                            Fuel Type
+                          </p>
+                          <p id="activeOrderFuel" class="text-sm font-bold">
+                            --
+                          </p>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center"
+                        >
+                          <span class="material-symbols-outlined"
+                            >payments</span
+                          >
+                        </div>
+                        <div>
+                          <p
+                            class="text-[10px] font-bold text-slate-400 uppercase"
+                          >
+                            Amount
+                          </p>
+                          <p id="activeOrderAmount" class="text-sm font-bold">
+                            --
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                      <a
+                        href="tracking.html"
+                        id="trackLiveRiderBtn"
+                        class="flex-1 py-3 bg-primary text-slate-900 font-bold rounded-xl text-sm shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all text-center"
+                      >
+                        Track Live Rider
+                      </a>
+
+                      <button
+                        id="confirmDeliveryBtn"
+                        class="hidden flex-1 py-3 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        type="button"
+                      >
+                        Confirm Delivery
+                      </button>
+
+                      <button
+                        id="callRiderBtn"
+                        class="px-4 py-3 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        title="Call Rider"
+                        type="button"
+                        disabled
+                      >
+                        <span class="material-symbols-outlined text-slate-600"
+                          >call</span
+                        >
+                      </button>
+                    </div>
+
+                    <p
+                      id="activeHint"
+                      class="text-xs text-slate-500 dark:text-slate-400"
+                    ></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-span-12 lg:col-span-4 space-y-6">
+                <div
+                  class="bg-slate-900 text-white rounded-3xl p-6 relative overflow-hidden shadow-xl"
+                >
+                  <div
+                    class="absolute -right-10 -top-10 size-40 bg-primary/20 rounded-full blur-3xl"
+                  ></div>
+                  <div class="relative z-10">
+                    <h3
+                      id="totalSpentTitle"
+                      class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4"
+                    >
+                      Total Spent (This Month)
+                    </h3>
+                    <p id="totalSpentValue" class="text-4xl font-black mb-6">
+                      ₦0
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                      <div class="h-8 w-px bg-slate-800"></div>
+                      <div>
+                        <p
+                          class="text-slate-500 text-[10px] uppercase font-bold"
+                        >
+                          Total Fuel
+                        </p>
+                        <p id="totalFuelLiters" class="font-bold">0 Liters</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <button
+                    class="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-primary transition-all text-left shadow-sm"
+                    type="button"
+                  >
+                    <div
+                      class="size-12 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
+                    >
+                      <span class="material-symbols-outlined font-bold"
+                        >local_gas_station</span
+                      >
+                    </div>
+                    <h4 class="font-bold text-sm">Petrol</h4>
+                    <p class="text-xs text-slate-400">₦850 / L</p>
+                  </button>
+                  <button
+                    class="group bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 hover:border-primary transition-all text-left shadow-sm"
+                    type="button"
+                  >
+                    <div
+                      class="size-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
+                    >
+                      <span class="material-symbols-outlined font-bold"
+                        >ev_station</span
+                      >
+                    </div>
+                    <h4 class="font-bold text-sm">Diesel</h4>
+                    <p class="text-xs text-slate-400">₦1,320 / L</p>
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="col-span-12 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-bold">Recent Transactions</h3>
+                  <a
+                    href="customer-order-history.html"
+                    class="text-xs font-bold text-primary hover:underline underline-offset-4"
+                    >View All Activity</a
+                  >
+                </div>
+
+                <div id="recentDesktopTable" class="overflow-x-auto">
+                  <table class="w-full text-left">
+                    <thead
+                      class="border-b border-slate-50 dark:border-slate-800"
+                    >
+                      <tr
+                        class="text-[10px] font-bold text-slate-400 uppercase tracking-widest"
+                      >
+                        <th class="pb-4 px-2">Order ID</th>
+                        <th class="pb-4 px-2">Date</th>
+                        <th class="pb-4 px-2">Fuel Type</th>
+                        <th class="pb-4 px-2">Amount</th>
+                        <th class="pb-4 px-2 text-right">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody
+                      id="recentTransactionsTbody"
+                      class="divide-y divide-slate-50 dark:divide-slate-800"
+                    >
+                      <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-400">
+                          Loading transactions...
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div id="recentMobileCards" class="scrollable-recent">
+                  <div id="recentMobileCardsContainer" class="space-y-3">
+                    <div class="text-center text-slate-400 py-4">
+                      Loading transactions...
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="mobile-bottom-nav">
+      <a href="#" class="bottom-nav-item" id="bottomHome"
+        ><span class="material-symbols-outlined">dashboard</span
+        ><span>Home</span></a
+      >
+      <a
+        href="customer-order-history.html"
+        class="bottom-nav-item"
+        id="bottomHistory"
+        ><span class="material-symbols-outlined">history</span
+        ><span>History</span></a
+      >
+      <a href="place-order.html" class="bottom-nav-item" id="bottomPlaceOrder"
+        ><span class="material-symbols-outlined">local_gas_station</span
+        ><span>Order</span></a
+      >
+      <a href="tracking.html" class="bottom-nav-item" id="bottomTracking"
+        ><span class="material-symbols-outlined">near_me</span
+        ><span>Track</span></a
+      >
+      <a
+        href="customer-settings.html"
+        class="bottom-nav-item"
+        id="bottomSettings"
+        ><span class="material-symbols-outlined">settings</span
+        ><span>Settings</span></a
+      >
+    </nav>
+
+    <script>
+      const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+          ? "http://127.0.0.1:8000"
+          : "https://flanorx-api.onrender.com";
+
+      const pageLoader = document.getElementById("pageLoader");
+
+      function hidePageLoader() {
+        if (!pageLoader) return;
+        pageLoader.classList.add("hidden-loader");
+      }
+
+      function monthName(m) {
+        const names = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        return names[m - 1] || "Month";
+      }
+
+      function formatNaira(n) {
+        const num = Number(n || 0);
+        return "₦" + num.toLocaleString("en-NG");
+      }
+
+      function formatDate(iso) {
+        if (!iso) return "-";
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return "-";
+        return d.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      }
+
+      function statusBadgeClass(status) {
+        const s = (status || "").toLowerCase();
+        if (s === "completed")
+          return "bg-primary/10 text-emerald-600 dark:text-primary";
+        if (s === "processing")
+          return "bg-blue-500/10 text-blue-600 dark:text-blue-400";
+        if (s === "pending")
+          return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-300";
+        if (s === "cancelled")
+          return "bg-slate-100 dark:bg-slate-800 text-slate-500";
+        return "bg-slate-100 dark:bg-slate-800 text-slate-500";
+      }
+
+      function prettyStatus(status) {
+        const map = {
+          pending: "Pending",
+          processing: "Processing",
+          completed: "Completed",
+          cancelled: "Cancelled",
+          accepted: "Accepted",
+          picked_up: "Picked Up",
+          in_transit: "In Transit",
+          delivered: "Delivered",
+          confirmed: "Confirmed",
+        };
+        return map[status] || status || "--";
+      }
+
+      function fuelLabel(fuelType) {
+        const map = {
+          "Petrol (95 Octane)": "Petrol (95 Octane)",
+          Diesel: "Diesel",
+        };
+        return map[fuelType] || fuelType || "--";
+      }
+
+      function computeProgress(data) {
+        const deliveryStatus = (data?.deliveryStatus || "").toLowerCase();
+
+        if (deliveryStatus === "confirmed" || data?.status === "completed")
+          return 100;
+        if (deliveryStatus === "delivered") return 95;
+        if (deliveryStatus === "in_transit") return 75;
+        if (deliveryStatus === "picked_up") return 55;
+        if (deliveryStatus === "accepted") return 35;
+        if (deliveryStatus === "pending") return 15;
+
+        if (typeof data?.progressPercent === "number") {
+          return Math.min(100, Math.max(0, data.progressPercent));
+        }
+
+        const eta = Number(data?.etaMinutes);
+        if (Number.isNaN(eta)) return 35;
+        if (eta <= 2) return 95;
+        if (eta <= 5) return 80;
+        if (eta <= 10) return 65;
+        if (eta <= 20) return 45;
+        return 30;
+      }
+
+      function getHintText(data) {
+        const deliveryStatus = (data?.deliveryStatus || "").toLowerCase();
+
+        if (deliveryStatus === "delivered") {
+          return "Your rider marked this order as delivered. Please confirm receipt to complete the order.";
+        }
+
+        if (deliveryStatus === "confirmed" || data?.status === "completed") {
+          return "This delivery has been completed successfully.";
+        }
+
+        const etaMinutes = Number(data?.etaMinutes);
+        const distanceKm = Number(data?.distanceKm);
+        const bits = [];
+
+        if (!Number.isNaN(distanceKm))
+          bits.push(`Distance: ${distanceKm.toFixed(1)} km`);
+        if (!Number.isNaN(etaMinutes)) bits.push(`ETA: ${etaMinutes} mins`);
+
+        return bits.join(" • ");
+      }
+
+      function setUserInfo() {
+        try {
+          const raw = localStorage.getItem("flanorx_auth");
+          if (!raw) return;
+
+          const user = JSON.parse(raw);
+          const fullName = user?.name || user?.email || "Customer";
+
+          const topName = document.getElementById("userNameTop");
+          const heroName = document.getElementById("userNameHero");
+          const avatar = document.getElementById("userAvatar");
+
+          if (topName) topName.textContent = fullName;
+          if (heroName)
+            heroName.textContent = fullName.split(" ")[0] || fullName;
+
+          if (avatar && user?.profile) {
+            avatar.style.backgroundImage = `url('${user.profile}')`;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function logout() {
+        try {
+          await fetch(`${API_BASE_URL}/api/users/logout`, {
+            method: "POST",
+            credentials: "include",
+          });
+        } catch (err) {
+          console.error(err);
+        }
+
+        localStorage.removeItem("flanorx_auth");
+        window.location.href = "login.html";
+      }
+
+      async function loadTotalSpentAndFuel(month, year) {
+        const titleEl = document.getElementById("totalSpentTitle");
+        const valueEl = document.getElementById("totalSpentValue");
+        const fuelEl = document.getElementById("totalFuelLiters");
+
+        try {
+          const res = await fetch(
+            `${API_BASE_URL}/api/order/total-spent?month=${month}&year=${year}`,
+            { credentials: "include" },
+          );
+
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data?.message || "Failed");
+
+          if (valueEl) valueEl.textContent = formatNaira(data.totalSpent || 0);
+          if (fuelEl)
+            fuelEl.textContent = `${(data.totalLiters || 0).toLocaleString()} Liters`;
+          if (titleEl)
+            titleEl.textContent = `Total Spent (${monthName(month)} ${year})`;
+        } catch (err) {
+          console.error(err);
+          if (valueEl) valueEl.textContent = "₦0";
+          if (fuelEl) fuelEl.textContent = "0 Liters";
+          if (titleEl) titleEl.textContent = "Total Spent (Unavailable)";
+        }
+      }
+
+      async function loadRecentTransactions() {
+        const desktopTbody = document.getElementById("recentTransactionsTbody");
+        const mobileContainer = document.getElementById(
+          "recentMobileCardsContainer",
+        );
+
+        if (desktopTbody) {
+          desktopTbody.innerHTML = `
+            <tr>
+              <td colspan="5" class="py-8 text-center text-slate-400">
+                Loading transactions...
+              </td>
+            </tr>
+          `;
+        }
+
+        if (mobileContainer) {
+          mobileContainer.innerHTML = `
+            <div class="text-center text-slate-400 py-4">
+              Loading transactions...
+            </div>
+          `;
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/order/my`, {
+            credentials: "include",
+          });
+
+          if (res.status === 401) {
+            localStorage.removeItem("flanorx_auth");
+            window.location.href = "login.html";
+            return;
+          }
+
+          const orders = await res.json().catch(() => []);
+
+          if (!Array.isArray(orders)) {
+            if (desktopTbody) {
+              desktopTbody.innerHTML = `
+                <tr>
+                  <td colspan="5" class="py-8 text-center text-slate-400">
+                    No orders found
+                  </td>
+                </tr>
+              `;
+            }
+            if (mobileContainer) {
+              mobileContainer.innerHTML = `
+                <div class="text-center text-slate-400 py-4">
+                  No transactions yet
+                </div>
+              `;
+            }
+            return;
+          }
+
+          const sorted = orders.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+          );
+          const top3 = sorted.slice(0, 3);
+
+          if (top3.length === 0) {
+            if (desktopTbody) {
+              desktopTbody.innerHTML = `
+                <tr>
+                  <td colspan="5" class="py-8 text-center text-slate-400">
+                    No recent transactions
+                  </td>
+                </tr>
+              `;
+            }
+            if (mobileContainer) {
+              mobileContainer.innerHTML = `
+                <div class="text-center text-slate-400 py-4">
+                  No transactions yet
+                </div>
+              `;
+            }
+            return;
+          }
+
+          if (desktopTbody) {
+            let html = "";
+
+            top3.forEach((o) => {
+              const fuel = o.fuelType || "-";
+              const fuelClass = fuel.includes("Diesel")
+                ? "bg-blue-500"
+                : "bg-orange-500";
+              const statusClass = statusBadgeClass(o.status);
+
+              html += `
+                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors group">
+                  <td class="py-4 px-2 font-bold text-sm">#${o.orderId || o._id?.slice(-6) || "—"}</td>
+                  <td class="py-4 px-2 text-sm text-slate-500">${formatDate(o.createdAt || o.date)}</td>
+                  <td class="py-4 px-2">
+                    <div class="flex items-center gap-2">
+                      <div class="size-2 rounded-full ${fuelClass}"></div>
+                      <span class="text-sm font-medium">${fuel}</span>
+                    </div>
+                  </td>
+                  <td class="py-4 px-2 text-sm font-bold">${formatNaira(o.totalAmount || 0)}</td>
+                  <td class="py-4 px-2 text-right">
+                    <span class="px-2 py-1 rounded ${statusClass} text-[10px] font-bold uppercase">${o.status || "—"}</span>
+                  </td>
+                </tr>
+              `;
+            });
+
+            desktopTbody.innerHTML = html;
+          }
+
+          if (mobileContainer) {
+            let cardsHtml = "";
+
+            top3.forEach((o) => {
+              const fuel = o.fuelType || "-";
+              const fuelColor = fuel.includes("Diesel")
+                ? "bg-blue-500"
+                : "bg-orange-500";
+              const statusClass = statusBadgeClass(o.status);
+
+              cardsHtml += `
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                  <div class="flex items-start justify-between mb-2">
+                    <div>
+                      <p class="text-xs font-bold text-slate-400">ORDER #${o.orderId || o._id?.slice(-6) || "—"}</p>
+                      <p class="text-sm font-bold mt-1">${fuel} · ${Number(o.quantity || 0)}L</p>
+                    </div>
+                    <span class="px-2 py-1 rounded ${statusClass} text-[10px] font-bold uppercase">${o.status || "—"}</span>
+                  </div>
+                  <div class="flex items-center justify-between mt-3">
+                    <div class="flex items-center gap-2">
+                      <div class="size-2 rounded-full ${fuelColor}"></div>
+                      <span class="text-xs text-slate-500">${formatDate(o.createdAt || o.date)}</span>
+                    </div>
+                    <span class="font-bold text-sm">${formatNaira(o.totalAmount || 0)}</span>
+                  </div>
+                </div>
+              `;
+            });
+
+            mobileContainer.innerHTML = cardsHtml;
+          }
+        } catch (err) {
+          console.error(err);
+
+          if (desktopTbody) {
+            desktopTbody.innerHTML = `
+              <tr>
+                <td colspan="5" class="py-8 text-center text-red-400">
+                  Failed to load
+                </td>
+              </tr>
+            `;
+          }
+
+          if (mobileContainer) {
+            mobileContainer.innerHTML = `
+              <div class="text-center text-red-400 py-4">
+                Failed to load
+              </div>
+            `;
+          }
+        }
+      }
+
+      async function confirmDelivery(orderId, buttonEl) {
+        if (!orderId) return;
+
+        const ok = window.confirm(
+          "Confirm that this order has been delivered?",
+        );
+        if (!ok) return;
+
+        const originalText = buttonEl ? buttonEl.textContent : "";
+
+        try {
+          if (buttonEl) {
+            buttonEl.disabled = true;
+            buttonEl.textContent = "Confirming...";
+          }
+
+          const res = await fetch(
+            `${API_BASE_URL}/api/delivery/${orderId}/confirm`,
+            {
+              method: "PUT",
+              credentials: "include",
+            },
+          );
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            throw new Error(data?.message || "Failed to confirm delivery");
+          }
+
+          alert("Delivery confirmed successfully");
+
+          await Promise.all([
+            loadActiveOrder(),
+            loadRecentTransactions(),
+            (async () => {
+              const now = new Date();
+              await loadTotalSpentAndFuel(
+                now.getMonth() + 1,
+                now.getFullYear(),
+              );
+            })(),
+          ]);
+        } catch (err) {
+          console.error(err);
+          alert(err.message || "Failed to confirm delivery");
+        } finally {
+          if (buttonEl) {
+            buttonEl.disabled = false;
+            buttonEl.textContent = originalText || "Confirm Delivery";
+          }
+        }
+      }
+
+      async function loadActiveOrder() {
+        const activeUI = document.getElementById("activeUI");
+        const noActiveUI = document.getElementById("noActiveUI");
+        const dot = document.getElementById("activeDot");
+        const idEl = document.getElementById("activeOrderId");
+        const statusEl = document.getElementById("activeOrderStatus");
+        const fuelEl = document.getElementById("activeOrderFuel");
+        const amountEl = document.getElementById("activeOrderAmount");
+        const etaValueEl = document.getElementById("etaValue");
+        const etaProgress = document.getElementById("etaProgress");
+        const hint = document.getElementById("activeHint");
+        const callBtn = document.getElementById("callRiderBtn");
+        const confirmBtn = document.getElementById("confirmDeliveryBtn");
+        const trackBtn = document.getElementById("trackLiveRiderBtn");
+
+        if (activeUI) activeUI.classList.add("hidden");
+        if (noActiveUI) noActiveUI.classList.add("hidden");
+        if (dot) dot.className = "size-2 bg-slate-300 rounded-full";
+        if (idEl) idEl.textContent = "ID: --";
+
+        if (confirmBtn) {
+          confirmBtn.classList.add("hidden");
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = "Confirm Delivery";
+          confirmBtn.onclick = null;
+        }
+
+        if (trackBtn) {
+          trackBtn.classList.remove("hidden");
+          trackBtn.classList.add("flex-1");
+        }
+
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/order/active`, {
+            credentials: "include",
+          });
+
+          const data = await res.json().catch(() => null);
+
+          if (res.status === 401) {
+            localStorage.removeItem("flanorx_auth");
+            window.location.href = "login.html";
+            return;
+          }
+
+          if (!res.ok || !data) {
+            if (noActiveUI) noActiveUI.classList.remove("hidden");
+            if (dot) dot.className = "size-2 bg-slate-300 rounded-full";
+            return;
+          }
+
+          if (activeUI) activeUI.classList.remove("hidden");
+          if (dot)
+            dot.className = "size-2 bg-primary rounded-full animate-pulse";
+
+          if (idEl)
+            idEl.textContent = `ID: ${data.orderId || data._id || "--"}`;
+          if (statusEl) {
+            statusEl.textContent = prettyStatus(
+              data.deliveryStatus || data.status,
+            );
+          }
+          if (fuelEl) fuelEl.textContent = fuelLabel(data.fuelType);
+          if (amountEl)
+            amountEl.textContent = formatNaira(data.totalAmount || data.amount);
+
+          const rider = data?.rider || null;
+
+          if (callBtn) {
+            if (rider?.phone || rider?.phoneNumber) {
+              const phone = rider.phone || rider.phoneNumber;
+              callBtn.disabled = false;
+              callBtn.classList.remove("opacity-60", "cursor-not-allowed");
+              callBtn.onclick = () => {
+                window.location.href = `tel:${phone}`;
+              };
+            } else {
+              callBtn.disabled = true;
+              callBtn.classList.add("opacity-60", "cursor-not-allowed");
+              callBtn.onclick = null;
+            }
+          }
+
+          const etaMinutes = Number(data?.etaMinutes);
+          const distanceKm = Number(data?.distanceKm);
+
+          if (etaValueEl) {
+            if (!Number.isNaN(etaMinutes)) {
+              etaValueEl.textContent = `${etaMinutes} mins`;
+            } else if (!Number.isNaN(distanceKm)) {
+              etaValueEl.textContent = `${distanceKm.toFixed(1)} km`;
+            } else if (
+              (data?.deliveryStatus || "").toLowerCase() === "delivered"
+            ) {
+              etaValueEl.textContent = "Arrived";
+            } else {
+              etaValueEl.textContent = "--";
+            }
+          }
+
+          const p = computeProgress(data);
+          if (etaProgress) etaProgress.style.width = `${p}%`;
+
+          if (hint) {
+            hint.textContent = getHintText(data);
+          }
+
+          if (confirmBtn && trackBtn) {
+            if ((data?.deliveryStatus || "").toLowerCase() === "delivered") {
+              confirmBtn.classList.remove("hidden");
+              confirmBtn.onclick = () => confirmDelivery(data._id, confirmBtn);
+              trackBtn.classList.remove("flex-1");
+              trackBtn.classList.add("flex-1");
+            } else {
+              confirmBtn.classList.add("hidden");
+              trackBtn.classList.add("flex-1");
+            }
+          }
+        } catch (err) {
+          console.error(err);
+          if (noActiveUI) noActiveUI.classList.remove("hidden");
+          if (activeUI) activeUI.classList.add("hidden");
+          if (dot) dot.className = "size-2 bg-slate-300 rounded-full";
+        }
+      }
+
+      function setActiveBottomNav() {
+        const path = window.location.pathname;
+        let current = path.substring(path.lastIndexOf("/") + 1);
+
+        if (
+          current === "" ||
+          current === "index.html" ||
+          current === "customer-dashboard.html" ||
+          current === "#"
+        ) {
+          current = "home";
+        }
+
+        document
+          .querySelectorAll(".bottom-nav-item")
+          .forEach((i) => i.classList.remove("active"));
+
+        document.querySelectorAll(".bottom-nav-item").forEach((i) => {
+          const href = i.getAttribute("href");
+          if ((current === "home" && href === "#") || href === current) {
+            i.classList.add("active");
+          }
+        });
+      }
+
+      (function init() {
+        setUserInfo();
+
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", logout);
+        }
+
+        const now = new Date();
+        const month = now.getMonth() + 1;
+        const year = now.getFullYear();
+
+        loadTotalSpentAndFuel(month, year);
+        loadRecentTransactions();
+        loadActiveOrder();
+        setInterval(loadActiveOrder, 15000);
+        setActiveBottomNav();
+
+        window.addEventListener("load", () => {
+          setTimeout(hidePageLoader, 900);
+        });
+
+        if (document.readyState === "complete") {
+          setTimeout(hidePageLoader, 900);
+        }
+      })();
+    </script>
+  </body>
+</html>

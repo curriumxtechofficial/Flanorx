@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Orders Management · Flanorx Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .status-badge {
+        padding: 0.25rem 0.5rem; /* py-1 px-2 */
+        border-radius: 9999px; /* rounded-full */
+        font-size: 10px; /* text-[10px] */
+        font-weight: 700; /* font-bold */
+        text-transform: uppercase; /* uppercase */
+        letter-spacing: 0.08em; /* tracking-wider */
+        display: inline-block;
+      }
+      .status-pending {
+        background-color: rgba(234, 179, 8, 0.1); /* approx bg-yellow-500/10 */
+        color: #b45309; /* approx text-yellow-700 */
+      }
+      .status-processing {
+        background-color: rgba(59, 130, 246, 0.1); /* approx bg-blue-500/10 */
+        color: #2563eb; /* approx text-blue-600 */
+      }
+      .status-completed {
+        background-color: rgba(19, 236, 91, 0.1); /* bg-primary/10 */
+        color: #13ec5b; /* text-primary */
+      }
+      .status-cancelled {
+        background-color: #f1f5f9; /* bg-slate-100 */
+        color: #6b7280; /* text-slate-500 */
+      }
+      /* Dark mode adjustments */
+      .dark .status-pending {
+        color: #f59e0b; /* dark:text-yellow-400 */
+      }
+      .dark .status-processing {
+        color: #60a5fa; /* dark:text-blue-400 */
+      }
+      .dark .status-cancelled {
+        background-color: #1f2937; /* dark:bg-slate-800 */
+      }
+
+      /* Mobile bottom navigation */
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+        }
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+        #sidebar {
+          display: none;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          display: flex !important;
+        }
+        main {
+          padding-bottom: 0;
+        }
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+      .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        transition: all 0.2s;
+        flex: 1;
+        max-width: 80px;
+        padding: 4px 0;
+        margin: 0 2px;
+      }
+      .bottom-nav-item span:first-child {
+        font-size: 24px;
+      }
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar (same as dashboard) -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 hidden lg:flex"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="admin-dashboard.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <a
+            href="orders.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+          >
+            <span class="material-symbols-outlined text-primary"
+              >shopping_cart</span
+            >
+            <span class="font-semibold text-sm">Orders</span>
+          </a>
+          <a
+            href="riders.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >motorcycle</span
+            >
+            <span class="font-medium text-sm">Riders</span>
+          </a>
+          <a
+            href="users.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >people</span
+            >
+            <span class="font-medium text-sm">Users</span>
+          </a>
+          <a
+            href="settings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >settings</span
+            >
+            <span class="font-medium text-sm">Settings</span>
+          </a>
+        </nav>
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="size-10 rounded-full bg-primary/20 flex items-center justify-center"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >admin_panel_settings</span
+                >
+              </div>
+              <div>
+                <p class="text-sm font-bold">Admin User</p>
+                <p class="text-xs text-slate-500">admin@flanorx.com</p>
+              </div>
+            </div>
+            <button
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined text-sm">logout</span>
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Sticky Header -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10 shrink-0"
+        >
+          <div class="flex items-center gap-4">
+            <div class="relative">
+              <span
+                class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xl"
+                >search</span
+              >
+              <input
+                class="pl-10 pr-4 py-1.5 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-40 lg:w-64 transition-all"
+                placeholder="Search orders..."
+                type="text"
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div class="h-8 w-px bg-slate-200 dark:border-slate-800"></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-slate-900 dark:text-white">
+                  Admin
+                </p>
+                <p class="text-xs text-slate-500">Operations</p>
+              </div>
+              <div
+                class="size-10 rounded-full bg-primary/20 flex items-center justify-center border-2 border-primary"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >admin_panel_settings</span
+                >
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Orders Content -->
+        <div class="flex-1 overflow-y-auto p-4 lg:p-8">
+          <div class="space-y-6">
+            <!-- Page Header -->
+            <div
+              class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+            >
+              <div>
+                <h2
+                  class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+                >
+                  Orders Management
+                </h2>
+                <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                  View and manage all platform orders
+                </p>
+              </div>
+              <button
+                class="bg-primary hover:bg-primary/90 px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl flex items-center gap-2 text-slate-900 font-bold text-sm transition-all shadow-lg shadow-primary/20"
+              >
+                <span class="material-symbols-outlined">add_circle</span>
+                Create Order
+              </button>
+            </div>
+
+            <!-- Filters Section -->
+            <div
+              class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div class="relative">
+                  <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"
+                    >search</span
+                  >
+                  <input
+                    type="text"
+                    placeholder="Search orders..."
+                    class="w-full pl-9 pr-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <select
+                  class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                >
+                  <option>All Statuses</option>
+                  <option>Pending</option>
+                  <option>Processing</option>
+                  <option>Completed</option>
+                  <option>Cancelled</option>
+                </select>
+                <select
+                  class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                >
+                  <option>Fuel Type</option>
+                  <option>Petrol</option>
+                  <option>Diesel</option>
+                  <option>Premium</option>
+                </select>
+                <input
+                  type="date"
+                  class="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary"
+                />
+                <button
+                  class="bg-primary/10 hover:bg-primary/20 text-primary font-bold px-4 py-2 rounded-lg text-sm flex items-center justify-center gap-2 transition-all"
+                >
+                  <span class="material-symbols-outlined">download</span>
+                  Export
+                </button>
+              </div>
+            </div>
+
+            <!-- Desktop Table View -->
+            <div
+              class="desktop-table bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[1200px] table-auto">
+                  <thead
+                    class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50"
+                  >
+                    <tr
+                      class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+                    >
+                      <th class="py-4 px-4 text-left">Order ID</th>
+                      <th class="py-4 px-4 text-left">Customer</th>
+                      <th class="py-4 px-4 text-left">Rider</th>
+                      <th class="py-4 px-4 text-left">Fuel Type</th>
+                      <th class="py-4 px-4 text-left">Qty</th>
+                      <th class="py-4 px-4 text-left">Amount</th>
+                      <th class="py-4 px-4 text-left">Status</th>
+                      <th class="py-4 px-4 text-left">Date</th>
+                      <th class="py-4 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="divide-y divide-slate-100 dark:divide-slate-800"
+                  >
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td class="py-4 px-4 font-bold text-sm whitespace-nowrap">
+                        #FLX-2847
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">John Doe</td>
+                      <td class="py-4 px-4 whitespace-nowrap">Michael A.</td>
+                      <td class="py-4 px-4 whitespace-nowrap">Petrol</td>
+                      <td class="py-4 px-4 whitespace-nowrap">15L</td>
+                      <td class="py-4 px-4 font-medium whitespace-nowrap">
+                        ₦12,500
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">
+                        <span class="status-badge status-completed"
+                          >Completed</span
+                        >
+                      </td>
+                      <td class="py-4 px-4 text-slate-500 whitespace-nowrap">
+                        2024-01-15
+                      </td>
+                      <td class="py-4 px-4 text-right whitespace-nowrap">
+                        <div class="flex items-center justify-end gap-2">
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            title="Edit"
+                          >
+                            <span
+                              class="material-symbols-outlined text-slate-500"
+                              >edit</span
+                            >
+                          </button>
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                            title="Delete"
+                          >
+                            <span class="material-symbols-outlined text-red-500"
+                              >delete</span
+                            >
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td class="py-4 px-4 font-bold text-sm whitespace-nowrap">
+                        #FLX-2846
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">Sarah Smith</td>
+                      <td class="py-4 px-4 whitespace-nowrap">James W.</td>
+                      <td class="py-4 px-4 whitespace-nowrap">Diesel</td>
+                      <td class="py-4 px-4 whitespace-nowrap">10L</td>
+                      <td class="py-4 px-4 font-medium whitespace-nowrap">
+                        ₦8,900
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">
+                        <span class="status-badge status-processing"
+                          >Processing</span
+                        >
+                      </td>
+                      <td class="py-4 px-4 text-slate-500 whitespace-nowrap">
+                        2024-01-15
+                      </td>
+                      <td class="py-4 px-4 text-right whitespace-nowrap">
+                        <div class="flex items-center justify-end gap-2">
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                          >
+                            <span
+                              class="material-symbols-outlined text-slate-500"
+                              >edit</span
+                            >
+                          </button>
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                          >
+                            <span class="material-symbols-outlined text-red-500"
+                              >delete</span
+                            >
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td class="py-4 px-4 font-bold text-sm whitespace-nowrap">
+                        #FLX-2845
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">Mike Johnson</td>
+                      <td class="py-4 px-4 whitespace-nowrap">Unassigned</td>
+                      <td class="py-4 px-4 whitespace-nowrap">Premium</td>
+                      <td class="py-4 px-4 whitespace-nowrap">20L</td>
+                      <td class="py-4 px-4 font-medium whitespace-nowrap">
+                        ₦24,300
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">
+                        <span class="status-badge status-pending">Pending</span>
+                      </td>
+                      <td class="py-4 px-4 text-slate-500 whitespace-nowrap">
+                        2024-01-14
+                      </td>
+                      <td class="py-4 px-4 text-right whitespace-nowrap">
+                        <div class="flex items-center justify-end gap-2">
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                          >
+                            <span
+                              class="material-symbols-outlined text-slate-500"
+                              >edit</span
+                            >
+                          </button>
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                          >
+                            <span class="material-symbols-outlined text-red-500"
+                              >delete</span
+                            >
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td class="py-4 px-4 font-bold text-sm whitespace-nowrap">
+                        #FLX-2844
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">Emma Wilson</td>
+                      <td class="py-4 px-4 whitespace-nowrap">David K.</td>
+                      <td class="py-4 px-4 whitespace-nowrap">Petrol</td>
+                      <td class="py-4 px-4 whitespace-nowrap">12L</td>
+                      <td class="py-4 px-4 font-medium whitespace-nowrap">
+                        ₦15,750
+                      </td>
+                      <td class="py-4 px-4 whitespace-nowrap">
+                        <span class="status-badge status-completed"
+                          >Completed</span
+                        >
+                      </td>
+                      <td class="py-4 px-4 text-slate-500 whitespace-nowrap">
+                        2024-01-14
+                      </td>
+                      <td class="py-4 px-4 text-right whitespace-nowrap">
+                        <div class="flex items-center justify-end gap-2">
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                          >
+                            <span
+                              class="material-symbols-outlined text-slate-500"
+                              >edit</span
+                            >
+                          </button>
+                          <button
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded"
+                          >
+                            <span class="material-symbols-outlined text-red-500"
+                              >delete</span
+                            >
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between px-6 py-4 border-t border-slate-100 dark:border-slate-800"
+              >
+                <p class="text-sm text-slate-500">Showing 1-4 of 847 orders</p>
+                <div class="flex gap-2">
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    class="px-3 py-1 bg-primary text-slate-900 rounded-lg text-sm font-bold"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-sm hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Cards View -->
+            <div class="mobile-cards space-y-4">
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <p class="text-xs font-bold text-slate-400">
+                      ORDER #FLX-2847
+                    </p>
+                    <p class="font-bold mt-1">John Doe · Michael A.</p>
+                  </div>
+                  <span class="status-badge status-completed">Completed</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
+                  <div>
+                    <span class="text-slate-400 text-xs">Fuel:</span> Petrol ·
+                    15L
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-xs">Amount:</span> ₦12,500
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-xs">Date:</span> 2024-01-15
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800"
+                >
+                  <button class="text-primary text-sm font-bold">Edit</button>
+                  <button class="text-red-500 text-sm font-bold">Delete</button>
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <p class="text-xs font-bold text-slate-400">
+                      ORDER #FLX-2846
+                    </p>
+                    <p class="font-bold mt-1">Sarah Smith · James W.</p>
+                  </div>
+                  <span class="status-badge status-processing">Processing</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
+                  <div>
+                    <span class="text-slate-400 text-xs">Fuel:</span> Diesel ·
+                    10L
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-xs">Amount:</span> ₦8,900
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-xs">Date:</span> 2024-01-15
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800"
+                >
+                  <button class="text-primary text-sm font-bold">Edit</button>
+                  <button class="text-red-500 text-sm font-bold">Delete</button>
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <p class="text-xs font-bold text-slate-400">
+                      ORDER #FLX-2845
+                    </p>
+                    <p class="font-bold mt-1">Mike Johnson · Unassigned</p>
+                  </div>
+                  <span class="status-badge status-pending">Pending</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mb-3 text-sm">
+                  <div>
+                    <span class="text-slate-400 text-xs">Fuel:</span> Premium ·
+                    20L
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-xs">Amount:</span> ₦24,300
+                  </div>
+                  <div>
+                    <span class="text-slate-400 text-xs">Date:</span> 2024-01-14
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800"
+                >
+                  <button class="text-primary text-sm font-bold">Edit</button>
+                  <button class="text-red-500 text-sm font-bold">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+      <a href="admin-dashboard.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Home</span>
+      </a>
+      <a href="orders.html" class="bottom-nav-item active">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span>Orders</span>
+      </a>
+      <a href="riders.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">motorcycle</span>
+        <span>Riders</span>
+      </a>
+      <a href="users.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">people</span>
+        <span>Users</span>
+      </a>
+      <a href="settings.html" class="bottom-nav-item">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+    <script>
+      (function () {
+        const currentPage =
+          window.location.pathname.split("/").pop() || "orders.html";
+        document.querySelectorAll("#sidebar nav a").forEach((link) => {
+          link.classList.remove("sidebar-active");
+          if (link.getAttribute("href") === currentPage)
+            link.classList.add("sidebar-active");
+        });
+        document.querySelectorAll(".bottom-nav-item").forEach((item) => {
+          item.classList.remove("active");
+          if (item.getAttribute("href") === currentPage)
+            item.classList.add("active");
+        });
+      })();
+    </script>
+  </body>
+</html>

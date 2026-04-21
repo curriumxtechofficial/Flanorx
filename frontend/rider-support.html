@@ -1,0 +1,771 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx | Rider Support & Help Center</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display"
+  >
+    <!-- Navigation - exactly like customer support -->
+    <header
+      class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="p-6 flex items-center">
+            <a href="index.html" class="flex items-center gap-2">
+              <img
+                src="flanorx.png"
+                alt="Flanorx Logo"
+                class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+              />
+            </a>
+          </div>
+          <div class="flex items-center gap-3">
+            <a
+              href="rider-login.html"
+              class="px-4 py-2 text-sm font-bold bg-primary text-background-dark rounded-lg hover:brightness-95 transition-all inline-block text-center"
+            >
+              Login
+            </a>
+            <a
+              href="rider-register.html"
+              class="px-4 py-2 text-sm font-bold bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition-all inline-block text-center"
+            >
+              Sign Up
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+      <!-- Hero Section with Rider Badge -->
+      <section class="text-center mb-16">
+        <div class="flex justify-center mb-4">
+          <span
+            class="bg-primary/20 text-primary px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-base"
+              >delivery_dining</span
+            >
+            Rider Support - 24/7
+          </span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-tight">
+          Rider Help Center
+        </h1>
+        <p
+          class="text-slate-500 dark:text-slate-400 text-lg mb-10 max-w-2xl mx-auto"
+        >
+          Get the support you need to deliver safely and earn more. We're here
+          24/7.
+        </p>
+        <!-- Search Bar -->
+        <div class="max-w-3xl mx-auto relative group">
+          <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+          >
+            <span
+              class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors"
+              >search</span
+            >
+          </div>
+          <input
+            class="block w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary transition-all shadow-sm"
+            placeholder="Search rider topics: earnings, deliveries, safety..."
+            type="text"
+          />
+        </div>
+      </section>
+
+      <!-- Quick Stats for Riders -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-100 dark:border-slate-800 text-center"
+        >
+          <span class="material-symbols-outlined text-primary text-3xl"
+            >schedule</span
+          >
+          <p class="text-2xl font-black text-primary mt-2">2 min</p>
+          <p class="text-sm text-slate-500">Avg. response time</p>
+        </div>
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-100 dark:border-slate-800 text-center"
+        >
+          <span class="material-symbols-outlined text-primary text-3xl"
+            >support_agent</span
+          >
+          <p class="text-2xl font-black text-primary mt-2">12</p>
+          <p class="text-sm text-slate-500">Agents online now</p>
+        </div>
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-100 dark:border-slate-800 text-center"
+        >
+          <span class="material-symbols-outlined text-primary text-3xl"
+            >payments</span
+          >
+          <p class="text-2xl font-black text-primary mt-2">24/7</p>
+          <p class="text-sm text-slate-500">Instant payouts support</p>
+        </div>
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl p-6 border border-slate-100 dark:border-slate-800 text-center"
+        >
+          <span class="material-symbols-outlined text-primary text-3xl"
+            >emoji_events</span
+          >
+          <p class="text-2xl font-black text-primary mt-2">98%</p>
+          <p class="text-sm text-slate-500">Rider satisfaction</p>
+        </div>
+      </div>
+
+      <!-- Category Grid - Rider Focused -->
+      <section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+        <div
+          class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-primary/50 transition-all cursor-pointer group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary transition-colors"
+          >
+            <span
+              class="material-symbols-outlined text-primary group-hover:text-background-dark"
+              >delivery_dining</span
+            >
+          </div>
+          <h3 class="font-bold text-lg mb-1">Deliveries</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Routes, assignments, and scheduling.
+          </p>
+        </div>
+        <div
+          class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-primary/50 transition-all cursor-pointer group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary transition-colors"
+          >
+            <span
+              class="material-symbols-outlined text-primary group-hover:text-background-dark"
+              >payments</span
+            >
+          </div>
+          <h3 class="font-bold text-lg mb-1">Earnings</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Payouts, bonuses, and adjustments.
+          </p>
+        </div>
+        <div
+          class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-primary/50 transition-all cursor-pointer group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary transition-colors"
+          >
+            <span
+              class="material-symbols-outlined text-primary group-hover:text-background-dark"
+              >health_and_safety</span
+            >
+          </div>
+          <h3 class="font-bold text-lg mb-1">Safety</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Protocols, gear, and emergency procedures.
+          </p>
+        </div>
+        <div
+          class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-primary/50 transition-all cursor-pointer group"
+        >
+          <div
+            class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary transition-colors"
+          >
+            <span
+              class="material-symbols-outlined text-primary group-hover:text-background-dark"
+              >account_circle</span
+            >
+          </div>
+          <h3 class="font-bold text-lg mb-1">Account</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            Profile, certifications, and settings.
+          </p>
+        </div>
+      </section>
+
+      <!-- Main FAQ Grid -->
+      <div class="grid md:grid-cols-3 gap-12">
+        <!-- FAQ Sections - Left 2 columns -->
+        <div class="md:col-span-2 space-y-12">
+          <!-- Category: Deliveries -->
+          <section>
+            <div class="flex items-center gap-2 mb-6">
+              <span class="material-symbols-outlined text-primary text-2xl"
+                >delivery_dining</span
+              >
+              <h2 class="text-2xl font-extrabold tracking-tight">
+                Deliveries & Routes
+              </h2>
+            </div>
+            <div class="space-y-4">
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+                open
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>How are deliveries assigned to riders?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Deliveries are assigned based on your proximity to the pickup
+                  location, your current availability, and rider rating. The
+                  system prioritizes the nearest available rider to ensure the
+                  fastest service for customers.
+                </div>
+              </details>
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>Can I choose which deliveries to accept?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Yes, you have the freedom to accept or decline any delivery
+                  request. However, your acceptance rate may affect future
+                  assignment priority. We recommend only declining when
+                  absolutely necessary.
+                </div>
+              </details>
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>What if I can't find the delivery location?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Use the in-app chat feature to contact the customer directly.
+                  You can also call through our masked number system for
+                  privacy. If still unable to locate, contact rider support for
+                  assistance.
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <!-- Category: Earnings & Payouts -->
+          <section>
+            <div class="flex items-center gap-2 mb-6">
+              <span class="material-symbols-outlined text-primary text-2xl"
+                >payments</span
+              >
+              <h2 class="text-2xl font-extrabold tracking-tight">
+                Earnings & Payouts
+              </h2>
+            </div>
+            <div class="space-y-4">
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>When will I receive my earnings?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Earnings are processed every Monday for the previous week's
+                  deliveries. We also offer instant cash-out 24/7 for a small
+                  fee - funds typically arrive within 2-4 hours to your linked
+                  account.
+                </div>
+              </details>
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>How is my delivery payout calculated?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Your payout = Base delivery fee + distance multiplier + surge
+                  pricing (during peak hours) - platform fee. You can view a
+                  complete breakdown in the Earnings tab after each delivery.
+                </div>
+              </details>
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>What are peak hours for bonus pay?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Peak hours are typically 7-9 AM and 5-7 PM on weekdays, with
+                  weekend lunch hours also seeing increased demand. During these
+                  times, surge pricing can multiply your earnings by 1.5x or
+                  more.
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <!-- Category: Safety & Compliance -->
+          <section>
+            <div class="flex items-center gap-2 mb-6">
+              <span class="material-symbols-outlined text-primary text-2xl"
+                >health_and_safety</span
+              >
+              <h2 class="text-2xl font-extrabold tracking-tight">
+                Safety & Compliance
+              </h2>
+            </div>
+            <div class="space-y-4">
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>What safety equipment is required?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  All riders must wear provided PPE including flame-retardant
+                  gloves, high-visibility safety vest, and closed-toe shoes.
+                  Your delivery kit includes spill mats, fire extinguisher, and
+                  emergency contact cards.
+                </div>
+              </details>
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>What to do in case of a fuel spill?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Follow your spill protocol training: secure the area
+                  immediately, deploy spill kit materials, document the incident
+                  in the app, and contact emergency support. The app has a
+                  dedicated "Spill Report" button for quick reporting.
+                </div>
+              </details>
+              <details
+                class="group bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 open:ring-1 open:ring-primary transition-all"
+              >
+                <summary
+                  class="flex items-center justify-between p-5 cursor-pointer list-none font-bold"
+                >
+                  <span>How to keep my certifications current?</span>
+                  <span
+                    class="material-symbols-outlined group-open:rotate-180 transition-transform"
+                    >expand_more</span
+                  >
+                </summary>
+                <div
+                  class="px-5 pb-5 text-slate-600 dark:text-slate-400 leading-relaxed"
+                >
+                  Check your certification status in Profile → Certifications.
+                  We send reminders 30 days before expiration. You can schedule
+                  recertification courses directly through the app at discounted
+                  rates.
+                </div>
+              </details>
+            </div>
+          </section>
+        </div>
+
+        <!-- Sidebar - Right column with proper sticky parent -->
+        <aside class="space-y-6 relative">
+          <div class="sticky top-24 space-y-6">
+            <!-- Emergency Support Card (Red) -->
+            <div
+              class="bg-red-500/5 dark:bg-red-500/10 p-8 rounded-2xl border border-red-500/20"
+            >
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-red-500 text-3xl"
+                  >emergency</span
+                >
+                <h3 class="text-xl font-bold">Emergency Support</h3>
+              </div>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed"
+              >
+                For spills, accidents, or immediate safety concerns. Available
+                24/7.
+              </p>
+              <ul class="space-y-4">
+                <li class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-red-500"
+                    >call</span
+                  >
+                  <span class="text-sm font-medium">+1 (800) 911-FUEL</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-red-500"
+                    >sos</span
+                  >
+                  <span class="text-sm font-medium"
+                    >Emergency button in app</span
+                  >
+                </li>
+              </ul>
+              <hr class="my-6 border-red-500/20" />
+              <button
+                class="w-full py-3 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-all flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[20px]"
+                  >emergency</span
+                >
+                SOS - Immediate Assistance
+              </button>
+            </div>
+
+            <!-- Live Support Card -->
+            <div
+              class="bg-primary/5 dark:bg-primary/10 p-8 rounded-2xl border border-primary/20"
+            >
+              <h3 class="text-xl font-bold mb-4">Live Rider Support</h3>
+              <div class="flex items-center gap-2 mb-4">
+                <span
+                  class="size-2 bg-primary rounded-full animate-pulse"
+                ></span>
+                <span class="text-sm font-medium">12 agents online now</span>
+              </div>
+              <p
+                class="text-sm text-slate-600 dark:text-slate-400 mb-6 leading-relaxed"
+              >
+                Chat with our rider support team for quick answers to your
+                questions.
+              </p>
+              <button
+                class="w-full py-3 bg-primary text-background-dark font-bold rounded-xl hover:brightness-105 transition-all flex items-center justify-center gap-2"
+              >
+                <span class="material-symbols-outlined text-[20px]">chat</span>
+                Start Live Chat
+              </button>
+              <p class="text-xs text-center text-slate-500 mt-3">
+                Average response:
+                <span class="text-primary font-bold">2 minutes</span>
+              </p>
+            </div>
+
+            <!-- Rider Resources Card -->
+            <div
+              class="bg-slate-900 text-white p-8 rounded-2xl overflow-hidden relative"
+            >
+              <div class="relative z-10">
+                <h4 class="font-bold text-lg mb-2">Rider Resources</h4>
+                <ul class="space-y-3 text-sm text-slate-300 mb-4">
+                  <li class="flex items-center gap-2">
+                    <span
+                      class="material-symbols-outlined text-primary text-base"
+                      >description</span
+                    >
+                    <span>Safety guidelines PDF</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span
+                      class="material-symbols-outlined text-primary text-base"
+                      >video_library</span
+                    >
+                    <span>Training videos</span>
+                  </li>
+                  <li class="flex items-center gap-2">
+                    <span
+                      class="material-symbols-outlined text-primary text-base"
+                      >event</span
+                    >
+                    <span>Rider meetups schedule</span>
+                  </li>
+                </ul>
+                <button
+                  class="text-sm font-bold text-primary flex items-center gap-1 group"
+                >
+                  Access resource center
+                  <span
+                    class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform"
+                    >arrow_forward</span
+                  >
+                </button>
+              </div>
+              <div class="absolute -right-4 -bottom-4 opacity-10">
+                <span class="material-symbols-outlined text-[120px]"
+                  >delivery_dining</span
+                >
+              </div>
+            </div>
+
+            <!-- Peak Hours Tip Card -->
+            <div
+              class="bg-gradient-to-r from-primary/10 to-yellow-400/10 p-6 rounded-xl border border-primary/20"
+            >
+              <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-primary text-3xl"
+                  >emoji_objects</span
+                >
+                <div>
+                  <h4 class="font-bold text-sm mb-1">
+                    💰 Maximize Your Earnings
+                  </h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-400">
+                    Peak hours: 7-9 AM & 5-7 PM weekdays. Surge pricing can
+                    boost your pay by 1.5x!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Recent Support Tickets Section -->
+      <section class="mt-16">
+        <div class="flex items-center justify-between mb-6">
+          <h3 class="text-xl font-extrabold">Your recent support tickets</h3>
+          <a href="#" class="text-primary text-sm font-bold hover:underline"
+            >View all →</a
+          >
+        </div>
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800"
+        >
+          <div
+            class="p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+          >
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-slate-400">help</span>
+              <div>
+                <p class="font-bold">Payment discrepancy - Mar 15, 2024</p>
+                <p class="text-xs text-slate-500">
+                  Ticket #TKT-2468 • Updated 2 hours ago
+                </p>
+              </div>
+            </div>
+            <span
+              class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold"
+              >Resolved</span
+            >
+          </div>
+          <div
+            class="p-5 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+          >
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-slate-400">help</span>
+              <div>
+                <p class="font-bold">Delivery address issue - Mar 14, 2024</p>
+                <p class="text-xs text-slate-500">
+                  Ticket #TKT-2467 • Updated 1 day ago
+                </p>
+              </div>
+            </div>
+            <span
+              class="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-bold"
+              >In Progress</span
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer - exactly like customer support -->
+    <footer
+      class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-12 mt-20"
+    >
+      <div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div>
+          <h5
+            class="font-extrabold mb-4 uppercase tracking-widest text-xs text-slate-400"
+          >
+            Company
+          </h5>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <li><a class="hover:text-primary" href="#">About Us</a></li>
+            <li><a class="hover:text-primary" href="#">Careers</a></li>
+            <li><a class="hover:text-primary" href="#">Sustainability</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5
+            class="font-extrabold mb-4 uppercase tracking-widest text-xs text-slate-400"
+          >
+            Rider Support
+          </h5>
+          <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <li><a class="hover:text-primary" href="#">Help Center</a></li>
+            <li><a class="hover:text-primary" href="#">Safety Resources</a></li>
+            <li><a class="hover:text-primary" href="#">Rider Agreement</a></li>
+          </ul>
+        </div>
+        <div class="col-span-2">
+          <h5
+            class="font-extrabold mb-4 uppercase tracking-widest text-xs text-slate-400"
+          >
+            Rider support promise
+          </h5>
+          <div
+            class="bg-gradient-to-br from-primary/10 to-transparent p-5 rounded-xl border border-primary/20"
+          >
+            <div class="flex items-start gap-4">
+              <div class="bg-primary/20 p-3 rounded-full">
+                <span class="material-symbols-outlined text-primary text-3xl"
+                  >support_agent</span
+                >
+              </div>
+              <div>
+                <p class="font-bold text-lg">We've got your back 24/7</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">
+                  Average response time:
+                  <span class="text-primary font-bold">2 minutes</span>
+                </p>
+                <div class="flex gap-2">
+                  <span
+                    class="bg-slate-100 dark:bg-slate-800 text-xs px-2 py-1 rounded-full"
+                    >⚡ Priority for riders</span
+                  >
+                  <span
+                    class="bg-slate-100 dark:bg-slate-800 text-xs px-2 py-1 rounded-full"
+                    >🎯 Dedicated support</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-400"
+      >
+        <p>© 2026 Flanorx. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a class="hover:text-primary" href="#">Privacy Policy</a>
+          <a class="hover:text-primary" href="#">Rider Terms</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Chat Bubble FAB -->
+    <div class="fixed bottom-8 right-8 z-[100] group">
+      <div
+        class="absolute bottom-full right-0 mb-4 scale-0 group-hover:scale-100 transition-all origin-bottom-right"
+      >
+        <div
+          class="bg-white dark:bg-slate-800 shadow-2xl rounded-2xl p-4 w-64 border border-slate-100 dark:border-slate-700"
+        >
+          <p class="font-bold mb-2">👋 Need help, rider?</p>
+          <p
+            class="text-sm text-slate-500 dark:text-slate-400 mb-3 leading-tight"
+          >
+            Chat with our rider support team now.
+          </p>
+          <button
+            class="w-full py-2 bg-primary text-background-dark font-bold rounded-lg text-sm"
+          >
+            Start Chat
+          </button>
+        </div>
+      </div>
+      <button
+        class="w-16 h-16 bg-primary rounded-full shadow-[0_8px_30px_rgb(19,236,91,0.4)] flex items-center justify-center hover:scale-110 transition-all cursor-pointer"
+      >
+        <span class="material-symbols-outlined text-background-dark text-3xl"
+          >chat</span
+        >
+      </button>
+    </div>
+  </body>
+</html>

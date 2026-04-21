@@ -1,0 +1,1408 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Rider Earnings · Flanorx</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/favicon-32x32.png"
+    />
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/apple-touch-icon.png"
+    />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .active-nav {
+        background-color: #13ec5b;
+        color: #102216;
+      }
+      .sidebar-item:hover {
+        background-color: rgba(19, 236, 91, 0.1);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+
+      .mobile-bottom-nav {
+        display: none;
+      }
+
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+
+        #menuToggle {
+          display: none;
+        }
+
+        #sidebar {
+          transform: translateX(-100%);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+
+        #menuToggle {
+          display: block;
+        }
+
+        main {
+          padding-bottom: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <aside
+        id="sidebar"
+        class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <div class="px-6 py-4 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div
+              id="sidebarProfileImage"
+              class="size-10 rounded-full bg-slate-700 overflow-hidden bg-cover bg-center"
+            ></div>
+            <div class="flex flex-col">
+              <span id="sidebarRiderName" class="text-sm font-semibold">Rider</span>
+              <div class="flex items-center gap-1">
+                <span
+                  id="sidebarStatusDot"
+                  class="size-2 bg-primary rounded-full animate-pulse"
+                ></span>
+                <span id="sidebarStatusText" class="text-xs text-primary font-medium">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="rider-dashboard.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-medium text-slate-300">Dashboard</span>
+          </a>
+          <a
+            href="rider-deliveries.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">delivery_dining</span>
+            <span class="font-medium text-slate-300">Deliveries</span>
+          </a>
+          <a
+            href="rider-earnings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav"
+          >
+            <span class="material-symbols-outlined">payments</span>
+            <span class="font-medium">Earnings</span>
+          </a>
+          <a
+            href="rider-history.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-medium text-slate-300">History</span>
+          </a>
+          <a
+            href="rider-settings.html"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-medium text-slate-300">Settings</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+          <button
+            id="logoutBtn"
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-500/20 hover:text-red-400 transition-colors py-3 rounded-lg text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-sm">power_settings_new</span>
+            Go Offline
+          </button>
+        </div>
+      </aside>
+
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <div class="flex items-center gap-4">
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+            <div
+              class="hidden sm:flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-4 py-1.5 rounded-full shadow-sm"
+            >
+              <span
+                class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+                >Payout</span
+              >
+              <div
+                class="flex items-center gap-2 bg-primary/20 text-slate-900 dark:text-primary px-3 py-0.5 rounded-full text-sm font-bold"
+              >
+                <span class="size-2 bg-primary rounded-full"></span>
+                Instant
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 lg:gap-6">
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+            <div
+              class="h-8 w-px bg-slate-200 dark:border-slate-800 hidden sm:block"
+            ></div>
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden sm:block">
+                <p id="headerRiderName" class="text-sm font-bold text-slate-900 dark:text-white">
+                  Rider
+                </p>
+              </div>
+              <div
+                id="headerProfileImage"
+                class="size-10 rounded-full bg-slate-200 bg-cover bg-center border-2 border-primary shrink-0"
+              ></div>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4 lg:p-8 space-y-8">
+          <div
+            class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          >
+            <div>
+              <h2
+                class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight"
+              >
+                Earnings
+              </h2>
+              <p class="text-slate-500 mt-1 text-sm lg:text-base">
+                Track your income, tips, and payouts in Naira
+              </p>
+            </div>
+            <div
+              class="flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-1 rounded-xl shadow-sm"
+            >
+              <button
+                id="periodWeekBtn"
+                class="px-4 py-2 text-sm font-bold rounded-lg bg-primary text-slate-900"
+              >
+                Week
+              </button>
+              <button
+                id="periodMonthBtn"
+                class="px-4 py-2 text-sm font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                Month
+              </button>
+              <button
+                id="periodYearBtn"
+                class="px-4 py-2 text-sm font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                Year
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span class="text-xs font-bold uppercase tracking-widest"
+                  >Total earned</span
+                >
+              </div>
+              <p id="totalEarnedValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                ₦0
+              </p>
+              <p
+                id="totalEarnedMeta"
+                class="text-xs text-primary font-bold mt-2 flex items-center gap-1"
+              >
+                <span>Live total</span>
+              </p>
+            </div>
+
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span class="text-xs font-bold uppercase tracking-widest"
+                  >This period</span
+                >
+              </div>
+              <p id="periodEarningsValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                ₦0
+              </p>
+              <p id="periodEarningsMeta" class="text-xs text-slate-500 font-bold mt-2">
+                ₦0 in selected period
+              </p>
+            </div>
+
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">volunteer_activism</span>
+                <span class="text-xs font-bold uppercase tracking-widest"
+                  >Tips</span
+                >
+              </div>
+              <p id="tipsValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                ₦0
+              </p>
+              <p id="tipsMeta" class="text-xs text-slate-500 font-bold mt-2">0% of total</p>
+            </div>
+
+            <div
+              class="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+            >
+              <div class="flex items-center gap-3 text-slate-400 mb-3">
+                <span class="material-symbols-outlined">hourglass_empty</span>
+                <span class="text-xs font-bold uppercase tracking-widest"
+                  >Pending</span
+                >
+              </div>
+              <p id="pendingValue" class="text-3xl font-black text-slate-900 dark:text-white">
+                ₦0
+              </p>
+              <p
+                id="pendingMeta"
+                class="text-xs text-amber-600 dark:text-amber-400 font-bold mt-2"
+              >
+                Awaiting customer confirmation
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-6">
+            <div class="col-span-12 lg:col-span-8 space-y-6">
+              <div
+                class="bg-white dark:bg-slate-900 rounded-3xl p-4 lg:p-6 border border-slate-100 dark:border-slate-800 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 class="text-lg font-bold">Payout trend</h3>
+                    <p class="text-sm text-slate-500">
+                      Daily earnings (last 7 days)
+                    </p>
+                  </div>
+                  <div class="flex gap-4">
+                    <div class="text-right">
+                      <p class="text-xs font-bold text-slate-400 uppercase">
+                        Avg
+                      </p>
+                      <p id="chartAvgValue" class="text-xl font-black text-primary">₦0</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-bold text-slate-400 uppercase">
+                        Peak
+                      </p>
+                      <p id="chartPeakValue" class="text-xl font-black text-slate-900 dark:text-white">
+                        ₦0
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="relative w-full pt-2 pb-4">
+                  <div class="h-48 w-full -mt-2">
+                    <svg
+                      id="earningsChart"
+                      class="w-full h-full"
+                      fill="none"
+                      preserveAspectRatio="none"
+                      viewBox="0 0 500 160"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <linearGradient id="earningsGradient" x1="0" x2="0" y1="0" y2="1">
+                          <stop offset="0%" stop-color="#13ec5b" stop-opacity="0.2" />
+                          <stop offset="100%" stop-color="#13ec5b" stop-opacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <path
+                        id="earningsAreaPath"
+                        d="M0,140 L500,140 L500,160 L0,160 Z"
+                        fill="url(#earningsGradient)"
+                      />
+                      <path
+                        id="earningsLinePath"
+                        d="M0,140 L500,140"
+                        fill="none"
+                        stroke="#13ec5b"
+                        stroke-linecap="round"
+                        stroke-width="4"
+                      />
+                    </svg>
+                  </div>
+                  <div
+                    id="chartLabels"
+                    class="flex justify-between mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest px-1"
+                  ></div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm"
+              >
+                <div
+                  class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between"
+                >
+                  <h3 class="text-lg font-bold">Recent payouts</h3>
+                  <a
+                    href="#"
+                    class="text-sm font-bold text-primary hover:underline flex items-center gap-1"
+                  >
+                    View all
+                    <span class="material-symbols-outlined text-base"
+                      >arrow_forward</span
+                    >
+                  </a>
+                </div>
+                <div
+                  id="recentPayoutsWrap"
+                  class="divide-y divide-slate-100 dark:divide-slate-800"
+                ></div>
+              </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-4 space-y-6">
+              <div
+                class="bg-slate-900 text-white rounded-3xl p-6 relative overflow-hidden shadow-xl"
+              >
+                <div
+                  class="absolute -right-10 -top-10 size-40 bg-primary/20 rounded-full blur-3xl"
+                ></div>
+                <div class="relative z-10 flex flex-col h-full">
+                  <h3
+                    class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4"
+                  >
+                    Weekly goal
+                  </h3>
+                  <p id="goalCurrentValue" class="text-4xl font-black mb-6 text-primary">₦0</p>
+                  <div class="mb-4">
+                    <span id="goalTargetText" class="text-sm text-slate-300"
+                      >of ₦100,000 target</span
+                    >
+                  </div>
+                  <div
+                    class="w-full h-3 bg-slate-800 rounded-full overflow-hidden mb-4"
+                  >
+                    <div
+                      id="goalBar"
+                      class="h-full bg-primary rounded-full"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <p id="goalRemainingText" class="text-sm font-medium text-slate-300 mt-2">
+                    Need <span class="text-white font-bold">₦0</span> to
+                    reach bonus tier
+                  </p>
+                  <div
+                    class="mt-6 flex items-center gap-2 text-sm border-t border-slate-800 pt-4"
+                  >
+                    <span class="material-symbols-outlined text-primary"
+                      >emoji_events</span
+                    >
+                    <span class="font-medium text-slate-300"
+                      >Bonus at ₦100,000: +₦5,000</span
+                    >
+                  </div>
+                </div>
+                <span
+                  class="material-symbols-outlined text-9xl absolute -bottom-8 -right-8 opacity-10 text-primary pointer-events-none"
+                  >payments</span
+                >
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm"
+              >
+                <div class="flex items-center gap-3 mb-4">
+                  <div
+                    class="size-12 bg-primary/20 rounded-full flex items-center justify-center text-primary"
+                  >
+                    <span class="material-symbols-outlined text-3xl"
+                      >flash_on</span
+                    >
+                  </div>
+                  <div>
+                    <h3 class="font-extrabold text-lg">Instant payout</h3>
+                    <p class="text-xs text-slate-500">Withdraw earnings now</p>
+                  </div>
+                </div>
+                <p id="instantPayoutValue" class="text-2xl font-black mb-3">
+                  ₦0
+                  <span class="text-sm font-normal text-slate-400">available</span>
+                </p>
+                <button
+                  id="transferBtn"
+                  class="w-full bg-primary hover:bg-primary/90 text-slate-900 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
+                >
+                  <span class="material-symbols-outlined">bolt</span> Transfer
+                  to bank
+                </button>
+                <p
+                  class="text-[10px] font-bold text-slate-400 text-center mt-3"
+                >
+                  Arrives in 30 min (fee 1%)
+                </p>
+              </div>
+
+              <div
+                class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 divide-y divide-slate-100 dark:divide-slate-800"
+              >
+                <div class="flex justify-between py-2">
+                  <span class="text-slate-500 font-medium">Total trips</span>
+                  <span id="summaryTrips" class="font-black">0</span>
+                </div>
+                <div class="flex justify-between py-2">
+                  <span class="text-slate-500 font-medium">Avg. per trip</span>
+                  <span id="summaryAvgTrip" class="font-black">₦0</span>
+                </div>
+                <div class="flex justify-between py-2">
+                  <span class="text-slate-500 font-medium">Online hours</span>
+                  <span id="summaryHours" class="font-black">0 h</span>
+                </div>
+                <div class="flex justify-between py-2">
+                  <span class="text-slate-500 font-medium">Tips total</span>
+                  <span id="summaryTips" class="font-black text-primary">₦0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-span-12">
+            <div
+              class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl p-6 flex flex-wrap items-center justify-between gap-4 shadow-lg"
+            >
+              <div class="flex items-center gap-4">
+                <div class="bg-primary/20 p-3 rounded-full">
+                  <span class="material-symbols-outlined text-3xl text-primary"
+                    >group_add</span
+                  >
+                </div>
+                <div>
+                  <h3
+                    class="text-sm font-bold uppercase tracking-wider opacity-80"
+                  >
+                    Refer a rider
+                  </h3>
+                  <p class="text-lg font-extrabold">
+                    Earn ₦5,000 for each friend who completes 10 deliveries
+                  </p>
+                </div>
+              </div>
+              <button
+                class="bg-primary text-slate-900 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all shadow-xl"
+              >
+                <span class="material-symbols-outlined">share</span> Invite now
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="mobile-bottom-nav">
+      <a
+        href="rider-dashboard.html"
+        class="bottom-nav-item"
+        id="bottomDashboard"
+      >
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Home</span>
+      </a>
+      <a
+        href="rider-deliveries.html"
+        class="bottom-nav-item"
+        id="bottomDeliveries"
+      >
+        <span class="material-symbols-outlined">delivery_dining</span>
+        <span>Deliver</span>
+      </a>
+      <a href="rider-earnings.html" class="bottom-nav-item" id="bottomEarnings">
+        <span class="material-symbols-outlined">payments</span>
+        <span>Earnings</span>
+      </a>
+      <a href="rider-history.html" class="bottom-nav-item" id="bottomHistory">
+        <span class="material-symbols-outlined">history</span>
+        <span>History</span>
+      </a>
+      <a href="rider-settings.html" class="bottom-nav-item" id="bottomSettings">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+    </nav>
+
+  <script>
+  (function () {
+    const API_BASE_URL =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1"
+        ? "http://127.0.0.1:8000"
+        : "https://flanorx-api.onrender.com";
+
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("backdrop");
+
+    const sidebarProfileImage = document.getElementById("sidebarProfileImage");
+    const sidebarRiderName = document.getElementById("sidebarRiderName");
+    const sidebarStatusDot = document.getElementById("sidebarStatusDot");
+    const sidebarStatusText = document.getElementById("sidebarStatusText");
+
+    const headerRiderName = document.getElementById("headerRiderName");
+    const headerProfileImage = document.getElementById("headerProfileImage");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    const periodWeekBtn = document.getElementById("periodWeekBtn");
+    const periodMonthBtn = document.getElementById("periodMonthBtn");
+    const periodYearBtn = document.getElementById("periodYearBtn");
+
+    const totalEarnedValue = document.getElementById("totalEarnedValue");
+    const totalEarnedMeta = document.getElementById("totalEarnedMeta");
+    const periodEarningsValue = document.getElementById("periodEarningsValue");
+    const periodEarningsMeta = document.getElementById("periodEarningsMeta");
+    const tipsValue = document.getElementById("tipsValue");
+    const tipsMeta = document.getElementById("tipsMeta");
+    const pendingValue = document.getElementById("pendingValue");
+    const pendingMeta = document.getElementById("pendingMeta");
+
+    const chartAvgValue = document.getElementById("chartAvgValue");
+    const chartPeakValue = document.getElementById("chartPeakValue");
+    const earningsAreaPath = document.getElementById("earningsAreaPath");
+    const earningsLinePath = document.getElementById("earningsLinePath");
+    const chartLabels = document.getElementById("chartLabels");
+
+    const recentPayoutsWrap = document.getElementById("recentPayoutsWrap");
+
+    const goalCurrentValue = document.getElementById("goalCurrentValue");
+    const goalTargetText = document.getElementById("goalTargetText");
+    const goalBar = document.getElementById("goalBar");
+    const goalRemainingText = document.getElementById("goalRemainingText");
+
+    const instantPayoutValue = document.getElementById("instantPayoutValue");
+    const transferBtn = document.getElementById("transferBtn");
+
+    const summaryTrips = document.getElementById("summaryTrips");
+    const summaryAvgTrip = document.getElementById("summaryAvgTrip");
+    const summaryHours = document.getElementById("summaryHours");
+    const summaryTips = document.getElementById("summaryTips");
+
+    let selectedPeriod = "week";
+    let cachedHistory = [];
+
+    function getStoredAuth() {
+      try {
+        return JSON.parse(localStorage.getItem("flanorx_auth") || "null");
+      } catch {
+        return null;
+      }
+    }
+
+    function setStoredAuth(data) {
+      localStorage.setItem("flanorx_auth", JSON.stringify(data));
+    }
+
+    function redirectToLogin() {
+      window.location.replace("rider-login.html");
+    }
+
+    function openSidebar() {
+      sidebar.classList.remove("-translate-x-full");
+      sidebar.classList.add("translate-x-0");
+      backdrop.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+      backdrop.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    if (menuToggle) {
+      menuToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        sidebar.classList.contains("-translate-x-full")
+          ? openSidebar()
+          : closeSidebar();
+      });
+    }
+
+    if (backdrop) backdrop.addEventListener("click", closeSidebar);
+
+    window.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Escape" &&
+        sidebar &&
+        !sidebar.classList.contains("-translate-x-full") &&
+        window.innerWidth < 1024
+      ) {
+        closeSidebar();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove("-translate-x-full");
+        backdrop.classList.add("hidden");
+        document.body.style.overflow = "";
+      } else {
+        if (!sidebar.classList.contains("translate-x-0")) {
+          sidebar.classList.add("-translate-x-full");
+        }
+      }
+    });
+
+    if (window.innerWidth < 1024) {
+      sidebar.classList.add("-translate-x-full");
+      backdrop.classList.add("hidden");
+    } else {
+      sidebar.classList.remove("-translate-x-full");
+    }
+
+    (function setActiveNavigation() {
+      const path = window.location.pathname;
+      let currentPage = path.substring(path.lastIndexOf("/") + 1);
+
+      if (
+        currentPage === "" ||
+        currentPage === "index.html" ||
+        currentPage === "#" ||
+        currentPage === "rider-dashboard.html"
+      ) {
+        currentPage = "home";
+      }
+
+      const navItems = document.querySelectorAll(".bottom-nav-item");
+      navItems.forEach((item) => item.classList.remove("active"));
+
+      navItems.forEach((item) => {
+        const href = item.getAttribute("href");
+        if (currentPage === "home" && href === "rider-dashboard.html") {
+          item.classList.add("active");
+        } else if (href === currentPage) {
+          item.classList.add("active");
+        }
+      });
+
+      const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+      sidebarLinks.forEach((link) => {
+        link.classList.remove("active-nav");
+        const href = link.getAttribute("href");
+
+        if (currentPage === "home" && href === "rider-dashboard.html") {
+          link.classList.add("active-nav");
+        } else if (href === currentPage) {
+          link.classList.add("active-nav");
+        }
+      });
+    })();
+
+    async function apiFetch(path, options = {}) {
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          ...(options.body instanceof FormData
+            ? {}
+            : { "Content-Type": "application/json" }),
+          ...(options.headers || {}),
+        },
+        ...options,
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data?.message || `Request failed (${response.status})`);
+      }
+
+      return data;
+    }
+
+    function formatMoney(value) {
+      const num = Number(value || 0);
+      return `₦${num.toLocaleString("en-NG", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}`;
+    }
+
+    function avatarFromName(name = "Rider") {
+      return `https://ui-avatars.com/api/?background=102216&color=13ec5b&name=${encodeURIComponent(
+        name || "Rider"
+      )}`;
+    }
+
+    function setPeriodButtonState(active) {
+      const all = [
+        { key: "week", el: periodWeekBtn },
+        { key: "month", el: periodMonthBtn },
+        { key: "year", el: periodYearBtn },
+      ];
+
+      all.forEach(({ key, el }) => {
+        if (!el) return;
+        if (key === active) {
+          el.className =
+            "px-4 py-2 text-sm font-bold rounded-lg bg-primary text-slate-900";
+        } else {
+          el.className =
+            "px-4 py-2 text-sm font-bold rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800";
+        }
+      });
+    }
+
+    function updateStatusUI(status) {
+      const normalized = status === "online" ? "online" : "offline";
+      const label = normalized === "online" ? "Online" : "Offline";
+
+      if (sidebarStatusText) {
+        sidebarStatusText.textContent = label;
+        sidebarStatusText.className =
+          normalized === "online"
+            ? "text-xs text-primary font-medium"
+            : "text-xs text-red-400 font-medium";
+      }
+
+      if (sidebarStatusDot) {
+        sidebarStatusDot.className =
+          normalized === "online"
+            ? "size-2 bg-primary rounded-full animate-pulse"
+            : "size-2 bg-red-500 rounded-full";
+      }
+
+      if (logoutBtn) {
+        logoutBtn.innerHTML =
+          normalized === "online"
+            ? `
+              <span class="material-symbols-outlined text-sm">power_settings_new</span>
+              Go Offline
+            `
+            : `
+              <span class="material-symbols-outlined text-sm">power_settings_new</span>
+              Go Online
+            `;
+      }
+    }
+
+    function updateProfileUI(rider) {
+      const name = rider?.name || "Rider";
+      const avatar =
+        rider?.profilePicture ||
+        rider?.profile ||
+        avatarFromName(name);
+
+      if (sidebarProfileImage) {
+        sidebarProfileImage.style.backgroundImage = `url("${avatar}")`;
+      }
+
+      if (headerProfileImage) {
+        headerProfileImage.style.backgroundImage = `url("${avatar}")`;
+      }
+
+      if (sidebarRiderName) sidebarRiderName.textContent = name;
+      if (headerRiderName) headerRiderName.textContent = name;
+
+      updateStatusUI(rider?.status || "offline");
+    }
+
+    function getDateRange(period) {
+      const now = new Date();
+      const start = new Date(now);
+
+      if (period === "week") {
+        start.setDate(now.getDate() - 6);
+        start.setHours(0, 0, 0, 0);
+      } else if (period === "month") {
+        start.setMonth(now.getMonth(), 1);
+        start.setHours(0, 0, 0, 0);
+      } else {
+        start.setFullYear(now.getFullYear(), 0, 1);
+        start.setHours(0, 0, 0, 0);
+      }
+
+      return { start, end: now };
+    }
+
+    function filterHistoryByPeriod(history, period) {
+      const items = Array.isArray(history) ? history : [];
+      const { start, end } = getDateRange(period);
+
+      return items.filter((item) => {
+        const date = new Date(item.completedAt || item.createdAt || Date.now());
+        return date >= start && date <= end;
+      });
+    }
+
+    function getWeekBuckets(history) {
+      const days = [];
+      const now = new Date();
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(now.getDate() - i);
+        d.setHours(0, 0, 0, 0);
+
+        days.push({
+          key: d.toDateString(),
+          label: d.toLocaleDateString("en-US", { weekday: "short" }),
+          total: 0,
+        });
+      }
+
+      history.forEach((item) => {
+        const date = new Date(item.completedAt || item.createdAt || Date.now());
+        const key = new Date(date.setHours(0, 0, 0, 0)).toDateString();
+
+        const bucket = days.find((d) => d.key === key);
+        if (bucket) {
+          bucket.total += Number(item.riderCommission || 0);
+        }
+      });
+
+      return days;
+    }
+
+    function buildLinePath(values) {
+      if (!values.length) return "M0,140 L500,140";
+
+      const max = Math.max(...values, 1);
+      const stepX = values.length === 1 ? 500 : 500 / (values.length - 1);
+
+      const points = values.map((value, index) => {
+        const x = index * stepX;
+        const y = 140 - (value / max) * 120;
+        return `${x},${Math.max(20, y)}`;
+      });
+
+      return `M${points.join(" L")}`;
+    }
+
+    function buildAreaPath(values) {
+      if (!values.length) return "M0,140 L500,140 L500,160 L0,160 Z";
+
+      const max = Math.max(...values, 1);
+      const stepX = values.length === 1 ? 500 : 500 / (values.length - 1);
+
+      const points = values.map((value, index) => {
+        const x = index * stepX;
+        const y = 140 - (value / max) * 120;
+        return `${x},${Math.max(20, y)}`;
+      });
+
+      return `M${points.join(" L")} L500,160 L0,160 Z`;
+    }
+
+    function renderChart(history) {
+      const buckets = getWeekBuckets(history);
+      const values = buckets.map((b) => Number(b.total || 0));
+      const avg =
+        values.length > 0
+          ? values.reduce((sum, v) => sum + v, 0) / values.length
+          : 0;
+      const peak = values.length > 0 ? Math.max(...values) : 0;
+
+      if (chartAvgValue) chartAvgValue.textContent = formatMoney(avg);
+      if (chartPeakValue) chartPeakValue.textContent = formatMoney(peak);
+
+      if (earningsLinePath) {
+        earningsLinePath.setAttribute("d", buildLinePath(values));
+      }
+
+      if (earningsAreaPath) {
+        earningsAreaPath.setAttribute("d", buildAreaPath(values));
+      }
+
+      if (chartLabels) {
+        chartLabels.innerHTML = buckets
+          .map((bucket) => `<span>${bucket.label}</span>`)
+          .join("");
+      }
+    }
+
+    function renderRecentPayouts(history) {
+      const items = Array.isArray(history) ? history.slice(0, 8) : [];
+
+      if (!recentPayoutsWrap) return;
+
+      if (!items.length) {
+        recentPayoutsWrap.innerHTML = `
+          <div class="p-5">
+            <p class="font-bold">No payout history yet</p>
+            <p class="text-xs text-slate-500 mt-1">Completed deliveries will show here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      recentPayoutsWrap.innerHTML = items
+        .map((item) => {
+          const amount = Number(item.riderCommission || 0);
+          const date = new Date(item.completedAt || item.createdAt || Date.now());
+          const quantity = item.quantity ? `${item.quantity}L` : "";
+          const fuel = item.fuelType || "Fuel";
+          const orderCode = item.orderId || item._id || "Order";
+
+          return `
+            <div class="flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition">
+              <div class="flex items-center gap-4">
+                <div class="size-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined">delivery_dining</span>
+                </div>
+                <div>
+                  <p class="font-bold">Delivery ${orderCode} · ${quantity} ${fuel}</p>
+                  <p class="text-xs text-slate-500">${date.toLocaleString()}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="font-black text-lg">+${formatMoney(amount)}</span>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">
+                  service-tax commission
+                </p>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function updateTopCards(history, totals) {
+      const filtered = filterHistoryByPeriod(history, selectedPeriod);
+
+      const periodTotal = filtered.reduce(
+        (sum, item) => sum + Number(item.riderCommission || 0),
+        0
+      );
+
+      const allTotal = Number(totals.totalEarnings || 0);
+      const completedDeliveries = Number(totals.completedDeliveries || 0);
+      const pendingAmount = Number(totals.pendingAmount || 0);
+      const tipsTotal = 0;
+
+      if (totalEarnedValue) totalEarnedValue.textContent = formatMoney(allTotal);
+      if (totalEarnedMeta) totalEarnedMeta.innerHTML = `<span>Live total</span>`;
+
+      if (periodEarningsValue) periodEarningsValue.textContent = formatMoney(periodTotal);
+      if (periodEarningsMeta) {
+        periodEarningsMeta.textContent =
+          selectedPeriod === "week"
+            ? `${formatMoney(periodTotal)} this week`
+            : selectedPeriod === "month"
+            ? `${formatMoney(periodTotal)} this month`
+            : `${formatMoney(periodTotal)} this year`;
+      }
+
+      if (tipsValue) tipsValue.textContent = formatMoney(tipsTotal);
+      if (tipsMeta) {
+        const percent = allTotal > 0 ? Math.round((tipsTotal / allTotal) * 100) : 0;
+        tipsMeta.textContent = `${percent}% of total`;
+      }
+
+      if (pendingValue) pendingValue.textContent = formatMoney(pendingAmount);
+      if (pendingMeta) pendingMeta.textContent = "Awaiting customer confirmation";
+
+      if (summaryTrips) summaryTrips.textContent = String(completedDeliveries);
+      if (summaryAvgTrip) {
+        const avg = completedDeliveries > 0 ? allTotal / completedDeliveries : 0;
+        summaryAvgTrip.textContent = formatMoney(avg);
+      }
+
+      if (summaryHours) {
+        const estimatedHours = (completedDeliveries * 20) / 60;
+        summaryHours.textContent = `${estimatedHours.toFixed(1)} h`;
+      }
+
+      if (summaryTips) summaryTips.textContent = formatMoney(tipsTotal);
+      if (instantPayoutValue) {
+        instantPayoutValue.innerHTML = `
+          ${formatMoney(Number(totals.walletBalance || 0))}
+          <span class="text-sm font-normal text-slate-400">available</span>
+        `;
+      }
+    }
+
+    function updateGoalCard(history, totals) {
+      const filtered = filterHistoryByPeriod(history, "week");
+      const weeklyTotal = filtered.reduce(
+        (sum, item) => sum + Number(item.riderCommission || 0),
+        0
+      );
+
+      const goalTarget = 100000;
+      const percent = Math.min(100, Math.round((weeklyTotal / goalTarget) * 100));
+      const remaining = Math.max(0, goalTarget - weeklyTotal);
+
+      if (goalCurrentValue) goalCurrentValue.textContent = formatMoney(weeklyTotal);
+      if (goalTargetText) goalTargetText.textContent = `of ${formatMoney(goalTarget)} target`;
+      if (goalBar) goalBar.style.width = `${percent}%`;
+      if (goalRemainingText) {
+        goalRemainingText.innerHTML = `Need <span class="text-white font-bold">${formatMoney(
+          remaining
+        )}</span> to reach bonus tier`;
+      }
+    }
+
+    async function fetchRiderProfile() {
+      return apiFetch("/api/riders/me");
+    }
+
+    async function fetchRiderEarnings() {
+      try {
+        return await apiFetch("/api/delivery/rider/earnings");
+      } catch {
+        return {
+          walletBalance: 0,
+          totalEarnings: 0,
+          completedDeliveries: 0,
+          history: [],
+          pendingAmount: 0,
+        };
+      }
+    }
+
+    async function fetchAssignedDeliveries() {
+      try {
+        const data = await apiFetch("/api/delivery/my-deliveries");
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function calculatePendingAmount(assigned) {
+      return assigned
+        .filter((item) => item.deliveryStatus === "delivered")
+        .reduce((sum, item) => {
+          const serviceTax = Number(item.serviceTax || 0);
+          return sum + serviceTax * 0.6;
+        }, 0);
+    }
+
+    async function hydrateEarningsPage() {
+      const auth = getStoredAuth();
+
+      if (!auth || auth.userType !== "rider") {
+        redirectToLogin();
+        return;
+      }
+
+      try {
+        const rider = await fetchRiderProfile();
+
+        if (rider?.verificationStatus !== "approved") {
+          window.location.replace("rider-complete-registration.html");
+          return;
+        }
+
+        const refreshedAuth = {
+          ...auth,
+          _id: rider._id || auth._id,
+          name: rider.name || auth.name,
+          email: rider.email || auth.email,
+          profilePicture: rider.profilePicture || auth.profilePicture || "",
+          verificationStatus: rider.verificationStatus || auth.verificationStatus,
+          isVerified:
+            rider.isVerified === true ||
+            rider.verificationStatus === "approved",
+          status: rider.status || auth.status || "offline",
+          userType: "rider",
+          loggedInAt: auth.loggedInAt || Date.now(),
+        };
+
+        setStoredAuth(refreshedAuth);
+        updateProfileUI(rider);
+
+        const [earnings, assigned] = await Promise.all([
+          fetchRiderEarnings(),
+          fetchAssignedDeliveries(),
+        ]);
+
+        cachedHistory = Array.isArray(earnings.history) ? earnings.history : [];
+
+        const totals = {
+          walletBalance: Number(earnings.walletBalance || 0),
+          totalEarnings: Number(earnings.totalEarnings || 0),
+          completedDeliveries: Number(earnings.completedDeliveries || 0),
+          pendingAmount: calculatePendingAmount(assigned),
+        };
+
+        updateTopCards(cachedHistory, totals);
+        renderChart(cachedHistory);
+        renderRecentPayouts(cachedHistory);
+        updateGoalCard(cachedHistory, totals);
+      } catch (error) {
+        console.error(error);
+
+        const msg = String(error?.message || "").toLowerCase();
+        if (
+          msg.includes("not authorized") ||
+          msg.includes("401") ||
+          msg.includes("jwt") ||
+          msg.includes("token")
+        ) {
+          localStorage.removeItem("flanorx_auth");
+          redirectToLogin();
+          return;
+        }
+
+        alert(error.message || "Failed to load earnings");
+      }
+    }
+
+    async function toggleRiderStatus() {
+      const auth = getStoredAuth();
+      if (!auth) return redirectToLogin();
+
+      const current = auth.status === "online" ? "online" : "offline";
+      const next = current === "online" ? "offline" : "online";
+
+      logoutBtn.disabled = true;
+      logoutBtn.classList.add("opacity-60", "cursor-not-allowed");
+
+      try {
+        const res = await apiFetch("/api/riders/status", {
+          method: "PATCH",
+          body: JSON.stringify({ status: next }),
+        });
+
+        const updated = {
+          ...auth,
+          status: res?.status || next,
+        };
+
+        setStoredAuth(updated);
+        updateStatusUI(updated.status);
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Failed to update rider status");
+      } finally {
+        logoutBtn.disabled = false;
+        logoutBtn.classList.remove("opacity-60", "cursor-not-allowed");
+      }
+    }
+
+    async function logoutRider() {
+      try {
+        await apiFetch("/api/riders/logout", {
+          method: "POST",
+        });
+      } catch (error) {
+        console.error("Logout error:", error);
+      } finally {
+        localStorage.removeItem("flanorx_auth");
+        redirectToLogin();
+      }
+    }
+
+    function rerenderForPeriod(period) {
+      selectedPeriod = period;
+      setPeriodButtonState(period);
+
+      fetchAssignedDeliveries()
+        .then((assigned) => {
+          const totals = {
+            walletBalance: Number(
+              (getStoredAuth() && getStoredAuth().walletBalance) || 0
+            ),
+            totalEarnings: Number(totalEarnedValue?.textContent.replace(/[^\d.]/g, "") || 0),
+            completedDeliveries: Number(summaryTrips?.textContent || 0),
+            pendingAmount: calculatePendingAmount(assigned),
+          };
+
+          updateTopCards(cachedHistory, totals);
+          renderChart(cachedHistory);
+          updateGoalCard(cachedHistory, totals);
+        })
+        .catch(() => {});
+    }
+
+    periodWeekBtn?.addEventListener("click", () => rerenderForPeriod("week"));
+    periodMonthBtn?.addEventListener("click", () => rerenderForPeriod("month"));
+    periodYearBtn?.addEventListener("click", () => rerenderForPeriod("year"));
+
+    logoutBtn?.addEventListener("click", toggleRiderStatus);
+    logoutBtn?.addEventListener("contextmenu", function (e) {
+      e.preventDefault();
+      logoutRider();
+    });
+
+    transferBtn?.addEventListener("click", () => {
+      alert("Wallet withdrawal endpoint never set yet. Connect this button to your payout route when ready.");
+    });
+
+    setPeriodButtonState("week");
+    hydrateEarningsPage();
+  })();
+</script>
+  </body>
+</html>

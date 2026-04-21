@@ -1,0 +1,362 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx - Rider Sign up</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Standard favicon (PNG) -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/favicon-32x32.png"
+    />
+
+    <!-- ICO fallback for older browsers -->
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+
+    <!-- Apple Touch Icon (iPhone/iPad) -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="images/apple-touch-icon.png"
+    />
+
+    <!-- ✅ Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .rider-gradient {
+        background: linear-gradient(145deg, #102216 0%, #1a3a24 100%);
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display"
+  >
+    <header
+      class="w-full flex items-center justify-between px-8 py-6 max-w-7xl mx-auto"
+    >
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center">
+          <img
+            src="flanorx.png"
+            alt="Flanorx Logo"
+            class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+          />
+        </a>
+      </div>
+      <div class="flex items-center gap-3">
+        <span
+          class="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400"
+        >
+          <span class="material-symbols-outlined text-base"
+            >delivery_dining</span
+          >
+          Rider Portal
+        </span>
+        <a
+          href="rider-support.html"
+          class="px-6 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300 inline-block"
+        >
+          Support
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="w-full max-w-[520px] space-y-8">
+        <!-- Rider-specific header with badge -->
+        <div class="text-center space-y-3">
+          <div class="flex justify-center mb-2">
+            <span
+              class="bg-primary/20 text-primary px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2"
+            >
+              <span class="material-symbols-outlined text-base"
+                >delivery_dining</span
+              >
+              Rider Application
+            </span>
+          </div>
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            Become a Flanorx Rider
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+            Join our fleet of delivery partners and earn on your own schedule.
+          </p>
+        </div>
+
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none p-8 border border-slate-100 dark:border-slate-800"
+        >
+          <!-- ✅ Status / Error -->
+          <div id="authMsg" class="hidden mb-4 text-sm"></div>
+
+          <!-- Rider Benefits (mini feature list) -->
+          <div
+            class="flex items-center justify-between gap-2 mb-6 text-xs bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg"
+          >
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-base"
+                >schedule</span
+              >
+              <span class="font-medium">Flexible hours</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-base"
+                >payments</span
+              >
+              <span class="font-medium">Instant payouts</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-primary text-base"
+                >support_agent</span
+              >
+              <span class="font-medium">24/7 support</span>
+            </div>
+          </div>
+
+          <!-- Sign up with Google Button (rider style with primary accent) -->
+          <button
+            id="googleSignupBtn"
+            type="button"
+            class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-4 px-4 rounded-lg border-2 border-primary/30 hover:border-primary transition-all transform active:scale-[0.98]"
+          >
+            <img
+              alt="Google Logo"
+              class="size-5"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfhYBtTt4_oqUaZlerep04zeaTzKfHSfvUjYyJIyPag-eqSTQWl_iOIGSZOX5sdJc2YRy7GZsmsajFBaoNokP35to5thiSG-iviTPX8j9xBrKcbyWUMF8vZPIxlMp8stu_p5nA852zS_BpMJiuHLLjQdme8S6407HA3J4VOZgMPI7X1dS20CUg7oA5bqApD2E1vfOy70QaYlmS5qqx3O7FunsRHfULBWh4FZGf6IQc46J3wfGSxZ7jiyAwdEiGAjwnoe0F-lL0CPc"
+            />
+            <span id="btnText">Sign up with Google as Rider</span>
+          </button>
+
+          <!-- Divider -->
+          <div class="relative my-8">
+            <div class="absolute inset-0 flex items-center">
+              <div
+                class="w-full border-t border-slate-200 dark:border-slate-700"
+              ></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-white dark:bg-slate-900 text-slate-400"
+                >rider requirements</span
+              >
+            </div>
+          </div>
+
+          <!-- Rider requirements checklist -->
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary text-lg"
+                >check_circle</span
+              >
+              <span class="text-slate-600 dark:text-slate-400"
+                >Valid driver's license</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary text-lg"
+                >check_circle</span
+              >
+              <span class="text-slate-600 dark:text-slate-400"
+                >Background check required</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary text-lg"
+                >check_circle</span
+              >
+              <span class="text-slate-600 dark:text-slate-400"
+                >Own a smartphone (iOS/Android)</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-primary text-lg"
+                >check_circle</span
+              >
+              <span class="text-slate-600 dark:text-slate-400"
+                >18+ years old</span
+              >
+            </div>
+          </div>
+
+          <!-- Login link -->
+          <p
+            class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400"
+          >
+            Already a rider?
+            <a
+              class="font-bold text-primary hover:underline transition-colors"
+              href="rider-login.html"
+              >Sign in</a
+            >
+          </p>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 dark:text-slate-600 px-8">
+          By registering as a rider, you agree to our
+          <a class="underline hover:text-primary transition-colors" href="#"
+            >Rider Terms</a
+          >
+          and
+          <a class="underline hover:text-primary transition-colors" href="#"
+            >Fleet Agreement</a
+          >.
+        </p>
+      </div>
+    </main>
+
+    <div
+      class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-yellow-400 to-primary/50 opacity-50"
+    ></div>
+
+   <script>
+  const GOOGLE_CLIENT_ID =
+    "139378208657-0fujugnuiosdv9moc909vfm1328ouodb.apps.googleusercontent.com";
+
+  const API_BASE_URL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+      ? "http://127.0.0.1:8000"
+      : "https://flanorx-api.onrender.com";
+
+  const btn = document.getElementById("googleSignupBtn");
+  const btnText = document.getElementById("btnText");
+  const authMsg = document.getElementById("authMsg");
+
+  // ✅ Same redirect logic as login
+  function redirectAfterLogin(serverData) {
+    window.location.href = "rider-complete-registration.html";
+  }
+
+  function showMsg(message, type = "info") {
+    authMsg.classList.remove("hidden");
+    authMsg.className =
+      "mb-4 text-sm " +
+      (type === "error"
+        ? "text-red-600 dark:text-red-400"
+        : type === "success"
+          ? "text-green-700 dark:text-green-400"
+          : "text-slate-600 dark:text-slate-300");
+    authMsg.textContent = message;
+  }
+
+  function setLoading(isLoading) {
+    btn.disabled = isLoading;
+    btnText.textContent = isLoading
+      ? "Signing up..."
+      : "Sign up with Google as Rider";
+    btn.classList.toggle("opacity-60", isLoading);
+    btn.classList.toggle("cursor-not-allowed", isLoading);
+  }
+
+  // ✅ Same endpoint as rider login
+  async function sendTokenToBackend(googleToken) {
+    const res = await fetch(`${API_BASE_URL}/api/riders/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ token: googleToken }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok)
+      throw new Error(data?.message || `Backend error (${res.status})`);
+    return data;
+  }
+
+  let tokenClient;
+
+  window.addEventListener("load", () => {
+    if (!window.google?.accounts?.oauth2) {
+      showMsg(
+        "Google OAuth library failed to load. Check your internet.",
+        "error"
+      );
+      return;
+    }
+
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: "openid email profile",
+      callback: async (resp) => {
+        try {
+          if (!resp || !resp.access_token)
+            throw new Error("No access token returned");
+
+          setLoading(true);
+          showMsg("Verifying credentials...", "info");
+
+          const serverData = await sendTokenToBackend(resp.access_token);
+
+          // ✅ Same localStorage structure as rider login
+          localStorage.setItem(
+            "flanorx_auth",
+            JSON.stringify({
+              _id: serverData._id,
+              name: serverData.name,
+              email: serverData.email,
+              profilePicture: serverData.profilePicture,
+              authMethod: serverData.authMethod,
+              userType: "rider",
+              isVerified: !!serverData.isVerified,
+              loggedInAt: Date.now(),
+            })
+          );
+
+          showMsg("Signup successful! Redirecting...", "success");
+          setTimeout(() => redirectAfterLogin(serverData), 1200);
+        } catch (e) {
+          console.error(e);
+          showMsg(e.message || "Signup failed. Please try again.", "error");
+          setLoading(false);
+        }
+      },
+    });
+
+    btn.addEventListener("click", () => {
+      if (btn.disabled) return;
+      authMsg.classList.add("hidden");
+      setLoading(true);
+      tokenClient.requestAccessToken({ prompt: "select_account" });
+    });
+  });
+</script>
+  </body>
+</html>

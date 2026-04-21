@@ -1,0 +1,913 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx - Power Down? No Wahala!</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "accent-yellow": "#ffc107",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      /* ---------- scroll reveal + hover animations ---------- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+          transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+      .reveal.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      /* icons & buttons get playful hover (scale / rotate / color) — no design change, just motion */
+      .group-hover\:scale-110:hover .material-symbols-outlined,
+      .group:hover .material-symbols-outlined {
+        transition:
+          transform 0.2s ease,
+          color 0.2s ease;
+      }
+      .group:hover .material-symbols-outlined {
+        transform: scale(1.12) rotate(1deg);
+        color: #13ec5b; /* keep primary vibe */
+      }
+      /* icon containers gentle scale + background */
+      .hover\:icon-pop:hover .material-symbols-outlined {
+        transform: scale(1.15);
+        transition: transform 0.15s ease;
+      }
+      .hover\:icon-pop:hover {
+        background-color: rgba(19, 236, 91, 0.15) !important;
+        transition: background-color 0.2s;
+      }
+      /* specific overrides so design stays untouched – only motion added */
+      .material-symbols-outlined {
+        transition:
+          transform 0.18s ease,
+          color 0.18s ease;
+      }
+      button:active .material-symbols-outlined {
+        transform: scale(0.9);
+      }
+      img.avatar-hover:hover {
+        transform: scale(1.03);
+        transition: transform 0.2s;
+      }
+      /* card hover border subtle? only if it exists — no, we promised no design change, but a minimal lift is invisible design-wise? just to be safe we skip border, only icon animation. fine */
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased"
+  >
+    <div class="relative flex min-h-screen flex-col overflow-x-hidden">
+      <header
+        class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md dark:bg-background-dark/80 dark:border-slate-800"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 items-center justify-between">
+            <div class="flex items-center gap-2">
+              <img
+                src="flanorx.png"
+                alt="Flanorx Logo"
+                class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+              />
+            </div>
+            <nav class="hidden md:flex items-center gap-8">
+              <a
+                class="text-sm font-semibold hover:text-primary transition-colors"
+                href="#"
+                >Services</a
+              >
+              <a
+                class="text-sm font-semibold hover:text-primary transition-colors"
+                href="#"
+                >Locations</a
+              >
+              <a
+                class="text-sm font-semibold hover:text-primary transition-colors"
+                href="#"
+                >About</a
+              >
+              <a
+                class="text-sm font-semibold hover:text-primary transition-colors flex items-center gap-1 group"
+                href="#"
+              >
+                <span
+                  class="material-symbols-outlined text-sm group-hover:scale-110 transition-transform"
+                  >track_changes</span
+                >
+                <span>Track Fuel</span>
+              </a>
+            </nav>
+            <div class="flex items-center gap-3">
+              <a
+                href="login.html"
+                class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary text-background-dark text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform active:scale-95"
+              >
+                Order Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-grow">
+        <!-- hero section – reveal applied to inner elements -->
+        <section
+          class="relative w-full min-h-[600px] flex items-center justify-center py-20 px-4 overflow-hidden"
+        >
+          <div class="absolute inset-0 z-0">
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30 z-10"
+            ></div>
+            <img
+              alt="Fuel Truck"
+              class="w-full h-full object-cover"
+              data-alt="Modern yellow fuel delivery truck on a clean road"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJJ8AfCqcNGDUlO1ArZE02GXe1R27QZw2BwfHXQOPtOnLq-rIh1B4JLnRWZfAsw0OvzPY_cfPwMNGmxfCEJjv4I2iq2K-lyuHAa3lyDtO7Kq57y8nJx2M51uWmzIGTAqfLKvW10a3o67sN2-Ju9Euhu4Bbfrrgelr3NJr49eE3gAG-St2Qwrn61BcsSgiq7RGXbzQlSvOKB4iRT2gZYRN4gg0-11BYRgn0RQmO5IVtwoLIiDGu8a_y_ek--cdNK9yRsjcraqr_LZo"
+            />
+          </div>
+          <div
+            class="relative z-20 max-w-5xl w-full text-center lg:text-left flex flex-col lg:flex-row items-center gap-12"
+          >
+            <div class="flex-1 space-y-6">
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-md reveal"
+              >
+                <span class="material-symbols-outlined text-primary text-sm"
+                  >bolt</span
+                >
+                <span
+                  class="text-xs font-bold text-primary uppercase tracking-wider"
+                  >Fastest Delivery in Town</span
+                >
+              </div>
+              <h2
+                class="text-5xl md:text-7xl font-black text-white leading-[1.1] tracking-tight reveal"
+              >
+                Power Down? <br /><span class="text-primary italic"
+                  >No wahala!</span
+                >
+              </h2>
+              <p
+                class="text-lg text-slate-200 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium reveal"
+              >
+                On-demand fuel delivery to your doorstep, anytime, 24/7
+              </p>
+            </div>
+            <div
+              class="w-full max-w-md bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-2xl border border-white/20 reveal"
+            >
+              <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary"
+                  >shopping_cart</span
+                >
+                Quick Order
+              </h3>
+              <form class="space-y-4">
+                <div class="space-y-2">
+                  <label class="text-xs font-bold text-slate-500 uppercase"
+                    >Delivery Location</label
+                  >
+                  <div class="relative group">
+                    <span
+                      class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-hover:text-primary transition-colors"
+                      >location_on</span
+                    >
+                    <input
+                      class="w-full pl-10 pr-4 py-3 rounded-lg border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary transition-all text-sm"
+                      placeholder="Enter street or city"
+                      type="text"
+                    />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase"
+                      >Fuel Type</label
+                    >
+                    <select
+                      class="w-full py-3 rounded-lg border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary text-sm font-semibold"
+                    >
+                      <option>Petrol (PMS)</option>
+                      
+                    </select>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase"
+                      >Quantity (Ltrs)</label
+                    >
+                    <input
+                      class="w-full py-3 rounded-lg border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700 focus:ring-primary focus:border-primary text-sm"
+                      placeholder="20"
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <a
+                  href="register.html"
+                  class="w-full py-4 bg-primary text-background-dark font-black text-lg rounded-xl hover:shadow-xl hover:shadow-primary/30 transition-all flex items-center justify-center gap-2 group"
+                >
+                  Get Fuel Now
+                  <span
+                    class="material-symbols-outlined group-hover:translate-x-1 transition-transform"
+                  >
+                    arrow_forward
+                  </span>
+                </a>
+                <p
+                  class="text-center text-[10px] text-slate-400 uppercase font-bold tracking-widest pt-2"
+                >
+                  Available 24/7 in Lagos, Abuja, &amp; Port Harcourt
+                </p>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- how it works -->
+        <section class="py-24 px-4 bg-white dark:bg-background-dark">
+          <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 space-y-4">
+              <h2
+                class="text-3xl md:text-4xl font-extrabold tracking-tight reveal"
+              >
+                How it Works
+              </h2>
+              <div
+                class="w-24 h-1.5 bg-primary mx-auto rounded-full reveal"
+              ></div>
+              <p class="text-slate-600 dark:text-slate-400 font-medium reveal">
+                Refueling is as simple as ordering pizza.
+              </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <div
+                class="relative flex flex-col items-center text-center group reveal"
+              >
+                <div
+                  class="size-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-300 hover:bg-primary/30"
+                >
+                  <span
+                    class="material-symbols-outlined text-primary"
+                    style="font-size: 40px"
+                    >map</span
+                  >
+                </div>
+                <h3 class="text-xl font-bold mb-3">1. Pin Location</h3>
+                <p class="text-slate-600 dark:text-slate-400">
+                  Set your exact delivery point on our intuitive map interface.
+                </p>
+                <div
+                  class="hidden md:block absolute top-10 -right-6 text-primary/30"
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 48px"
+                    >trending_flat</span
+                  >
+                </div>
+              </div>
+              <div
+                class="relative flex flex-col items-center text-center group reveal"
+              >
+                <div
+                  class="size-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-300 hover:bg-primary/30"
+                >
+                  <span
+                    class="material-symbols-outlined text-primary"
+                    style="font-size: 40px"
+                    >oil_barrel</span
+                  >
+                </div>
+                <h3 class="text-xl font-bold mb-3">2. Choose Fuel</h3>
+                <p class="text-slate-600 dark:text-slate-400">
+                  Select Petrol, Diesel, or Gas and the specific volume you
+                  need.
+                </p>
+                <div
+                  class="hidden md:block absolute top-10 -right-6 text-primary/30"
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 48px"
+                    >trending_flat</span
+                  >
+                </div>
+              </div>
+              <div class="flex flex-col items-center text-center group reveal">
+                <div
+                  class="size-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-300 hover:bg-primary/30"
+                >
+                  <span
+                    class="material-symbols-outlined text-primary"
+                    style="font-size: 40px"
+                    >task_alt</span
+                  >
+                </div>
+                <h3 class="text-xl font-bold mb-3">3. Get Refueled</h3>
+                <p class="text-slate-600 dark:text-slate-400">
+                  Our rider arrives within 30 minutes to professionally fill
+                  your tank.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- leading energy delivery -->
+        <section class="py-24 px-4 bg-slate-50 dark:bg-slate-900/50">
+          <div
+            class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"
+          >
+            <div class="grid grid-cols-2 gap-6">
+              <div
+                class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 reveal group"
+              >
+                <span
+                  class="material-symbols-outlined text-primary mb-4"
+                  style="font-size: 32px"
+                  >speed</span
+                >
+                <h4 class="font-bold mb-2">30-Min Delivery</h4>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                  Fastest turnaround in the industry. We don't keep you waiting.
+                </p>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 mt-8 reveal group"
+              >
+                <span
+                  class="material-symbols-outlined text-[#ff4d4d] mb-4"
+                  style="font-size: 32px"
+                  >verified_user</span
+                >
+                <h4 class="font-bold mb-2">Quality Fuel</h4>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                  Direct from depot. No adulteration. 100% pure fuel guaranteed.
+                </p>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 reveal group"
+              >
+                <span
+                  class="material-symbols-outlined text-[#ffc107] mb-4"
+                  style="font-size: 32px"
+                  >payments</span
+                >
+                <h4 class="font-bold mb-2">Fair Pricing</h4>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                  Market competitive rates with transparent delivery fees.
+                </p>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 mt-8 reveal group"
+              >
+                <span
+                  class="material-symbols-outlined text-primary mb-4"
+                  style="font-size: 32px"
+                  >route</span
+                >
+                <h4 class="font-bold mb-2">Live Tracking</h4>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                  Watch your delivery rider on the map in real-time.
+                </p>
+              </div>
+            </div>
+            <div class="space-y-8 reveal">
+              <h2 class="text-4xl font-extrabold leading-tight">
+                Leading the
+                <span class="text-primary">Energy Delivery</span> Revolution
+              </h2>
+              <p class="text-lg text-slate-600 dark:text-slate-400">
+                We understand that power is the lifeblood of your home and
+                business. Flanorx was built to eliminate the stress of searching
+                for fuel or carrying heavy jerrycans.
+              </p>
+              <ul class="space-y-4">
+                <li class="flex items-center gap-3 group">
+                  <span
+                    class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform"
+                    >check_circle</span
+                  ><span class="font-bold">Fully Insured Delivery Process</span>
+                </li>
+                <li class="flex items-center gap-3 group">
+                  <span
+                    class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform"
+                    >check_circle</span
+                  ><span class="font-bold">Certified Professional Riders</span>
+                </li>
+                <li class="flex items-center gap-3 group">
+                  <span
+                    class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform"
+                    >check_circle</span
+                  ><span class="font-bold">Eco-friendly Delivery Fleet</span>
+                </li>
+              </ul>
+              <button
+                class="bg-primary text-background-dark px-8 py-4 rounded-xl font-bold hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+              >
+                Learn More About Us
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- customer stories -->
+        <section class="py-24 px-4 overflow-hidden">
+          <div class="max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-12">
+              <div>
+                <h2 class="text-3xl font-extrabold mb-2 reveal">
+                  Customer Stories
+                </h2>
+                <p class="text-slate-500 reveal">
+                  Don't just take our word for it.
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <button
+                  class="p-2 rounded-full border border-slate-200 hover:bg-slate-100 transition-all group"
+                >
+                  <span
+                    class="material-symbols-outlined group-hover:scale-110 transition-transform"
+                    >chevron_left</span
+                  >
+                </button>
+                <button
+                  class="p-2 rounded-full bg-primary text-background-dark hover:shadow-md transition-all group"
+                >
+                  <span
+                    class="material-symbols-outlined group-hover:scale-110 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div
+                class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between reveal group"
+              >
+                <div class="space-y-4">
+                  <div class="flex text-[#ffc107]">
+                    <span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span>
+                  </div>
+                  <p
+                    class="text-slate-600 dark:text-slate-400 leading-relaxed italic font-medium"
+                  >
+                    "Flanorx is a lifesaver! My generator ran out in the middle
+                    of a big zoom meeting. They arrived in 20 minutes."
+                  </p>
+                </div>
+                <div class="flex items-center gap-4 mt-8">
+                  <div
+                    class="size-12 rounded-full overflow-hidden bg-slate-200 avatar-hover"
+                  >
+                    <img
+                      alt="User 1"
+                      class="hover:scale-105 transition-transform duration-200"
+                      data-alt="Close up portrait of a smiling man"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZWyg0gmYeX7MBeNkbZCf30HL2ak_OEuY_Ip-sVArA6J46mbKQfz97vA8hgYGpljydGv2zy8QYqYSVxd10UI5yOBYkVTpRzcsjOIfC7cVy4pt4RdBCYv4qGBbCLnxkTTjHVebntDEV_xmmi8VEsKE9oWVrE8Deckj5mqCRUboOlzQpm8QJK01oWqZguemdKYTQ-_BbTlE6n9Qj6D2qY4nHx75lgQ1XrS_K7AX2Yux3iZT5lT0bRdkBqVtmaeQt9DlGjWBjQeYr0rY"
+                    />
+                  </div>
+                  <div>
+                    <h5 class="font-bold">Ibrahim O.</h5>
+                    <p
+                      class="text-xs text-slate-500 uppercase font-bold tracking-tighter"
+                    >
+                      Business Owner
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between reveal group"
+              >
+                <div class="space-y-4">
+                  <div class="flex text-[#ffc107]">
+                    <span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span>
+                  </div>
+                  <p
+                    class="text-slate-600 dark:text-slate-400 leading-relaxed italic font-medium"
+                  >
+                    "The quality of the diesel is top-notch. I've noticed my
+                    engine runs smoother since I started using Flanorx
+                    exclusively."
+                  </p>
+                </div>
+                <div class="flex items-center gap-4 mt-8">
+                  <div
+                    class="size-12 rounded-full overflow-hidden bg-slate-200 avatar-hover"
+                  >
+                    <img
+                      alt="User 2"
+                      class="hover:scale-105 transition-transform"
+                      data-alt="Close up portrait of a smiling woman"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuZou43f9AfRvat-5ZIu6Cbz9qjrG9oZ6cBdjzkI0_-RkRRe1wJwoyP4nniBprAPjS2Ol9dOOariRFmqEXYBMbCKezUKCGHXB8lGk5GD7Q92kmEtsxxkBpGrJ3gJL-3WMwI2AftC_tOa-ctkdQdHUoMY_JA5bS0Z6dCH9j4P9QMudKKrqVuR4m6wnr0EvOoq4CJnsJlCoQrpGPBNwFKIRIEbk6HggxilWa1Nq6P_Y2HUN3tnVAH9qdtGUdxcv0LsUzbfevD8e6rbk"
+                    />
+                  </div>
+                  <div>
+                    <h5 class="font-bold">Sarah A.</h5>
+                    <p
+                      class="text-xs text-slate-500 uppercase font-bold tracking-tighter"
+                    >
+                      Homeowner
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col justify-between reveal group"
+              >
+                <div class="space-y-4">
+                  <div class="flex text-[#ffc107]">
+                    <span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span
+                    ><span class="material-symbols-outlined">star</span>
+                  </div>
+                  <p
+                    class="text-slate-600 dark:text-slate-400 leading-relaxed italic font-medium"
+                  >
+                    "I love the driver portal. I'm making a great income
+                    delivering fuel on my own schedule. Highly recommended!"
+                  </p>
+                </div>
+                <div class="flex items-center gap-4 mt-8">
+                  <div
+                    class="size-12 rounded-full overflow-hidden bg-slate-200 avatar-hover"
+                  >
+                    <img
+                      alt="User 3"
+                      class="hover:scale-105 transition-transform"
+                      data-alt="Close up portrait of a bearded man"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrs1QjeztUnknw1dZrckl7dUR1vEP1phEZ0ZeyGSj0ardhSVLz7uL1YDn5Jusg-uOA4gQkJ7lwxkMMHpAeevIyrSRhATKfOxXILpEojG0LUsSuijP5zAYGUyIYJ6gRiDCcsX9fslMMbvdOeesSwIDX2kMUtR0-cAfZCVTB_B9iRTRF2DaCvxKjcqxAKGonsydL7qHg0XjxbQo-6Qzqph0ansyEAVufeaVG3sBy4hHzx3b6hLY09KzWudMlY3feDq5cDaeUkwSdTN4"
+                    />
+                  </div>
+                  <div>
+                    <h5 class="font-bold">David K.</h5>
+                    <p
+                      class="text-xs text-slate-500 uppercase font-bold tracking-tighter"
+                    >
+                      Flanorx Rider
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ride with flanorx -->
+        <section class="py-20 px-4 bg-primary">
+          <div
+            class="max-w-5xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10"
+          >
+            <div
+              class="text-background-dark max-w-xl text-center lg:text-left reveal"
+            >
+              <h2 class="text-4xl font-black mb-4">Ride with Flanorx</h2>
+              <p class="text-lg font-semibold opacity-90 leading-relaxed">
+                Join our elite fleet of delivery experts. Earn great pay, work
+                your own hours, and help power the community.
+              </p>
+            </div>
+            <button
+              class="bg-background-dark text-primary px-10 py-5 rounded-2xl font-black text-xl shadow-2xl hover:scale-105 transition-transform active:scale-95 reveal"
+            >
+              Become a Rider
+            </button>
+          </div>
+        </section>
+
+        <!-- partner with flanorx -->
+        <section
+          class="py-24 px-4 bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800"
+        >
+          <div class="max-w-7xl mx-auto">
+            <div
+              class="bg-slate-50 dark:bg-slate-900/40 rounded-[2.5rem] p-8 md:p-16 flex flex-col lg:flex-row items-center gap-12 overflow-hidden relative"
+            >
+              <div
+                class="absolute -top-12 -right-12 size-64 bg-accent-yellow/5 rounded-full blur-3xl"
+              ></div>
+              <div
+                class="absolute -bottom-12 -left-12 size-64 bg-primary/5 rounded-full blur-3xl"
+              ></div>
+              <div class="flex-1 space-y-8 relative z-10">
+                <div class="flex items-center gap-3 reveal">
+                  <div
+                    class="size-12 bg-accent-yellow/20 rounded-xl flex items-center justify-center hover:bg-accent-yellow/30 transition-colors"
+                  >
+                    <span
+                      class="material-symbols-outlined text-accent-yellow"
+                      style="font-size: 28px"
+                      >handshake</span
+                    >
+                  </div>
+                  <span
+                    class="text-sm font-bold uppercase tracking-[0.2em] text-slate-500"
+                    >Business Opportunities</span
+                  >
+                </div>
+                <h2
+                  class="text-4xl md:text-5xl font-black tracking-tight leading-tight reveal"
+                >
+                  Partner with <span class="text-accent-yellow">Flanorx</span>
+                </h2>
+                <p
+                  class="text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed reveal"
+                >
+                  Are you a gas station owner or fuel depot operator? Expand
+                  your reach and increase your sales by joining our distribution
+                  network. We provide the technology and the customers; you
+                  provide the fuel.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div class="flex items-start gap-3 group">
+                    <span
+                      class="material-symbols-outlined text-accent-yellow group-hover:scale-110 transition-transform"
+                      >storefront</span
+                    >
+                    <div>
+                      <h5 class="font-bold text-sm">Expand Your Reach</h5>
+                      <p class="text-xs text-slate-500">
+                        Access thousands of customers beyond your physical
+                        location.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3 group">
+                    <span
+                      class="material-symbols-outlined text-accent-yellow group-hover:scale-110 transition-transform"
+                      >query_stats</span
+                    >
+                    <div>
+                      <h5 class="font-bold text-sm">Real-time Analytics</h5>
+                      <p class="text-xs text-slate-500">
+                        Detailed insights into your sales and inventory
+                        movements.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="w-full lg:w-auto flex flex-col items-center gap-6 relative z-10 reveal"
+              >
+                <button
+                  class="w-full lg:w-auto bg-accent-yellow text-background-dark px-12 py-6 rounded-2xl font-black text-xl shadow-xl shadow-accent-yellow/20 hover:scale-105 hover:shadow-2xl transition-all active:scale-95"
+                >
+                  Join as a Partner
+                </button>
+                <div class="flex items-center gap-6 opacity-60 grayscale">
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 40px"
+                    >corporate_fare</span
+                  >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 40px"
+                    >factory</span
+                  >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-size: 40px"
+                    >domain</span
+                  >
+                </div>
+                <p
+                  class="text-xs font-bold text-slate-400 uppercase tracking-widest"
+                >
+                  Trusted by 50+ Depots Nationwide
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="bg-slate-950 text-white pt-20 pb-10 px-4">
+        <div class="max-w-7xl mx-auto">
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
+          >
+            <div class="space-y-6 reveal">
+              <div class="flex items-center gap-2">
+                <img
+                  src="flanorx.png"
+                  alt="Flanorx Logo"
+                  class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed">
+                Providing reliable, fast, and safe on-demand energy delivery for
+                every home and business in Nigeria.
+              </p>
+              <div class="flex gap-4">
+                <a
+                  class="size-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-primary hover:text-background-dark transition-all group"
+                  href="#"
+                  ><span
+                    class="material-symbols-outlined group-hover:scale-110 transition-transform"
+                    >social_leaderboard</span
+                  ></a
+                >
+                <a
+                  class="size-10 rounded-full bg-slate-900 flex items-center justify-center hover:bg-primary hover:text-background-dark transition-all group"
+                  href="#"
+                  ><span
+                    class="material-symbols-outlined group-hover:scale-110 transition-transform"
+                    >alternate_email</span
+                  ></a
+                >
+              </div>
+            </div>
+            <div class="reveal">
+              <h5 class="font-bold mb-6">Services</h5>
+              <ul class="space-y-4 text-sm text-slate-400">
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >Residential Delivery</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >Commercial Fueling</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >Fleet Management</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >LPG Refilling</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="reveal">
+              <h5 class="font-bold mb-6">Company</h5>
+              <ul class="space-y-4 text-sm text-slate-400">
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >Sustainability</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >Privacy Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="hover:text-primary transition-colors flex items-center gap-1"
+                    href="#"
+                    ><span class="material-symbols-outlined text-sm"
+                      >chevron_right</span
+                    >Terms of Service</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="reveal">
+              <h5 class="font-bold mb-6">Contact</h5>
+              <ul class="space-y-4 text-sm text-slate-400">
+                <li class="flex gap-3">
+                  <span
+                    class="material-symbols-outlined text-primary group-hover:scale-110"
+                    >location_on</span
+                  >Port Harcourt, Nigeria
+                </li>
+                <li class="flex gap-3">
+                  <span
+                    class="material-symbols-outlined text-primary group-hover:scale-110"
+                    >call</span
+                  >+234 800 1234567
+                </li>
+                <li class="flex gap-3">
+                  <span
+                    class="material-symbols-outlined text-primary group-hover:scale-110"
+                    >mail</span
+                  >support@flanorx.com
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div
+            class="pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4"
+          >
+            <p class="text-xs text-slate-500">
+              © 2026 Flanorx. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- tiny scroll reveal script -->
+    <script>
+      (function () {
+        const reveals = document.querySelectorAll(".reveal");
+        function checkReveal() {
+          for (let el of reveals) {
+            const rect = el.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            if (rect.top < windowHeight - 80) {
+              el.classList.add("show");
+            }
+          }
+        }
+        window.addEventListener("scroll", checkReveal);
+        window.addEventListener("resize", checkReveal);
+        checkReveal(); // immediate check
+      })();
+    </script>
+    <!-- extra hover pop for icons – already covered by group & inline transitions -->
+  </body>
+</html>

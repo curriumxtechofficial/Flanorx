@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Settings · Flanorx Customer</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts: Manrope -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "brand-yellow": "#FFD700",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .sidebar-active {
+        background-color: rgba(19, 236, 91, 0.1);
+        border-right: 4px solid #13ec5b;
+        color: #111813;
+      }
+      .avatar-upload-overlay {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .avatar-group:hover .avatar-upload-overlay {
+        opacity: 1;
+      }
+      .bottom-nav-item.active {
+        color: #13ec5b;
+        background: rgba(19, 236, 91, 0.1);
+        border-radius: 12px;
+        padding: 4px 0;
+      }
+      .bottom-nav-item.active .material-symbols-outlined {
+        font-variation-settings: "FILL" 1;
+        color: #13ec5b;
+      }
+      .bottom-nav-item {
+        transition: all 0.2s;
+        padding: 4px 0;
+        margin: 0 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        color: #64748b;
+        flex: 1;
+        max-width: 80px;
+      }
+      .bottom-nav-item .material-symbols-outlined {
+        font-size: 24px;
+        transition: all 0.2s;
+      }
+      .bottom-nav-item span:last-child {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .dark .bottom-nav-item {
+        color: #94a3b8;
+      }
+      .dark .bottom-nav-item.active {
+        background: rgba(19, 236, 91, 0.15);
+        color: #13ec5b;
+      }
+      .dark .bottom-nav-item.active .material-symbols-outlined {
+        color: #13ec5b;
+      }
+      .mobile-bottom-nav {
+        display: none;
+      }
+      @media (max-width: 1023px) {
+        .mobile-bottom-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(226, 232, 240, 0.8);
+          z-index: 40;
+          padding-bottom: env(safe-area-inset-bottom, 0);
+          align-items: center;
+          justify-content: space-around;
+          box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.03);
+        }
+        .dark .mobile-bottom-nav {
+          background: rgba(15, 23, 42, 0.95);
+          border-top-color: rgba(30, 41, 59, 0.8);
+        }
+        main {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+        }
+        #menuToggle {
+          display: none;
+        }
+        #sidebar {
+          transform: translateX(-100%);
+        }
+      }
+      @media (min-width: 1024px) {
+        #sidebar {
+          transform: translateX(0) !important;
+        }
+        #menuToggle {
+          display: block;
+        }
+        main {
+          padding-bottom: 0;
+        }
+      }
+
+      /* Utility to hide elements */
+      .hidden-section {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- ========== SIDEBAR ========== -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-dashboard.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >dashboard</span
+            >
+            <span class="font-medium text-sm">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="customer-order-history.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >history</span
+            >
+            <span class="font-medium text-sm">Order History</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="place-order.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >local_gas_station</span
+            >
+            <span class="font-semibold text-sm">Place Order</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group"
+            href="tracking.html"
+          >
+            <span
+              class="material-symbols-outlined group-hover:text-primary transition-colors"
+              >near_me</span
+            >
+            <span class="font-medium text-sm">Tracking</span>
+          </a>
+          <!-- Settings (ACTIVE) -->
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-xl sidebar-active group transition-all"
+            href="customer-settings.html"
+          >
+            <span class="material-symbols-outlined text-primary">settings</span>
+            <span class="font-semibold text-sm">Settings</span>
+          </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+          <div class="bg-red-500/10 rounded-2xl p-4">
+            <p class="text-xs font-bold text-red-500 uppercase mb-3">Account</p>
+            <button
+              id="logoutBtn"
+              class="w-full py-2 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Backdrop (mobile) -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- ========== MAIN CONTENT ========== -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- ========== SETTINGS CONTENT ========== -->
+        <div class="p-4 lg:p-8 space-y-8 max-w-5xl">
+          <!-- Page heading -->
+          <div>
+            <h2
+              class="text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-3"
+            >
+              <span class="material-symbols-outlined text-primary text-3xl"
+                >settings</span
+              >
+              Account Settings
+            </h2>
+            <p class="text-slate-500 mt-1 text-sm lg:text-base">
+              View your information. Click the edit icon to modify.
+            </p>
+          </div>
+
+          <!-- Two column layout -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Right: Settings sections -->
+            <div class="lg:col-span-8 space-y-6">
+              <!-- ===== PERSONAL INFORMATION (summary only, form hidden) ===== -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary"
+                      >badge</span
+                    >
+                    Personal Information
+                  </h3>
+                  <button
+                    id="editPersonalBtn"
+                    class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors"
+                    title="Edit"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                </div>
+
+                <!-- Summary view (visible by default) -->
+                <div
+                  id="personalSummary"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm"
+                >
+                  <div>
+                    <span class="text-slate-500 block text-xs">First name</span
+                    ><span class="font-medium">Alex</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-500 block text-xs">Last name</span
+                    ><span class="font-medium">Johnson</span>
+                  </div>
+                  <div class="md:col-span-2">
+                    <span class="text-slate-500 block text-xs">Email</span
+                    ><span class="font-medium">alex.johnson@example.com</span>
+                  </div>
+                  <div class="md:col-span-2">
+                    <span class="text-slate-500 block text-xs">Phone</span
+                    ><span class="font-medium">+1 (555) 789-1234</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-500 block text-xs"
+                      >Date of birth</span
+                    ><span class="font-medium">August 23, 1985</span>
+                  </div>
+                  <div>
+                    <span class="text-slate-500 block text-xs">Gender</span
+                    ><span class="font-medium">Male</span>
+                  </div>
+                </div>
+
+                <!-- Edit form (hidden by default) -->
+                <div id="personalEditForm" class="hidden-section">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >First name</label
+                      >
+                      <input
+                        type="text"
+                        value="Alex"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Last name</label
+                      >
+                      <input
+                        type="text"
+                        value="Johnson"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div class="md:col-span-2">
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Email address</label
+                      >
+                      <input
+                        type="email"
+                        value="alex.johnson@example.com"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div class="md:col-span-2">
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Phone number</label
+                      >
+                      <input
+                        type="tel"
+                        value="+1 (555) 789-1234"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Date of birth</label
+                      >
+                      <input
+                        type="date"
+                        value="1985-08-23"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Gender</label
+                      >
+                      <select
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary appearance-none"
+                      >
+                        <option>Prefer not to say</option>
+                        <option selected>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="flex justify-end gap-3 mt-6">
+                    <button
+                      id="cancelPersonalBtn"
+                      class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="px-6 py-2 bg-primary text-slate-900 font-bold rounded-lg text-sm shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center gap-2"
+                    >
+                      <span class="material-symbols-outlined">save</span> Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ===== SECURITY (summary only, form hidden) ===== -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary"
+                      >lock</span
+                    >
+                    Security
+                  </h3>
+                  <button
+                    id="editSecurityBtn"
+                    class="text-primary hover:bg-primary/10 p-2 rounded-full transition-colors"
+                    title="Edit"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                </div>
+
+                <!-- Security summary (visible by default) -->
+                <div id="securitySummary" class="text-sm space-y-2">
+                  <p>
+                    <span class="text-slate-500">Password:</span> ••••••••
+                    <span class="text-xs text-slate-400 ml-2"
+                      >(last changed 30 days ago)</span
+                    >
+                  </p>
+                </div>
+
+                <!-- Security edit form (hidden by default) -->
+                <div id="securityEditForm" class="hidden-section">
+                  <div class="space-y-5 mt-2">
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Current password</label
+                      >
+                      <input
+                        type="password"
+                        value="••••••••"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >New password</label
+                      >
+                      <input
+                        type="password"
+                        placeholder="Leave blank to keep unchanged"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"
+                        >Confirm new password</label
+                      >
+                      <input
+                        type="password"
+                        placeholder="Re‑enter new password"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div
+                      class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 text-xs flex items-center gap-2"
+                    >
+                      <span
+                        class="material-symbols-outlined text-slate-400 text-sm"
+                        >info</span
+                      >
+                      <span class="text-slate-500"
+                        >Password must be at least 8 characters, include a
+                        number and a special character.</span
+                      >
+                    </div>
+                  </div>
+                  <div class="flex justify-end gap-3 mt-6">
+                    <button
+                      id="cancelSecurityBtn"
+                      class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="px-6 py-2 bg-primary text-slate-900 font-bold rounded-lg text-sm shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center gap-2"
+                    >
+                      <span class="material-symbols-outlined">save</span> Update
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Notification Preferences (always visible) -->
+              <div
+                class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm"
+              >
+                <h3 class="text-lg font-bold flex items-center gap-2 mb-6">
+                  <span class="material-symbols-outlined text-primary"
+                    >notifications</span
+                  >
+                  Notification Preferences
+                </h3>
+                <div class="space-y-4">
+                  <label
+                    class="flex items-center justify-between cursor-pointer"
+                  >
+                    <span class="text-sm font-medium">Order updates (SMS)</span>
+                    <div
+                      class="relative inline-block w-12 h-6 rounded-full bg-slate-200 dark:bg-slate-700 peer-checked:bg-primary transition"
+                    >
+                      <input type="checkbox" class="sr-only peer" checked />
+                      <span
+                        class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7 peer-checked:bg-primary"
+                      ></span>
+                    </div>
+                  </label>
+                  <label
+                    class="flex items-center justify-between cursor-pointer"
+                  >
+                    <span class="text-sm font-medium">Promotional emails</span>
+                    <div
+                      class="relative inline-block w-12 h-6 rounded-full bg-slate-200 dark:bg-slate-700"
+                    >
+                      <input type="checkbox" class="sr-only peer" />
+                      <span
+                        class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7 peer-checked:bg-primary"
+                      ></span>
+                    </div>
+                  </label>
+                  <label
+                    class="flex items-center justify-between cursor-pointer"
+                  >
+                    <span class="text-sm font-medium"
+                      >Delivery push notifications</span
+                    >
+                    <div
+                      class="relative inline-block w-12 h-6 rounded-full bg-slate-200 dark:bg-slate-700 peer-checked:bg-primary transition"
+                    >
+                      <input type="checkbox" class="sr-only peer" checked />
+                      <span
+                        class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-all peer-checked:left-7 peer-checked:bg-primary"
+                      ></span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Danger zone -->
+              <div
+                class="bg-red-500/5 border border-red-200 dark:border-red-900/30 rounded-3xl p-6"
+              >
+                <h4 class="font-bold text-red-500 flex items-center gap-2 mb-3">
+                  <span class="material-symbols-outlined">warning</span> Danger
+                  Zone
+                </h4>
+                <p class="text-xs text-slate-500 mb-4">
+                  Permanently delete your account and all associated data. This
+                  action cannot be undone.
+                </p>
+                <button
+                  class="px-5 py-2.5 bg-red-500 text-white text-xs font-bold rounded-lg hover:bg-red-600 transition-all"
+                >
+                  Delete account
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Tab Bar -->
+    <nav class="mobile-bottom-nav">
+      <a href="customer-dashboard.html" class="bottom-nav-item"
+        ><span class="material-symbols-outlined">dashboard</span
+        ><span>Home</span></a
+      >
+      <a href="customer-order-history.html" class="bottom-nav-item"
+        ><span class="material-symbols-outlined">history</span
+        ><span>History</span></a
+      >
+      <a href="place-order.html" class="bottom-nav-item"
+        ><span class="material-symbols-outlined">local_gas_station</span
+        ><span>Order</span></a
+      >
+      <a href="tracking.html" class="bottom-nav-item"
+        ><span class="material-symbols-outlined">near_me</span
+        ><span>Track</span></a
+      >
+      <a href="customer-settings.html" class="bottom-nav-item active"
+        ><span class="material-symbols-outlined">settings</span
+        ><span>Settings</span></a
+      >
+    </nav>
+
+    <!-- Scripts -->
+    <script>
+      (function () {
+        // Mobile menu toggle
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        if (menuToggle && sidebar && backdrop) {
+          menuToggle.addEventListener("click", function () {
+            sidebar.classList.toggle("-translate-x-full");
+            backdrop.classList.toggle("hidden");
+          });
+
+          backdrop.addEventListener("click", function () {
+            sidebar.classList.add("-translate-x-full");
+            backdrop.classList.add("hidden");
+          });
+        }
+
+        // Logout
+        document
+          .getElementById("logoutBtn")
+          ?.addEventListener("click", function () {
+            if (confirm("Log out from Flanorx?")) {
+              localStorage.removeItem("flanorx_auth");
+              window.location.href = "login.html";
+            }
+          });
+
+        // Avatar upload demo
+        document
+          .getElementById("avatarUpload")
+          ?.addEventListener("change", function (e) {
+            if (e.target.files.length > 0) {
+              alert("[Demo] Avatar upload simulation. File would be uploaded.");
+            }
+          });
+
+        // PERSONAL INFORMATION TOGGLE
+        const editPersonalBtn = document.getElementById("editPersonalBtn");
+        const cancelPersonalBtn = document.getElementById("cancelPersonalBtn");
+        const personalSummary = document.getElementById("personalSummary");
+        const personalEditForm = document.getElementById("personalEditForm");
+
+        if (editPersonalBtn) {
+          editPersonalBtn.addEventListener("click", function () {
+            personalSummary.classList.add("hidden-section");
+            personalEditForm.classList.remove("hidden-section");
+          });
+        }
+        if (cancelPersonalBtn) {
+          cancelPersonalBtn.addEventListener("click", function () {
+            personalSummary.classList.remove("hidden-section");
+            personalEditForm.classList.add("hidden-section");
+          });
+        }
+
+        // SECURITY TOGGLE
+        const editSecurityBtn = document.getElementById("editSecurityBtn");
+        const cancelSecurityBtn = document.getElementById("cancelSecurityBtn");
+        const securitySummary = document.getElementById("securitySummary");
+        const securityEditForm = document.getElementById("securityEditForm");
+
+        if (editSecurityBtn) {
+          editSecurityBtn.addEventListener("click", function () {
+            securitySummary.classList.add("hidden-section");
+            securityEditForm.classList.remove("hidden-section");
+          });
+        }
+        if (cancelSecurityBtn) {
+          cancelSecurityBtn.addEventListener("click", function () {
+            securitySummary.classList.remove("hidden-section");
+            securityEditForm.classList.add("hidden-section");
+          });
+        }
+
+        // Active states
+        const path = window.location.pathname;
+        let currentPage = path.substring(path.lastIndexOf("/") + 1);
+        if (!currentPage || currentPage === "index.html")
+          currentPage = "customer-settings.html";
+
+        const navItems = document.querySelectorAll(".bottom-nav-item");
+        navItems.forEach((item) => item.classList.remove("active"));
+        navItems.forEach((item) => {
+          const href = item.getAttribute("href");
+          if (href === currentPage) item.classList.add("active");
+        });
+
+        const sidebarLinks = document.querySelectorAll("#sidebar nav a");
+        sidebarLinks.forEach((link) => link.classList.remove("sidebar-active"));
+        sidebarLinks.forEach((link) => {
+          const href = link.getAttribute("href");
+          if (href === currentPage) link.classList.add("sidebar-active");
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Deliveries Management - Flanorx Rider</title>
+    <!-- Tailwind + plugins (consistent with customer) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Font: Manrope (same family) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Material Symbols Outlined -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b", // rider primary preserved
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: {
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+            keyframes: {
+              "radar-pulse": {
+                "0%": { transform: "scale(1)", opacity: "0.5" },
+                "100%": { transform: "scale(4)", opacity: "0" },
+              },
+            },
+            animation: {
+              radar: "radar-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .active-nav {
+        background-color: #13ec5b;
+        color: #102216;
+      }
+      .sidebar-item:hover {
+        background-color: rgba(19, 236, 91, 0.1);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased"
+  >
+    <!-- MAIN FLEX CONTAINER (exactly like customer: h-screen overflow-hidden) -->
+    <div class="flex h-screen overflow-hidden">
+      <!-- SIDEBAR – fixed on mobile, static on large, with slide transform & backdrop (mirror customer) -->
+      <aside
+        id="sidebar"
+        class="w-64 bg-slate-900 dark:bg-black text-white flex flex-col shrink-0 fixed lg:static inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out"
+      >
+        <!-- Logo (rider original) -->
+        <div class="p-6 flex items-center">
+          <div class="flex items-center gap-2">
+            <img
+              src="flanorx.png"
+              alt="Flanorx Logo"
+              class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
+
+        <!-- Profile card (exactly as provided) -->
+        <div class="px-6 py-4 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div
+              class="size-10 rounded-full bg-slate-700 overflow-hidden bg-cover bg-center"
+              style="
+                background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBa8ZNW64xDK0wXgwyGzDqvnIWwueOsJ8588nwMeGmUHzR-s-ONqU69Abefm6dPzyaQ2GM8hKv58dZFGTNhVelUOYIrPJQlWKfzJRVe7j2ZKPWBxvSEt9vjXSglEsSJ98sQ7iTylRd22ISSTfGWhOU3W3CCQywBiCKaBxit7lP9MbuZNrFUgEIysO3tj5Kch7iJacxK0VB1JNxHoNUwG_0XyCp1iYiQ_KeSTIZqGvE1q2oFWBRvJyuxmqEHMX-kaEkGgQTGWkYfIGY&quot;);
+              "
+            ></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold">Alex Rivera</span>
+              <div class="flex items-center gap-1">
+                <span class="size-2 bg-primary rounded-full"></span>
+                <span class="text-xs text-primary font-medium">Online</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation – active-nav on Deliveries (as in the provided page) -->
+        <nav class="flex-1 px-4 py-4 space-y-1">
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-medium text-slate-300">Dashboard</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg active-nav"
+          >
+            <span class="material-symbols-outlined">delivery_dining</span>
+            <span class="font-medium">Deliveries</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">payments</span>
+            <span class="font-medium text-slate-300">Earnings</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">history</span>
+            <span class="font-medium text-slate-300">History</span>
+          </a>
+          <a
+            href="#"
+            class="flex items-center gap-3 px-4 py-3 rounded-lg sidebar-item text-slate-400 hover:text-white transition-colors"
+          >
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-medium text-slate-300">Settings</span>
+          </a>
+        </nav>
+
+        <!-- Sidebar footer: Go offline (exactly as original) -->
+        <div class="p-4 border-t border-slate-800">
+          <button
+            class="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-red-500/20 hover:text-red-400 transition-colors py-3 rounded-lg text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-sm"
+              >power_settings_new</span
+            >
+            Go Offline
+          </button>
+        </div>
+      </aside>
+
+      <!-- BACKDROP (mobile only) – same as customer -->
+      <div
+        id="backdrop"
+        class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden transition-opacity duration-300"
+      ></div>
+
+      <!-- MAIN CONTENT (flex column, scrollable) -->
+      <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- STICKY HEADER – matches customer structure: h-16, backdrop-blur, flex-between, left hamburger + filters / right notifications 
+           (filters now have pointer-events-none and opacity-50 from original, preserved) -->
+        <header
+          class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between sticky top-0 z-10"
+        >
+          <!-- Left section: hamburger + filter elements (preserved from rider deliveries) -->
+          <div class="flex items-center gap-4 overflow-x-auto hide-scrollbar">
+            <!-- mobile menu toggle – exactly like customer position -->
+            <button
+              id="menuToggle"
+              class="lg:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0"
+            >
+              <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+          </div>
+
+          <!-- Right section: live feed + notifications (preserved) -->
+          <div class="flex items-center gap-4 lg:gap-6 shrink-0">
+            <div
+              class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest hidden sm:block"
+            >
+              Live Feed
+            </div>
+            <button
+              class="relative text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              <span
+                class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"
+              ></span>
+            </button>
+          </div>
+        </header>
+
+        <!-- DASHBOARD CONTENT – uses padding scale from customer (p-4 lg:p-8) -->
+        <div class="flex-1 p-4 lg:p-8 pt-4 lg:pt-8 flex flex-col min-h-0">
+          <!-- Two‑panel layout: left panel full width on mobile, map hidden on mobile and visible on lg+ -->
+          <div class="flex flex-1 min-h-0 gap-6 flex-col lg:flex-row">
+            <!-- LEFT PANEL: delivery list (on mobile: full width, on desktop: 1/3 width) -->
+            <div
+              class="w-full lg:w-1/3 xl:min-w-[380px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl flex flex-col overflow-hidden shadow-sm"
+            >
+              <!-- scrollable content with custom-scrollbar, preserves zero state -->
+              <div
+                class="flex-1 overflow-y-auto custom-scrollbar p-5 flex flex-col"
+              >
+                <div class="space-y-6 flex-1">
+                  <!-- In Progress (0) -->
+                  <section>
+                    <h2
+                      class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2"
+                    >
+                      <span class="size-2 bg-blue-500 rounded-full"></span>
+                      In Progress (0)
+                    </h2>
+                  </section>
+                  <!-- Available Near You (0) -->
+                  <section>
+                    <h2
+                      class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2"
+                    >
+                      <span class="size-2 bg-primary rounded-full"></span>
+                      Available Near You (0)
+                    </h2>
+                  </section>
+                  <!-- Zero state content (exactly as provided) -->
+                  <div class="flex-1 flex items-center justify-center py-10">
+                    <div class="text-center max-w-sm">
+                      <div class="relative inline-block mb-6">
+                        <div
+                          class="size-32 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center border-4 border-slate-50 dark:border-slate-800"
+                        >
+                          <span
+                            class="material-symbols-outlined text-6xl text-slate-300 dark:text-slate-700"
+                            >explore_off</span
+                          >
+                        </div>
+                        <div
+                          class="absolute -bottom-2 -right-2 bg-primary/20 p-2 rounded-full"
+                        >
+                          <span
+                            class="material-symbols-outlined text-primary text-2xl"
+                            >sensors</span
+                          >
+                        </div>
+                      </div>
+                      <h3
+                        class="text-xl font-extrabold text-slate-900 dark:text-white mb-2"
+                      >
+                        No Deliveries Available
+                      </h3>
+                      <p
+                        class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed px-4"
+                      >
+                        Check back soon or move to a busier area to start
+                        earning. We're searching for orders in your vicinity.
+                      </p>
+                      <div class="mt-8">
+                        <div
+                          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-900 rounded-full"
+                        >
+                          <span
+                            class="size-2 bg-primary rounded-full animate-pulse"
+                          ></span>
+                          <span
+                            class="text-[10px] font-black uppercase tracking-wider text-slate-400"
+                            >Searching for Orders</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT PANEL: MAP - hidden on mobile, visible on lg and above (preserved exactly) -->
+            <div
+              class="hidden lg:block lg:flex-1 relative bg-slate-200 dark:bg-slate-800 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm"
+            >
+              <!-- map background -->
+              <div
+                class="absolute inset-0 bg-center bg-cover opacity-80 mix-blend-multiply dark:mix-blend-normal"
+                style="
+                  background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBnIKP2whgjmbMGpeEs2Gs3Gz0OosPE0G2m8jqfyOFcgrZv8hmkw6vi0tYo8BIcrSBTmIKsPk8uFaLxirIupI-aHHasdACD2TsGJI9QOAypcqbgMshBGF69OR3VwmXsQlDboUuL44uc_yb-U66eOGl3YExt7-ZMRPRqsUr_v2KTe7cHEpU_8rSjBCwilT6MBZIAlZyQsubQ6cvUsdiVAKblr8G-8OXKbY6k3CU7ys8XW1IkV1nI91XMnkruS_l-yW3Bxa8D2zewvU8&quot;);
+                "
+              ></div>
+              <!-- radar animation and marker (preserved) -->
+              <div
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
+              >
+                <div class="relative">
+                  <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-12 bg-primary/40 rounded-full animate-radar"
+                  ></div>
+                  <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-24 bg-primary/20 rounded-full animate-radar [animation-delay:1s]"
+                  ></div>
+                  <div
+                    class="size-8 bg-primary border-4 border-white dark:border-slate-900 rounded-full shadow-2xl relative z-10 flex items-center justify-center"
+                  >
+                    <span
+                      class="material-symbols-outlined text-slate-900 text-sm font-black"
+                      >navigation</span
+                    >
+                  </div>
+                  <div
+                    class="absolute top-full mt-4 left-1/2 -translate-x-1/2 whitespace-nowrap"
+                  >
+                    <div
+                      class="bg-slate-900/90 backdrop-blur text-white px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-xl border border-primary/20 flex items-center gap-2"
+                    >
+                      <span
+                        class="size-1.5 bg-primary rounded-full animate-pulse"
+                      ></span>
+                      Searching for Orders
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- map controls (preserved) -->
+              <div class="absolute bottom-6 right-6 flex flex-col gap-2">
+                <button
+                  class="size-10 bg-white dark:bg-slate-900 rounded-lg shadow-lg flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50"
+                >
+                  <span class="material-symbols-outlined">my_location</span>
+                </button>
+                <div
+                  class="flex flex-col bg-white dark:bg-slate-900 rounded-lg shadow-lg overflow-hidden border border-slate-200 dark:border-slate-800"
+                >
+                  <button
+                    class="size-10 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 border-b border-slate-100 dark:border-slate-800"
+                  >
+                    <span class="material-symbols-outlined text-sm">add</span>
+                  </button>
+                  <button
+                    class="size-10 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    <span class="material-symbols-outlined text-sm"
+                      >remove</span
+                    >
+                  </button>
+                </div>
+              </div>
+              <!-- legend (preserved, with opacity for some items) -->
+              <div
+                class="absolute bottom-6 left-6 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl"
+              >
+                <div class="flex items-center gap-4 text-xs font-bold">
+                  <div class="flex items-center gap-1.5 opacity-50">
+                    <span class="size-2 bg-primary rounded-full"></span
+                    ><span>Available</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 opacity-50">
+                    <span class="size-2 bg-blue-600 rounded-full"></span
+                    ><span>Active</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <span class="size-2 bg-slate-400 rounded-full"></span
+                    ><span>Completed</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- SIMPLE SCRIPT FOR MOBILE SIDEBAR (identical behavior to customer) -->
+    <script>
+      (function () {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+
+        function openSidebar() {
+          sidebar.classList.remove("-translate-x-full");
+          sidebar.classList.add("translate-x-0");
+          backdrop.classList.remove("hidden");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeSidebar() {
+          sidebar.classList.add("-translate-x-full");
+          sidebar.classList.remove("translate-x-0");
+          backdrop.classList.add("hidden");
+          document.body.style.overflow = "";
+        }
+
+        if (menuToggle) {
+          menuToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (sidebar.classList.contains("-translate-x-full")) {
+              openSidebar();
+            } else {
+              closeSidebar();
+            }
+          });
+        }
+
+        if (backdrop) {
+          backdrop.addEventListener("click", closeSidebar);
+        }
+
+        window.addEventListener("keydown", (e) => {
+          if (
+            e.key === "Escape" &&
+            sidebar &&
+            !sidebar.classList.contains("-translate-x-full") &&
+            window.innerWidth < 1024
+          ) {
+            closeSidebar();
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 1024) {
+            sidebar.classList.remove("-translate-x-full");
+            backdrop.classList.add("hidden");
+            document.body.style.overflow = "";
+          } else {
+            if (!sidebar.classList.contains("translate-x-0")) {
+              sidebar.classList.add("-translate-x-full");
+            }
+          }
+        });
+
+        if (window.innerWidth < 1024) {
+          sidebar.classList.add("-translate-x-full");
+          backdrop.classList.add("hidden");
+        } else {
+          sidebar.classList.remove("-translate-x-full");
+        }
+      })();
+    </script>
+  </body>
+</html>

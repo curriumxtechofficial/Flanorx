@@ -1,0 +1,327 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Flanorx - Sign up</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ✅ Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#13ec5b",
+              "background-light": "#f6f8f6",
+              "background-dark": "#102216",
+            },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        font-family: "Manrope", sans-serif;
+      }
+      .welcome-glow {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col font-display"
+  >
+    <header
+      class="w-full flex items-center justify-between px-8 py-6 max-w-7xl mx-auto"
+    >
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center">
+          <img
+            src="flanorx.png"
+            alt="Flanorx Logo"
+            class="h-6 w-auto object-contain transition-transform duration-300 hover:scale-105"
+          />
+        </a>
+      </div>
+      <div class="flex items-center gap-3">
+        <span
+          class="hidden sm:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400"
+        >
+          <span class="material-symbols-outlined text-base"
+            >local_gas_station</span
+          >
+          Customer Portal
+        </span>
+        <a
+          href="customer-support.html"
+          class="px-6 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300 inline-block"
+        >
+          Support
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1 flex items-center justify-center px-4 py-8">
+      <div class="w-full max-w-[520px] space-y-8">
+        <!-- Header with welcome badge -->
+        <div class="text-center space-y-3">
+          <div class="flex justify-center mb-2">
+            <span
+              class="bg-primary/20 text-primary px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 welcome-glow"
+            >
+              <span class="material-symbols-outlined text-base"
+                >celebration</span
+              >
+              Welcome to Flanorx!
+            </span>
+          </div>
+          <h2 class="text-3xl font-bold text-slate-900 dark:text-slate-100">
+            Join the Fuel Revolution
+          </h2>
+          <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+            Never visit a gas station again. We deliver quality fuel right to
+            your vehicle.
+          </p>
+        </div>
+
+        <div
+          class="bg-white dark:bg-slate-900 rounded-xl shadow-xl shadow-slate-200/50 dark:shadow-none p-8 border border-slate-100 dark:border-slate-800"
+        >
+          <!-- ✅ Status / Error -->
+          <div id="authMsg" class="hidden mb-4 text-sm"></div>
+
+          <!-- Feature Grid -->
+          <div class="grid grid-cols-2 gap-3 mb-6">
+            <div
+              class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >verified</span
+              >
+              <span class="text-xs font-medium">Quality guaranteed</span>
+            </div>
+            <div
+              class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >schedule</span
+              >
+              <span class="text-xs font-medium">24/7 delivery</span>
+            </div>
+            <div
+              class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >credit_score</span
+              >
+              <span class="text-xs font-medium">Secure payments</span>
+            </div>
+            <div
+              class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-lg"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >support_agent</span
+              >
+              <span class="text-xs font-medium">24/7 support</span>
+            </div>
+          </div>
+
+          <!-- Sign up with Google Button -->
+          <button
+            id="googleSignupBtn"
+            type="button"
+            class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-4 px-4 rounded-lg border-2 border-primary/30 hover:border-primary transition-all transform active:scale-[0.98]"
+          >
+            <img
+              alt="Google Logo"
+              class="size-5"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfhYBtTt4_oqUaZlerep04zeaTzKfHSfvUjYyJIyPag-eqSTQWl_iOIGSZOX5sdJc2YRy7GZsmsajFBaoNokP35to5thiSG-iviTPX8j9xBrKcbyWUMF8vZPIxlMp8stu_p5nA852zS_BpMJiuHLLjQdme8S6407HA3J4VOZgMPI7X1dS20CUg7oA5bqApD2E1vfOy70QaYlmS5qqx3O7FunsRHfULBWh4FZGf6IQc46J3wfGSxZ7jiyAwdEiGAjwnoe0F-lL0CPc"
+            />
+            <span id="btnText">Sign up with Google</span>
+          </button>
+
+          <!-- Login link -->
+          <p
+            class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400"
+          >
+            Already have an account?
+            <a
+              class="font-bold text-primary hover:underline transition-colors"
+              href="login.html"
+              >Sign in</a
+            >
+          </p>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="flex justify-center gap-4 text-xs text-slate-400">
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">lock</span>
+            Secure checkout
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">verified</span>
+            SSL encrypted
+          </span>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 dark:text-slate-600 px-8">
+          By registering, you agree to our
+          <a class="underline hover:text-primary transition-colors" href="#"
+            >Terms of Service</a
+          >
+          and
+          <a class="underline hover:text-primary transition-colors" href="#"
+            >Privacy Policy</a
+          >.
+        </p>
+      </div>
+    </main>
+
+    <div
+      class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-yellow-400 to-primary/50 opacity-50"
+    ></div>
+
+    <script>
+      // 🔧 SETTINGS
+      const GOOGLE_CLIENT_ID =
+        "139378208657-0fujugnuiosdv9moc909vfm1328ouodb.apps.googleusercontent.com";
+      const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+          ? "http://127.0.0.1:8000"
+          : "https://flanorx-api.onrender.com";
+
+      const btn = document.getElementById("googleSignupBtn");
+      const btnText = document.getElementById("btnText");
+      const authMsg = document.getElementById("authMsg");
+
+      function redirectToDashboard() {
+        window.location.href = "customer-dashboard.html";
+      }
+
+      function showMsg(message, type = "info") {
+        authMsg.classList.remove("hidden");
+        authMsg.className =
+          "mb-4 text-sm " +
+          (type === "error"
+            ? "text-red-600 dark:text-red-400"
+            : type === "success"
+              ? "text-green-700 dark:text-green-400"
+              : "text-slate-600 dark:text-slate-300");
+        authMsg.textContent = message;
+      }
+
+      function setLoading(isLoading) {
+        btn.disabled = isLoading;
+        btnText.textContent = isLoading
+          ? "Creating account..."
+          : "Sign up with Google";
+        btn.classList.toggle("opacity-60", isLoading);
+        btn.classList.toggle("cursor-not-allowed", isLoading);
+      }
+
+      async function sendTokenToBackend(googleToken) {
+        const res = await fetch(`${API_BASE_URL}/api/users/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            token: googleToken,
+            userType: "customer",
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok)
+          throw new Error(data?.message || `Backend error (${res.status})`);
+        return data;
+      }
+
+      let tokenClient;
+
+      window.addEventListener("load", () => {
+        if (!window.google?.accounts?.oauth2) {
+          showMsg(
+            "Google OAuth library failed to load. Check your internet.",
+            "error",
+          );
+          return;
+        }
+
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: "openid email profile",
+          callback: async (resp) => {
+            try {
+              if (!resp || !resp.access_token)
+                throw new Error("No access token returned");
+
+              showMsg("Creating your account...", "info");
+
+              const serverData = await sendTokenToBackend(resp.access_token);
+
+              localStorage.setItem(
+                "flanorx_auth",
+                JSON.stringify({
+                  _id: serverData._id,
+                  name: serverData.name,
+                  email: serverData.email,
+                  profile: serverData.profile,
+                  authMethod: serverData.authMethod,
+                  userType: "customer",
+                  loggedInAt: Date.now(),
+                }),
+              );
+
+              showMsg("Welcome to Flanorx! Redirecting...", "success");
+              setTimeout(redirectToDashboard, 1500);
+            } catch (e) {
+              console.error(e);
+              showMsg(e.message || "Registration failed", "error");
+              setLoading(false);
+            }
+          },
+        });
+
+        btn.addEventListener("click", () => {
+          if (btn.disabled) return;
+          authMsg.classList.add("hidden");
+          setLoading(true);
+          tokenClient.requestAccessToken({ prompt: "consent" });
+        });
+      });
+    </script>
+  </body>
+</html>
